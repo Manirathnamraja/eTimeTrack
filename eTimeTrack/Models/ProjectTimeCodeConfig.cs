@@ -22,6 +22,19 @@ namespace eTimeTrack.Models
         public string OT1Notes { get; set; }
         public string OT2Notes { get; set; }
         public string OT3Notes { get; set; }
+        //Added new 4 time codes
+        public bool DisplayOT4 { get; set; }
+        public bool DisplayOT5 { get; set; }
+        public bool DisplayOT6 { get; set; }
+        public bool DisplayOT7 { get; set; }
+        public string OT4Name { get; set; }
+        public string OT5Name { get; set; }
+        public string OT6Name { get; set; }
+        public string OT7Name { get; set; }
+        public string OT4Notes { get; set; }
+        public string OT5Notes { get; set; }
+        public string OT6Notes { get; set; }
+        public string OT7Notes { get; set; }
 
         [ForeignKey("ProjectID")]
         [Required]

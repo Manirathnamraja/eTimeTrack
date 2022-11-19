@@ -33,6 +33,15 @@ namespace eTimeTrack.Models
         public float? MaxOT3Hours { get; set; }
         public int? LastModifiedBy { get; set; }
         public DateTime? LastModifiedDate { get; set;}
+        //Added new Time Codes
+        [DisplayName("Maximum OT4 Hours")]
+        public float? MaxOT4Hours { get; set; }
+        [DisplayName("Maximum OT5 Hours")]
+        public float? MaxOT5Hours { get; set; }
+        [DisplayName("Maximum OT6 Hours")]
+        public float? MaxOT6Hours { get; set; }
+        [DisplayName("Maximum OT7 Hours")]
+        public float? MaxOT7Hours { get; set; }
 
         [JsonIgnore]
         [ForeignKey("UserTypeID")]
@@ -57,6 +66,11 @@ namespace eTimeTrack.Models
             MaxOT2Hours = null;
             MaxOT3Hours = null;
             //MaxHoursOverall = 40;
+            //Added new Time Codes
+            MaxOT4Hours = null;
+            MaxOT5Hours = null;
+            MaxOT6Hours = null;
+            MaxOT7Hours = null;
             LastModifiedDate = DateTime.UtcNow;
             if (UserHelpers.GetCurrentUserId() != UserHelpers.Invalid)
             {

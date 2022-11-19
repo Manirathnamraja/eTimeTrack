@@ -42,61 +42,121 @@
                 </div>
                 <div class="col-xs-2">
                     @TimeCode.NT.ToString()
-                    </div>
-                    <div class="col-xs-4">
-                        @Html.TextBoxFor(x => x.ProjectTimeCodeConfig.NTName, new { @class = "form-control", placeholder = TimeCode.NT.GetDisplayName() })
-                    </div>
-                    <div class="col-xs-4">
-                        @Html.TextAreaFor(x => x.ProjectTimeCodeConfig.NTNotes, new { @class = "form-control" })
-                    </div>
                 </div>
-
-                <div class="data-row row">
-                    <div class="col-xs-2">
-                        @Html.CheckBoxFor(x => x.ProjectTimeCodeConfig.DisplayOT1)
-                    </div>
-                    <div class="col-xs-2">
-                        @TimeCode.OT1.ToString()
-                    </div>
-                    <div class="col-xs-4">
-                        @Html.TextBoxFor(x => x.ProjectTimeCodeConfig.OT1Name, new { @class = "form-control", placeholder = TimeCode.OT1.GetDisplayName() })
-                    </div>
-                    <div class="col-xs-4">
-                        @Html.TextAreaFor(x => x.ProjectTimeCodeConfig.OT1Notes, new { @class = "form-control" })
-                    </div>
+                <div class="col-xs-4">
+                    @Html.TextBoxFor(x => x.ProjectTimeCodeConfig.NTName, new { @class = "form-control", placeholder = TimeCode.NT.GetDisplayName() })
                 </div>
-
-                <div class="data-row row">
-                    <div class="col-xs-2">
-                        @Html.CheckBoxFor(x => x.ProjectTimeCodeConfig.DisplayOT2)
-                    </div>
-                    <div class="col-xs-2">
-                        @TimeCode.OT2.ToString()
-                    </div>
-                    <div class="col-xs-4">
-                        @Html.TextBoxFor(x => x.ProjectTimeCodeConfig.OT2Name, new { @class = "form-control", placeholder = TimeCode.OT2.GetDisplayName() })
-                    </div>
-                    <div class="col-xs-4">
-                        @Html.TextAreaFor(x => x.ProjectTimeCodeConfig.OT2Notes, new { @class = "form-control" })
-                    </div>
+                <div class="col-xs-4">
+                    @Html.TextAreaFor(x => x.ProjectTimeCodeConfig.NTNotes, new { @class = "form-control" })
                 </div>
-
-                <div class="data-row row">
-                    <div class="col-xs-2">
-                        @Html.CheckBoxFor(x => x.ProjectTimeCodeConfig.DisplayOT3)
-                    </div>
-                    <div class="col-xs-2">
-                        @TimeCode.OT3.ToString()
-                    </div>
-                    <div class="col-xs-4">
-                        @Html.TextBoxFor(x => x.ProjectTimeCodeConfig.OT3Name, new { @class = "form-control", placeholder = TimeCode.OT3.GetDisplayName() })
-                    </div>
-                    <div class="col-xs-4">
-                        @Html.TextAreaFor(x => x.ProjectTimeCodeConfig.OT3Notes, new { @class = "form-control" })
-                    </div>
-                </div>
-
             </div>
+
+            <div class="data-row row">
+                <div class="col-xs-2">
+                    @Html.CheckBoxFor(x => x.ProjectTimeCodeConfig.DisplayOT1)
+                </div>
+                <div class="col-xs-2">
+                    @TimeCode.OT1.ToString()
+                </div>
+                <div class="col-xs-4">
+                    @Html.TextBoxFor(x => x.ProjectTimeCodeConfig.OT1Name, new { @class = "form-control", placeholder = TimeCode.OT1.GetDisplayName() })
+                </div>
+                <div class="col-xs-4">
+                    @Html.TextAreaFor(x => x.ProjectTimeCodeConfig.OT1Notes, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="data-row row">
+                <div class="col-xs-2">
+                    @Html.CheckBoxFor(x => x.ProjectTimeCodeConfig.DisplayOT2)
+                </div>
+                <div class="col-xs-2">
+                    @TimeCode.OT2.ToString()
+                </div>
+                <div class="col-xs-4">
+                    @Html.TextBoxFor(x => x.ProjectTimeCodeConfig.OT2Name, new { @class = "form-control", placeholder = TimeCode.OT2.GetDisplayName() })
+                </div>
+                <div class="col-xs-4">
+                    @Html.TextAreaFor(x => x.ProjectTimeCodeConfig.OT2Notes, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="data-row row">
+                <div class="col-xs-2">
+                    @Html.CheckBoxFor(x => x.ProjectTimeCodeConfig.DisplayOT3)
+                </div>
+                <div class="col-xs-2">
+                    @TimeCode.OT3.ToString()
+                </div>
+                <div class="col-xs-4">
+                    @Html.TextBoxFor(x => x.ProjectTimeCodeConfig.OT3Name, new { @class = "form-control", placeholder = TimeCode.OT3.GetDisplayName() })
+                </div>
+                <div class="col-xs-4">
+                    @Html.TextAreaFor(x => x.ProjectTimeCodeConfig.OT3Notes, new { @class = "form-control" })
+                </div>
+            </div>
+            <!-- Added new extta 4 time codes -->
+            <div class="data-row row">
+                <div class="col-xs-2">
+                    @Html.CheckBoxFor(x => x.ProjectTimeCodeConfig.DisplayOT4)
+                </div>
+                <div class="col-xs-2">
+                    @TimeCode.OT4.ToString()
+                </div>
+                <div class="col-xs-4">
+                    @Html.TextBoxFor(x => x.ProjectTimeCodeConfig.OT4Name, new { @class = "form-control", placeholder = TimeCode.OT4.GetDisplayName() })
+                </div>
+                <div class="col-xs-4">
+                    @Html.TextAreaFor(x => x.ProjectTimeCodeConfig.OT4Notes, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="data-row row">
+                <div class="col-xs-2">
+                    @Html.CheckBoxFor(x => x.ProjectTimeCodeConfig.DisplayOT5)
+                </div>
+                <div class="col-xs-2">
+                    @TimeCode.OT5.ToString()
+                </div>
+                <div class="col-xs-4">
+                    @Html.TextBoxFor(x => x.ProjectTimeCodeConfig.OT5Name, new { @class = "form-control", placeholder = TimeCode.OT5.GetDisplayName() })
+                </div>
+                <div class="col-xs-4">
+                    @Html.TextAreaFor(x => x.ProjectTimeCodeConfig.OT5Notes, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="data-row row">
+                <div class="col-xs-2">
+                    @Html.CheckBoxFor(x => x.ProjectTimeCodeConfig.DisplayOT6)
+                </div>
+                <div class="col-xs-2">
+                    @TimeCode.OT6.ToString()
+                </div>
+                <div class="col-xs-4">
+                    @Html.TextBoxFor(x => x.ProjectTimeCodeConfig.OT6Name, new { @class = "form-control", placeholder = TimeCode.OT6.GetDisplayName() })
+                </div>
+                <div class="col-xs-4">
+                    @Html.TextAreaFor(x => x.ProjectTimeCodeConfig.OT6Notes, new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="data-row row">
+                <div class="col-xs-2">
+                    @Html.CheckBoxFor(x => x.ProjectTimeCodeConfig.DisplayOT7)
+                </div>
+                <div class="col-xs-2">
+                    @TimeCode.OT7.ToString()
+                </div>
+                <div class="col-xs-4">
+                    @Html.TextBoxFor(x => x.ProjectTimeCodeConfig.OT7Name, new { @class = "form-control", placeholder = TimeCode.OT7.GetDisplayName() })
+                </div>
+                <div class="col-xs-4">
+                    @Html.TextAreaFor(x => x.ProjectTimeCodeConfig.OT7Notes, new { @class = "form-control" })
+                </div>
+            </div>
+
+        </div>
 
 
             <div class="pull-right">

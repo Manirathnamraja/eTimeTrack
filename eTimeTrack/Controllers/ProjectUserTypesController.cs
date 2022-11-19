@@ -35,6 +35,11 @@ namespace eTimeTrack.Controllers
                 MaxOT1Hours = x.MaxOT1Hours,
                 MaxOT2Hours = x.MaxOT2Hours,
                 MaxOT3Hours = x.MaxOT3Hours,
+                //Added new Time Codes
+                MaxOT4Hours = x.MaxOT4Hours,
+                MaxOT5Hours = x.MaxOT5Hours,
+                MaxOT6Hours = x.MaxOT6Hours,
+                MaxOT7Hours = x.MaxOT7Hours,
                 UserTypeName = x.UserType == null ? UserTypesController.GenericUserTypeText : x.UserType.Code + ": " + x.UserType.Type
             }).ToList();
 
@@ -128,7 +133,12 @@ namespace eTimeTrack.Controllers
                 MaxOT2Hours = model.MaxOT2Hours,
                 MaxOT3Hours = model.MaxOT3Hours,
                 ProjectID = model.ProjectID,
-                UserTypeID = (int)model.UserTypeID
+                UserTypeID = (int)model.UserTypeID,
+                //Added new Time Codes
+                MaxOT4Hours = model.MaxOT4Hours,
+                MaxOT5Hours = model.MaxOT5Hours,
+                MaxOT6Hours = model.MaxOT6Hours,
+                MaxOT7Hours = model.MaxOT7Hours,
             };
 
             Db.ProjectUserTypes.Add(projectUserTypes);
@@ -182,7 +192,12 @@ namespace eTimeTrack.Controllers
                 MaxOT3Hours = projectUserType.MaxOT3Hours,
                 ProjectUserTypeID = projectUserType.ProjectUserTypeID,
                 UserTypeName = isGenericUserType ? UserTypesController.GenericUserTypeText : projectUserType.UserType?.Code + ": " + projectUserType.UserType?.Type,
-                IsGenericUserType = isGenericUserType
+                IsGenericUserType = isGenericUserType,
+                //Added new Time Codes
+                MaxOT4Hours = projectUserType.MaxOT4Hours,
+                MaxOT5Hours = projectUserType.MaxOT5Hours,
+                MaxOT6Hours = projectUserType.MaxOT6Hours,
+                MaxOT7Hours = projectUserType.MaxOT7Hours,
             };
 
             if (model.UserTypeName == ": ")
@@ -232,6 +247,11 @@ namespace eTimeTrack.Controllers
             existing.MaxOT1Hours = model.MaxOT1Hours;
             existing.MaxOT2Hours = model.MaxOT2Hours;
             existing.MaxOT3Hours = model.MaxOT3Hours;
+            //Added new Time Codes
+            existing.MaxOT4Hours = model.MaxOT4Hours;
+            existing.MaxOT5Hours = model.MaxOT5Hours;
+            existing.MaxOT6Hours = model.MaxOT6Hours;
+            existing.MaxOT7Hours = model.MaxOT7Hours;
 
             Db.SaveChanges();
 

@@ -6,7 +6,7 @@ namespace eTimeTrack.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
             ContextKey = "eTimeTrack.Models.ApplicationDbContext";
         }
 

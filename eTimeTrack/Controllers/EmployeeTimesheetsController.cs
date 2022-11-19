@@ -111,7 +111,12 @@ namespace eTimeTrack.Controllers
                     MaxOT1Hours = foundProjectUserType?.MaxOT1Hours,
                     MaxOT2Hours = foundProjectUserType?.MaxOT2Hours,
                     MaxOT3Hours = foundProjectUserType?.MaxOT3Hours,
-                    MandatoryComments = project.CommentsMandatory
+                    MandatoryComments = project.CommentsMandatory,
+                    //Added 4 new time codes
+                    MaxOT4Hours = foundProjectUserType?.MaxOT4Hours,
+                    MaxOT5Hours = foundProjectUserType?.MaxOT5Hours,
+                    MaxOT6Hours = foundProjectUserType?.MaxOT6Hours,
+                    MaxOT7Hours = foundProjectUserType?.MaxOT7Hours,
                 });
             }
 
@@ -652,6 +657,23 @@ namespace eTimeTrack.Controllers
             if (timeCodeConfig.DisplayOT3)
             {
                 yield return new TimeCodeInfoViewModel { TimeCode = TimeCode.OT3, Name = timeCodeConfig.OT3Name ?? TimeCode.OT3.GetDisplayName(), Notes = timeCodeConfig.OT3Notes };
+            }
+            //Added new 4 time codes
+            if (timeCodeConfig.DisplayOT4)
+            {
+                yield return new TimeCodeInfoViewModel { TimeCode = TimeCode.OT4, Name = timeCodeConfig.OT4Name ?? TimeCode.OT4.GetDisplayName(), Notes = timeCodeConfig.OT4Notes };
+            }
+            if (timeCodeConfig.DisplayOT5)
+            {
+                yield return new TimeCodeInfoViewModel { TimeCode = TimeCode.OT5, Name = timeCodeConfig.OT5Name ?? TimeCode.OT5.GetDisplayName(), Notes = timeCodeConfig.OT5Notes };
+            }
+            if (timeCodeConfig.DisplayOT6)
+            {
+                yield return new TimeCodeInfoViewModel { TimeCode = TimeCode.OT6, Name = timeCodeConfig.OT6Name ?? TimeCode.OT6.GetDisplayName(), Notes = timeCodeConfig.OT6Notes };
+            }
+            if (timeCodeConfig.DisplayOT7)
+            {
+                yield return new TimeCodeInfoViewModel { TimeCode = TimeCode.OT7, Name = timeCodeConfig.OT7Name ?? TimeCode.OT7.GetDisplayName(), Notes = timeCodeConfig.OT7Notes };
             }
         }
 
@@ -1201,5 +1223,10 @@ namespace eTimeTrack.Controllers
         public float? MaxOT3Hours { get; set; }
         public bool MandatoryComments { get; set; }
         public string ProjectName { get; set; }
+        //Added new Time Codes
+        public float? MaxOT4Hours { get; set; }
+        public float? MaxOT5Hours { get; set; }
+        public float? MaxOT6Hours { get; set; }
+        public float? MaxOT7Hours { get; set; }
     }
 }

@@ -30,5 +30,14 @@ namespace eTimeTrack.ViewModels
 
         [DisplayName("User Type")]
         public string UserTypeName { get; set; }
+        //Added new Time Codes
+        [DisplayName("Maximum OT4 Hours")]
+        public float? MaxOT4Hours { get; set; }
+        [DisplayName("Maximum OT5 Hours")]
+        public float? MaxOT5Hours { get; set; }
+        [DisplayName("Maximum OT6 Hours")]
+        public float? MaxOT6Hours { get; set; }
+        [DisplayName("Maximum OT7 Hours")]
+        public float? MaxOT7Hours { get; set; }
     }
 }

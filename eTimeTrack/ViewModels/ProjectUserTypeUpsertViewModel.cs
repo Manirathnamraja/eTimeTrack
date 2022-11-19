@@ -23,6 +23,15 @@ namespace eTimeTrack.ViewModels
         public float? MaxOT2Hours { get; set; }
         [DisplayName("Maximum OT3 Hours")]
         public float? MaxOT3Hours { get; set; }
+        //Added new Time Codes
+        [DisplayName("Maximum OT4 Hours")]
+        public float? MaxOT4Hours { get; set; }
+        [DisplayName("Maximum OT5 Hours")]
+        public float? MaxOT5Hours { get; set; }
+        [DisplayName("Maximum OT6 Hours")]
+        public float? MaxOT6Hours { get; set; }
+        [DisplayName("Maximum OT7 Hours")]
+        public float? MaxOT7Hours { get; set; }
     }
 
     public class ProjectUserTypeCreateViewModel : ProjectUserTypeBaseViewModel

@@ -34,6 +34,10 @@
             <th>@Html.DisplayNameFor(model => model.MaxOT1Hours)</th>
             <th>@Html.DisplayNameFor(model => model.MaxOT2Hours)</th>
             <th>@Html.DisplayNameFor(model => model.MaxOT3Hours)</th>
+            <th>@Html.DisplayNameFor(model => model.MaxOT4Hours)</th>
+            <th>@Html.DisplayNameFor(model => model.MaxOT5Hours)</th>
+            <th>@Html.DisplayNameFor(model => model.MaxOT6Hours)</th>
+            <th>@Html.DisplayNameFor(model => model.MaxOT7Hours)</th>
             <th data-orderable="false">Edit</th>
         </tr>
     </thead>
@@ -49,6 +53,10 @@
                 <td>@Html.DisplayFor(modelItem => item.MaxOT1Hours)</td>
                 <td>@Html.DisplayFor(modelItem => item.MaxOT2Hours)</td>
                 <td>@Html.DisplayFor(modelItem => item.MaxOT3Hours)</td>
+                <td>@Html.DisplayFor(modelItem => item.MaxOT4Hours)</td>
+                <td>@Html.DisplayFor(modelItem => item.MaxOT5Hours)</td>
+                <td>@Html.DisplayFor(modelItem => item.MaxOT6Hours)</td>
+                <td>@Html.DisplayFor(modelItem => item.MaxOT7Hours)</td>
                 <td>
                     <a href='@Url.Action("EditProjectUserType", new {projectUserTypeId = item.ProjectUserTypeID, projectId = item.ProjectID})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
                 </td>

@@ -40,7 +40,7 @@
                     @Html.ValidationMessageFor(m => m.AliasCode, "", new { @class = "text-danger" })
                 </div>
             </div>
-            
+
             <div class="form-group">
                 @Html.LabelFor(model => model.AliasType, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
@@ -88,6 +88,37 @@
                     @Html.ValidationMessageFor(m => m.MaxOT3Hours, "", new { @class = "text-danger" })
                 </div>
             </div>
+            <div class="form-group">
+            @Html.LabelFor(model => model.MaxOT4Hours, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.MaxOT4Hours, new { type = "number", min = "0", @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.MaxOT4Hours, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.MaxOT5Hours, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.MaxOT5Hours, new { type = "number", min = "0", @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.MaxOT5Hours, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.MaxOT6Hours, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.MaxOT6Hours, new { type = "number", min = "0", @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.MaxOT6Hours, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.MaxOT7Hours, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.MaxOT7Hours, new { type = "number", min = "0", @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.MaxOT7Hours, "", new { @class = "text-danger" })
+            </div>
+        </div>
 
         </div>
         <div class="pull-right">
