@@ -1,0 +1,53 @@
+﻿@model eTimeTrack.Models.EmployeeTimesheet
+
+@{
+    bool readOnly = false;
+    if (ViewBag.ReadOnly != null && ViewBag.ReadOnly)
+    {
+        readOnly = true;
+    }
+}
+
+@*Headers*@
+<table id="timesheet" class="table" width="100%">
+    <thead>
+    <tr>
+        <th>Project</th>
+        <th>Project Part</th>
+        <th>Project Task</th>
+        <th data-tablesaw-priority="persist">Variation</th>
+        <th class="dayHeader">Sat</th>
+        <th class="dayHeader">Sun</th>
+        <th class="dayHeader">Mon</th>
+        <th class="dayHeader">Tue</th>
+        <th class="dayHeader">Wed</th>
+        <th class="dayHeader">Thu</th>
+        <th class="dayHeader">Fri</th>
+        <th>Total Hours</th>
+        <th>
+            <div style="width: 200px">General Comments</div>
+        </th>
+        @if (!readOnly)
+        {
+            <th>Delete</th>
+        }
+    </tr>
+    </thead>
+    <tfoot>
+    <tr class="totalHoursRow">
+        <td colspan="4">Total Daily Hours</td>
+        <td class="totalDailyHours tdDay1" data-day-number="1"></td>
+        <td class="totalDailyHours" data-day-number="2"></td>
+        <td class="totalDailyHours" data-day-number="3"></td>
+        <td class="totalDailyHours" data-day-number="4"></td>
+        <td class="totalDailyHours" data-day-number="5"></td>
+        <td class="totalDailyHours" data-day-number="6"></td>
+        <td class="totalDailyHours tdDay7" data-day-number="7"></td>
+        <td id="totalWeeklyHours"></td>
+        <td colspan="2"></td>
+    </tr>
+    </tfoot>
+    <tbody id="timesheetItemList">
+    @Html.EditorFor(model => model.TimesheetItems)
+    </tbody>
+</table>

@@ -1,0 +1,58 @@
+﻿@using eTimeTrack.Extensions
+@model IEnumerable<eTimeTrack.Models.Company>
+
+@{
+    ViewBag.Title = "Companies";
+}
+
+@Html.Partial("_Banner")
+
+@if (User.IsSuperUser())
+{
+    <p>
+        <a href="@Url.Action("CreateEdit")" class="btn btn-primary">Create Company</a>
+    </p>
+}
+
+<table class="table data-table" width="100%">
+    <thead>
+    <tr>
+        <th>@Html.DisplayNameFor(model => model.Company_Code)</th>
+        <th>@Html.DisplayNameFor(model => model.Company_Name)</th>
+        <th data-orderable="false">Edit</th>
+        <th data-orderable="false">Assign to Projects</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Company_Code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Company_Name)
+            </td>
+            @if (User.IsSuperUser())
+            {
+                <td>
+                    <a href='@Url.Action("CreateEdit", new {id = item.Company_Id})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                </td>
+            }
+            else
+            {
+                <td>
+                    <a class="btn btn-primary" role="button" disabled><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                </td>
+            }
+            <td>
+                <a href='@Url.Action("Assign", new {id = item.Company_Id})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
+            </td>
+        </tr>
+    }
+
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>

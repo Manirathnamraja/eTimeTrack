@@ -1,0 +1,37 @@
+﻿@using eTimeTrack.Helpers
+@using eTimeTrack.Models
+@model IEnumerable<UserType>
+
+@{
+    ViewBag.Title = "System-wide User Types";
+    ViewBag.BannerColour = AecomColour.Blue;
+}
+
+@Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
+
+<p>
+    <a href="@Url.Action("CreateUserType", "UserTypes")" class="btn btn-primary">Create User Type</a>
+</p>
+
+<table class="table data-table" width="100%">
+    <thead>
+        <tr>
+            <th data-priority="1">@Html.DisplayNameFor(model => model.Code)</th>
+            <th data-priority="2">@Html.DisplayNameFor(model => model.Type)</th>
+            <th data-priority="3">@Html.DisplayNameFor(model => model.Description)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (UserType item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Code)</td>
+                <td>@Html.DisplayFor(modelItem => item.Type)</td>
+                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>

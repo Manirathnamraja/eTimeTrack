@@ -1,0 +1,22 @@
+select TimesheetPeriods.TimesheetPeriodID, StartDate, EndDate, EmployeeID from TimesheetPeriods
+join 
+(select EmployeeTimesheets.TimesheetID, EmployeeTimesheets.TimesheetPeriodID, EmployeeTimesheets.EmployeeID from
+EmployeeTimesheets
+join EmployeeTimesheetItems on EmployeeTimesheets.TimesheetID = EmployeeTimesheetItems.TimesheetID
+
+WHERE 
+EmployeeTimesheetItems.Day1Hrs <> 0 OR
+EmployeeTimesheetItems.Day2Hrs <> 0 OR
+EmployeeTimesheetItems.Day3Hrs <> 0 OR
+EmployeeTimesheetItems.Day4Hrs <> 0 OR
+EmployeeTimesheetItems.Day5Hrs <> 0 OR
+EmployeeTimesheetItems.Day6Hrs <> 0 OR
+EmployeeTimesheetItems.Day7Hrs <> 0
+
+ group by EmployeeTimesheets.TimesheetID, EmployeeTimesheets.TimesheetPeriodID, EmployeeTimesheets.EmployeeID
+
+) TimeSheetIds on TimeSheetIds.TimesheetPeriodID = TimesheetPeriods.TimesheetPeriodID
+
+group by TimesheetPeriods.TimesheetPeriodID, StartDate, EndDate, EmployeeID
+
+order by StartDate

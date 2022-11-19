@@ -1,0 +1,552 @@
+﻿html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 5em;
+}
+
+#page-header-body {
+    padding-bottom: 4em;
+}
+
+#page-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    border-top: 1px solid #cccccc;
+    color: #2c3e50;
+    border: none;
+    line-height: 4em;
+}
+
+footer img {
+    max-height: 3rem;
+}
+
+footer span {
+    font-size: 0.9em;
+    vertical-align: middle;
+}
+
+.navbar {
+    border-radius: 0;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input, textarea, select, .limitWidth {
+    max-width: 280px;
+}
+
+.fullWidth {
+    max-width: none;
+}
+
+.longTimePeriodDropdown {
+    max-width: 310px !important;
+}
+
+.hoursInput {
+    width: 45px;
+}
+
+.selectedHoursInput {
+    border-width: 3px;
+    border-color: #2c3e50;
+}
+
+.hoursInputWithComments {
+    background-color: #f7ffaf;
+}
+
+table#timesheet {
+    font-size: small;
+}
+
+    table#timesheet input, table#timesheet select {
+        font-size: small;
+    }
+
+td {
+    vertical-align: middle !important;
+}
+
+.dayCommentsLabel {
+    text-align: right;
+}
+
+/*Append a red asterisk after input*/
+.required:after {
+    content: "\00a0*";
+    font-weight: bold;
+    color: red;
+}
+
+.payTypeSelector {
+    width: 80px;
+}
+
+.notifyjs-container {
+    top: -8px !important;
+}
+
+.notifyjs-arrow {
+    top: 5px !important;
+}
+
+.dayHeader {
+    text-align: center;
+}
+
+@media (min-width:768px) {
+    #timesheet .totalDailyHours, .totalTaskHours {
+        padding-left: 12px !important; /* this offset works well*/
+    }
+}
+
+tfoot {
+    font-weight: bold;
+}
+
+
+.tdDay1 {
+    border-left: 1px solid #dce4ec !important;
+}
+
+.tdDay7, .totalTaskHours, td.totalWeeklyHours {
+    border-right: 1px solid #dce4ec !important;
+}
+
+.totalHoursRow {
+    border-bottom: 1px solid #dce4ec;
+    background-color: #b9c4c4;
+}
+
+.hoursInput, .payTypeSelector {
+    padding: 6px 8px;
+}
+
+#timesheet .tdDay {
+    padding-left: 3px;
+    padding-right: 4px;
+}
+
+.datepicker {
+    cursor: pointer !important;
+    background-color: white !important;
+}
+
+.labelFormValue {
+    padding-top: 12px;
+    margin-bottom: 0px;
+    padding-left: 0px;
+    font-weight: normal;
+}
+
+.logo-img img {
+    max-width: 230px;
+}
+
+.navbar-brand {
+    padding: 5px 15px 5px 15px;
+}
+
+.navbar-inverse {
+    background-color: #00b5e2;
+}
+
+
+footer {
+    background-color: #dce4ec;
+}
+
+a {
+    color: #00b5e2;
+}
+
+.banner {
+    padding: 15px 0 10px 0;
+    margin-bottom: 20px;
+    border-bottom: solid 3px #84bd00;
+}
+
+    .banner h1, .banner h2, .banner h3 {
+        margin: 0;
+    }
+
+.banner-container .banner-blue {
+    border-color: #00b5e2;
+}
+
+.banner-green {
+    border-color: #84bd00;
+}
+
+.banner-orange {
+    border-color: #f68b1f;
+}
+
+.banner-magenta {
+    border-color: #9e007e;
+}
+
+.banner-yellow {
+    border-color: #ffe512;
+}
+
+.banner-warm-grey {
+    border-bottom: solid 3px #8c8279;
+}
+
+.banner-black {
+    border-bottom: solid 3px #000;
+}
+
+a.tool-tip, a.tool-tip:hover, a.tool-tip:visited {
+    color:#2c3e50
+}
+
+a.tool-tip-indent::before { 
+    content: "\00a0\00a0\00a0\00a0\00a0";
+}
+
+.checkbox input[type="checkbox"] {
+    margin-left: 0;
+}
+
+.table thead > tr > td,
+.table tbody > tr > td,
+.table tfoot > tr > td {
+    border-top: 1px solid #dce4ec !important;
+}
+
+.table thead > tr > th {
+    border-bottom: 2px solid #dce4ec !important;
+}
+
+* {
+    border-radius: 0 !important;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: #2c3e50;
+}
+
+    .navbar-inverse .navbar-nav > li > a:hover {
+        color: #fff;
+    }
+
+.data-table {
+    width: 100%;
+}
+
+.container .table.dataTable {
+    border-collapse: collapse !important;
+}
+
+table.dataTable.no-footer {
+    border-bottom: 2px solid #dce4ec !important;
+}
+
+.container .dataTables_wrapper .dataTables_paginate .paginate_button {
+    background-color: #95a5a6;
+    border: none !important;
+    color: #2c3e50 !important;
+}
+
+
+    .container .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        color: #2c3e50 !important;
+        background: none;
+        background-color: #798d8f !important;
+    }
+
+    .container .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        background-color: #2c3e50 !important;
+        background: none;
+        color: white !important;
+    }
+
+    .container .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+        background-color: #95a5a6;
+    }
+
+        .container .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover {
+            background-color: #95a5a6 !important;
+        }
+
+    .container .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+        color: #ffffff !important;
+        background: none !important;
+        background-color: #1a242f !important;
+    }
+
+    .container .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+    .container .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover {
+        color: #798d8f !important;
+    }
+
+.data-table th {
+    border-right: solid 1px #dce4ec !important;
+    border-left: solid 1px #dce4ec !important;
+    border-collapse: collapse !important;
+}
+
+    .data-table th:first-child {
+        border-left: none !important;
+    }
+
+    .data-table th:last-child {
+        border-right: none !important;
+    }
+
+.dataTables_wrapper {
+    margin-bottom: 21px;
+}
+
+table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child:before,
+table.dataTable.dtr-inline.collapsed > tbody > tr > th:first-child:before {
+    border: none !important;
+    box-shadow: none !important;
+    background-color: white !important;
+    color: #2c3e50 !important;
+    font-size: 22px !important;
+    font-weight: bold;
+    top: 12px !important;
+    left: 7px !important;
+    padding-top: 1px;
+}
+
+.dataTables_wrapper {
+    margin-bottom: 21px;
+}
+
+.table-mobile thead, .taskTotalRow {
+    background-color: #2c3e50 !important;
+    font-weight: bold;
+    color: white;
+}
+
+
+
+    .table-mobile thead > tr > td,
+    .table-mobile tbody > tr > td {
+        border: none !important;
+        border-top: none !important;
+    }
+
+.table-mobile {
+    border: solid 2px #2c3e50;
+    margin-top: 50px;
+    font-size: medium;
+}
+
+    .table-mobile th {
+        padding-top: 15px !important;
+    }
+
+    .table-mobile tbody {
+        padding-top: 15px !important;
+    }
+
+    .table-mobile textarea {
+        margin-bottom: 5px !important;
+    }
+
+    .table-mobile td {
+        padding-top: 3px !important;
+        padding-bottom: 1px !important;
+    }
+
+@media (max-width:767px) {
+    /* Set width on the form input elements since they're 100% wide by default */
+
+    input, textarea, select, .limitWidth {
+        max-width: unset !important;
+    }
+
+    div.dataTables_wrapper div.dataTables_length, div.dataTables_wrapper div.dataTables_filter, div.dataTables_wrapper div.dataTables_info, div.dataTables_wrapper div.dataTables_paginate {
+        text-align: right !important;
+    }
+
+
+    .dataTables_paginate {
+        width: 200px;
+    }
+
+        .dataTables_paginate .previous, .dataTables_paginate .next {
+            display: none !important;
+        }
+
+    #page-footer .text-right {
+        line-height: 1em !important;
+        padding-top: 12px;
+    }
+}
+
+.table-mobile .totalDailyHours {
+    color: #95a5a6;
+    font-weight: bold;
+}
+
+.row-width-setter th {
+    padding: 0 !important;
+}
+
+.table-mobile thead > tr > th {
+    border-bottom: none !important;
+}
+
+#float-menu {
+    position: fixed;
+    z-index: 1000;
+    width: 100%;
+    background-color: #00b5e2;
+    bottom: 0;
+    left: 0;
+    vertical-align: middle;
+    display: table-cell;
+    border-top: solid 3px #dce4ec;
+}
+
+.add-task-float-button {
+    margin: 5px;
+    height: 47px;
+    width: 47px;
+    color: white;
+    font-size: 70px;
+    border: solid 3px #2c3e50;
+    filter: alpha(opacity=60); /* For IE8 and earlier */
+    padding-left: 0px;
+    padding-top: 12px;
+    line-height: 10px;
+}
+
+.float-menu-section {
+    height: 25px;
+    margin-top: 18px;
+    font-weight: bold;
+    font-size: larger;
+}
+
+.navbar-inverse .navbar-toggle {
+    border-color: #2c3e50;
+}
+
+#items-container {
+    margin-bottom: 21px;
+}
+
+.wide-btn {
+    min-width: 100px;
+}
+
+@media (min-width: 1600px) {
+    .container {
+        width: 1300px !important;
+    }
+}
+
+td hr {
+    margin-top: 4px !important;
+    margin-bottom: 4px !important;
+}
+
+#timesheet .heading-col, #timesheet tr .timesheet-heading-value {
+    padding-right: 4px;
+    padding-left: 4px;
+}
+
+#timesheet .heading-col-task-variation {
+    width: 200px;
+}
+
+.notes-container {
+    padding-top: 1em;
+}
+
+.notes-container .alert {
+    text-align: justify;
+    margin: 0;
+    background-color: #00b5e2;
+    border: none;
+}
+
+.data-row {
+    border-top: 1px solid #dce4ec !important;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.data-header {
+    border-bottom: 2px solid #dce4ec !important;
+    font-weight: bold;
+}
+
+.table-custom-stripe > tbody > tr:nth-child(4n+1) > td {
+    background-color: #f9f9f9;
+}
+
+table .timesheet-task-variation-value {
+    padding: 2px 4px !important;
+    line-height: 1.3 !important;
+}
+
+#timesheet.table > tbody > tr > td {
+    padding: 4px;
+}
+
+.checkbox-sort-value {
+    color: #fff;
+    color: rgba(0, 0, 0, 0);
+}
+
+/*.bottom-align-text {
+    position: absolute;
+    top: 10px;
+}*/
+
+.bottom-align-text {
+    padding-top: 10px;
+}
+
+.userTypeNotificationDisplay .alert {
+    padding: 5px 15px;
+    margin-bottom: 0;
+}
+
+.user-type-display {
+    margin-top: 5px;
+}
+
+.reconciliation-entry-response-container {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+table.dataTable thead th, table.dataTable thead td {
+    padding: 10px 10px 10px 10px !important;
+}
+
+.custom-label-with-info a.tool-tip-indent::before {
+    content: none;
+}
+
+.tooltip-inner {
+    min-width: 200px;
+}

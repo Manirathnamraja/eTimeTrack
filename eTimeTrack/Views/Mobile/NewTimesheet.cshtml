@@ -1,0 +1,44 @@
+﻿@model eTimeTrack.Controllers.MobileState
+
+@{
+    ViewBag.Title = (Model.ExistingCurrentTimesheet != null ? "Edit Current" : "Create New")  + " Timesheet?";
+}
+
+@Html.Partial("_Banner")
+
+
+@if (Model.ExistingCurrentTimesheet == null)
+{
+    <div id="create-current-question">
+        <h4>Do you want to create a new timesheet for this week?</h4>
+        <a id="create-new-yes" class="btn btn-primary pull-right wide-btn">Yes</a>
+        <a href="@Url.Action("Index", "EmployeeTimesheets")" class="btn btn-primary wide-btn">No</a>
+    </div>
+}
+else
+{
+    <div id="edit-current-question">
+        <h4>Do you want to edit your existing timesheet for this week?</h4>
+        <a href="@Url.Action("EditExistingTimesheet", "EmployeeTimesheets")" class="btn btn-primary pull-right wide-btn">Yes</a>
+        <a href="@Url.Action("Index", "EmployeeTimesheets")" class="btn btn-primary wide-btn">No</a>
+    </div>
+}
+
+<div id="duplicate-question" style="display: none;">
+    <h4>Do you want to duplicate your new timesheet from the most recent one in the system?</h4>
+    <a href="@Url.Action("CreateCurrent", "EmployeeTimesheets", new {duplicate = true})" class="btn btn-primary pull-right wide-btn">Yes</a>
+    <a href="@Url.Action("CreateCurrent", "EmployeeTimesheets")" class="btn btn-primary wide-btn">No</a>
+</div>
+
+@section scripts {
+
+    <script>
+
+        $('#create-new-yes').click(function () {
+            $('#create-current-question').slideUp();
+            $('#duplicate-question').slideDown();
+        });
+
+    </script>
+
+}

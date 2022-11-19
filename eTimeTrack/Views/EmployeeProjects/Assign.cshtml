@@ -1,0 +1,87 @@
+﻿@using eTimeTrack.Helpers
+@using eTimeTrack.Models
+@using eTimeTrack.ViewModels
+@model GenericAssignmentModel<Employee, Project, EmployeeProject>
+
+@{
+    ViewBag.Title = "Assign Employee";
+    ViewBag.BannerColour = AecomColour.Blue;
+}
+
+@Html.Partial("_Banner")
+
+<h4>
+    @Model.AssignmentRecipient.UserName
+    @if (Model.IsAdmin)
+    {
+        <span> - </span>
+            <span style="color: red">Administrator</span>
+    }
+</h4>
+
+<table class="table data-table" width="100%">
+    <thead>
+        <tr>
+            <th>Project</th>
+            <th>Assigned</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Project project in Model.AvailableList)
+            {
+                EmployeeProject assignedProject = Model.AssignedList.SingleOrDefault(x => x.ProjectId == project.ProjectID);
+
+            <tr>
+                <td>@project.Name</td>
+                <td>
+                    @Html.CheckBox("Assigned", assignedProject != null, new { data_projectid = project.ProjectID, @class = "assignCheckbox" })
+                    <span class="checkbox-sort-value">@(assignedProject == null ? "0" : "1")</span>
+                </td>
+            </tr>
+
+        }
+    </tbody>
+</table>
+
+<div>
+    <a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/notify")
+    <script>
+
+        var isAdmin = @Model.IsAdmin.ToString().ToLower();
+
+        $(document).ready(function() {
+
+            // Assignment
+            $(document).on('click', '.assignCheckbox', function() {
+                var checkbox = $(this);
+
+                var checked = checkbox.is(":checked");
+                $.post('@Url.Action("AssignToProject", "EmployeeProjects")',
+                        { userId: @Model.AssignmentRecipient.Id,
+                            projectId: $(this).data('projectid'),
+                            assigned: checked
+                        })
+                    .done(function(data) {
+                        if (isAdmin && !checked) {
+                            checkbox.notify("ADMINISTRATOR Rights Removed & Successfully Saved",
+                                { position: "right bottom", className: "warning", autoHideDelay: 6000 });
+                        } else {
+                            checkbox.notify("Successfully Saved",
+                                { position: "right bottom", className: "success", autoHideDelay: 1500 });
+                        }
+                    })
+                    .error(function() {
+                        checkbox.notify("Save Failed! Refresh page.",
+                            { position: "right bottom", className: "error", autoHideDelay: 1500 });
+                    });
+            });
+
+        });
+
+    </script>
+
+}

@@ -1,0 +1,210 @@
+﻿@using eTimeTrack.Controllers
+@using eTimeTrack.Extensions
+@model eTimeTrack.Models.IndexViewModel
+@{
+    ViewBag.Title = "Menu";
+}
+
+@Html.Partial("_Banner")
+
+@Html.Partial("_InfoMessageRender")
+
+<p class="text-success">@ViewBag.StatusMessage</p>
+
+@if (ViewBag.DownloadFile != null)
+{
+    <p>@Html.ActionLink("Download Import Log", "DownloadBulkImportLog", "EmployeeTimesheets", new { id = ViewBag.DownloadFile }, new { @class = "btn btn-primary" })</p>
+}
+
+<div>
+    <dl class="dl-horizontal">
+        <dt>Password:</dt>
+        <dd>
+            @if (Model.HasPassword)
+            {
+                @Html.ActionLink("Change your password", "ChangePassword")
+            }
+            else
+            {
+                @Html.ActionLink("Create", "SetPassword")
+            }
+        </dd>
+    </dl>
+
+    @if (User.IsInAnyAdminRole())
+    {
+        <dl class="dl-horizontal">
+            <dt>Timesheets:</dt>
+            <dd>
+                @Html.ActionLink("My Timesheets", "TimesheetIndex", "EmployeeTimesheets")
+            </dd>
+        </dl>
+
+        <hr />
+        <h4>Project-Level Controls</h4>
+
+        if (User.IsUserPlusOrAbove())
+        {
+            <dl class="dl-horizontal">
+                <dt>Timesheet Periods:</dt>
+                <dd>
+                    @Html.ActionLink("Project Timesheet Periods", "Assign", "ProjectTimesheetPeriods")
+                </dd>
+            </dl>
+
+        }
+
+        if (User.IsUserAdministratorOrAboveExcludeTimesheetEditor())
+        {
+            <dl class="dl-horizontal">
+                <dt>Users:</dt>
+                <dd>
+                    @Html.ActionLink("Assign Users to Project", "Assign", "Projects")
+                </dd>
+                @if (User.IsUserPlusOrAbove())
+                {
+                <dd>
+                    @Html.ActionLink("User Details", "Index", "EmployeeProjects")
+                </dd>
+                }
+            </dl>
+        }
+
+        if (User.IsUserPlusOrAbove())
+        {
+
+        <dl class="dl-horizontal">
+                <dt>Project:</dt>
+                <dd>
+                    @Html.ActionLink("Project Parts", "Index", "ProjectComponent", new { type = ProjectComponentType.ProjectPart }, null)
+                </dd>
+                <dd>
+                    @Html.ActionLink("Project Groups", "Index", "ProjectComponent", new { type = ProjectComponentType.ProjectGroup }, null)
+                </dd>
+                <dd>
+                    @Html.ActionLink("Project Tasks", "Index", "ProjectComponent", new { type = ProjectComponentType.ProjectTask }, null)
+                </dd>
+                <dd>
+                    @Html.ActionLink("Project Variations", "Index", "ProjectVariations", new { type = ProjectComponentType.ProjectTask }, null)
+                </dd>
+            <dd>
+                @Html.ActionLink("Time Codes", "TimeCodeConfig", "Projects")
+            </dd>
+            <dd>
+                @Html.ActionLink("Project User Types", "Index", "ProjectUserTypes")
+            </dd>
+            </dl>
+
+            <dl class="dl-horizontal">
+                <dt>Task Transfer:</dt>
+                <dd>
+                    @Html.ActionLink("Transfer Tasks / Variations", "TaskSelect", "TaskTransfer")
+                </dd>
+            </dl>
+
+            <dl class="dl-horizontal">
+                <dt>Reconciliation:</dt>
+                <dd>
+                    @Html.ActionLink("Upload Reconciliation Spreadsheet", "ImportReconciliationFile", "ReconciliationUpload")
+                </dd>
+                <dd>
+                    @Html.ActionLink("Manage", "Index", "ReconciliationEntries")
+                </dd>
+                <dd>
+                    @Html.ActionLink("Summary", "Index", "ReconciliationSummary")
+                </dd>
+            </dl>
+        }
+
+        if (User.IsTimesheetEditorOrAbove())
+        {
+            <dl class="dl-horizontal">
+                <dt>Timesheet Management:</dt>
+                <dd>
+                    @Html.ActionLink("Create Timesheet", "CreateSelect", "EmployeeTimesheets")
+                </dd>
+                <dd>
+                    @Html.ActionLink("Edit Timesheets", "EditSelect", "EmployeeTimesheets")
+                </dd>
+            </dl>
+        }
+
+        if (User.IsUserAdministratorOrAboveExcludeTimesheetEditor())
+        {
+            <hr />
+            <h4>System-Wide Controls</h4>
+
+            <dl class="dl-horizontal">
+                <dt>User Management:</dt>
+                <dd>
+                    @Html.ActionLink("Users", "Index", "Employees")
+                </dd>
+            </dl>
+
+            if (User.IsAdminOrAbove())
+            {
+                <dl class="dl-horizontal">
+                    <dt>Companies:</dt>
+                    <dd>
+                        @Html.ActionLink("Companies", "Index", "Companies")
+                    </dd>
+                </dl>
+
+                if (User.IsSuperUser())
+                {
+                    <dl class="dl-horizontal">
+                        <dt>Projects:</dt>
+                        <dd>
+                            @Html.ActionLink("Manage Projects", "Index", "Projects")
+                        </dd>
+                    </dl>
+
+                    <dl class="dl-horizontal">
+                        <dt>Timesheet Periods:</dt>
+                        <dd>
+                            @Html.ActionLink("Timesheet Periods", "Index", "TimesheetPeriods")
+                        </dd>
+                    </dl>
+                }
+            }
+
+            if (User.IsSuperUser())
+            {
+                <dl class="dl-horizontal">
+                    <dt>User Types:</dt>
+                    <dd>
+                        @Html.ActionLink("User Types", "Index", "UserTypes")
+                    </dd>
+                </dl>
+            }
+
+            if (User.IsAdminOrAbove())
+            {
+                <dl class="dl-horizontal">
+                    <dt>Reconciliation:</dt>
+
+                    @if (User.IsSuperUser())
+                    {
+                        <dd>
+                            @Html.ActionLink("Reconciliation Types", "Index", "ReconciliationTypes")
+                        </dd>
+                    }
+                    <dd>
+                        @Html.ActionLink("Import Templates", "Index", "ReconciliationTemplates")
+                    </dd>
+                </dl>
+            }
+        }
+
+        @*if (User.IsAdminOrAbove())
+        {
+            <dl class="dl-horizontal">
+                <dt>Import Timesheets:</dt>
+                <dd>
+                    @Html.ActionLink("Import Timesheet Data", "ImportUserTimes", "EmployeeTimesheets")
+                </dd>
+            </dl>
+        }*@
+
+    }
+</div>

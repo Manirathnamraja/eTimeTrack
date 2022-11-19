@@ -1,0 +1,67 @@
+﻿@using eTimeTrack.Extensions
+@using eTimeTrack.Helpers
+@model eTimeTrack.Models.EmployeeTimesheet
+
+@{
+    ViewBag.Title = "New Timesheet";
+
+    bool differentUser = Model.EmployeeID != UserHelpers.GetCurrentUserId();
+    string text = "Create New Timesheet" + (differentUser ? " - " + UserHelpers.GetUser(Model.EmployeeID).UserName : string.Empty);
+}
+
+@Html.Partial("_Banner", new ViewDataDictionary { { "title", text } })
+
+@Html.Partial("_InfoMessageRender")
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Html.HiddenFor(model => model.EmployeeID)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TimesheetPeriodID, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.TimesheetPeriodID, (IEnumerable<SelectListItem>)ViewBag.TimesheetPeriods, "Select", new { @class = "form-control longTimePeriodDropdown" })
+                @Html.ValidationMessageFor(model => model.TimesheetPeriodID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Duplicate From", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("TimesheetPeriodDuplicateID", (SelectList)ViewBag.TimesheetPeriodDuplicates, "None", new { @class = "form-control longTimePeriodDropdown" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
+
+@if (differentUser)
+{
+    <a href='@Url.Action("CreateSelect")' class="btn btn-primary">Back</a>
+}
+else
+{
+    if (User.IsInAnyAdminRole())
+     {
+         <a href='@Url.Action("TimesheetIndex")' class="btn btn-primary">Back</a>
+     }
+     else
+     {
+         <a href='@Url.Action("Index")' class="btn btn-primary">Back</a> 
+     }
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

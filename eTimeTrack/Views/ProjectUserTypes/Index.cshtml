@@ -1,0 +1,60 @@
+﻿@using eTimeTrack.Controllers
+@using eTimeTrack.Helpers
+@using eTimeTrack.Models
+@using eTimeTrack.ViewModels
+@model IEnumerable<eTimeTrack.ViewModels.ProjectUserTypeIndexViewModel>
+
+@{
+    ViewBag.Title = "Project User Types";
+    ViewBag.BannerColour = AecomColour.Blue;
+}
+
+@Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
+
+<p>
+    <a href="@Url.Action("CreateProjectUserType")" class="btn btn-primary">Create Project User Type</a>
+</p>
+
+@{
+    if (ViewBag.NoGenericProjectUserType)
+    {
+        <div class="alert alert-danger">There is no Default/Unassigned assignment. Create it by editing the '@(UserTypesController.GenericUserTypeText)' User Type and saving.</div>
+    }
+}
+
+<table class="table data-table" width="100%">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.UserTypeName)</th>
+            <th>@Html.DisplayNameFor(model => model.AliasCode)</th>
+            <th>@Html.DisplayNameFor(model => model.AliasType)</th>
+            <th>@Html.DisplayNameFor(model => model.AliasDescription)</th>
+            <th>@Html.DisplayNameFor(model => model.MaxNTHours)</th>
+            <th>@Html.DisplayNameFor(model => model.MaxOT1Hours)</th>
+            <th>@Html.DisplayNameFor(model => model.MaxOT2Hours)</th>
+            <th>@Html.DisplayNameFor(model => model.MaxOT3Hours)</th>
+            <th data-orderable="false">Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (ProjectUserTypeIndexViewModel item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.UserTypeName)</td>
+                <td>@Html.DisplayFor(modelItem => item.AliasCode)</td>
+                <td>@Html.DisplayFor(modelItem => item.AliasType)</td>
+                <td>@Html.DisplayFor(modelItem => item.AliasDescription)</td>
+                <td>@Html.DisplayFor(modelItem => item.MaxNTHours)</td>
+                <td>@Html.DisplayFor(modelItem => item.MaxOT1Hours)</td>
+                <td>@Html.DisplayFor(modelItem => item.MaxOT2Hours)</td>
+                <td>@Html.DisplayFor(modelItem => item.MaxOT3Hours)</td>
+                <td>
+                    <a href='@Url.Action("EditProjectUserType", new {projectUserTypeId = item.ProjectUserTypeID, projectId = item.ProjectID})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>

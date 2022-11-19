@@ -1,0 +1,97 @@
+﻿@using eTimeTrack.Helpers
+@model eTimeTrack.Models.EmployeeViewModel
+@{
+    ViewBag.Title = "Create User";
+    ViewBag.BannerColour = AecomColour.Blue;
+}
+
+@Html.Partial("_Banner")
+
+@Html.Partial("_InfoMessageRender")
+
+<hr />
+
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.EmployeeNo, new { @class = "col-md-2 control-label required" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.EmployeeNo, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.EmployeeNo, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.FirstName, new { @class = "control-label col-md-2 required" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Surname, new { @class = "control-label col-md-2 required" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Surname, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Surname, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label required" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.ManagerID, new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.ManagerID, (SelectList)ViewBag.ManagerID, "Select", new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.ManagerID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.CompanyID, new { @class = "control-label col-md-2 required" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(x => x.CompanyID, (SelectList)ViewBag.CompanyList, new { @class = "form-control limitWidth" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.AllowOT, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            <div class="checkbox">
+                @Html.CheckBox("AllowOT", Model.AllowOT.GetValueOrDefault())
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.IsActive, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            <div class="checkbox">
+                @Html.EditorFor(x => x.IsActive)
+                <a class='tool-tip tool-tip-indent' data-toggle="tooltip" data-placement="right" title="Not used in web enabled eTimeTrack. Used in some versions of the Management Database only. Please consider the impact of this field on all projects prior to changing the Active status.">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="pull-right">
+        <input type="submit" class="btn btn-primary" value="Register" />
+    </div>
+
+    <a href="@Url.Action("Index", "Employees")" class="btn btn-primary">Back</a>
+
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

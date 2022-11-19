@@ -1,0 +1,117 @@
+﻿@model eTimeTrack.Models.EmployeeTimesheetItem
+
+@{
+    bool readOnly = ViewData.ContainsKey("ReadOnly") && ViewData["ReadOnly"] != null && (bool)ViewData["ReadOnly"];
+}
+
+<tr class="item-container @(Model.TimesheetItemID) @(Model.ReadOnly ? " itemReadOnly" : string.Empty)" data-id="@(Model.TimesheetItemID)">
+    @Html.HiddenFor(x => x.TimesheetItemID)
+    @Html.HiddenFor(x => x.TimesheetID)
+    @Html.HiddenFor(x => x.TaskID)
+    @Html.HiddenFor(x => x.VariationID)
+    @Html.HiddenFor(x => x.PayTypeID)
+    @Html.HiddenFor(x => x.ReadOnly)
+    @Html.EditorForManyIndexField(x => x.TimesheetItemID.ToString())
+
+    <td class="timesheet-heading-value">
+        @Html.DisplayFor(model => model.ProjectTask.Project.Name)
+        @Html.HiddenFor(model => model.ProjectTask.Project.Name)
+        @Html.HiddenFor(model => model.ProjectTask.Project.ProjectID, new {@class="item-container-project-id"})
+        @Html.HiddenFor(model => model.ProjectTask.Project.ProjectNo)
+    </td>
+    <td class="timesheet-heading-value">
+        @Html.DisplayFor(model => model.ProjectTask.ProjectGroup.ProjectPart.Name)
+        @Html.HiddenFor(model => model.ProjectTask.ProjectGroup.ProjectPart.Name)
+        @Html.HiddenFor(model => model.ProjectTask.ProjectGroup.ProjectPart.PartNo)
+        @Html.HiddenFor(model => model.ProjectTask.ProjectGroup.ProjectPart.ProjectID)
+     
+    </td>
+    <td class="timesheet-heading-value">
+        @Html.DisplayFor(model => model.ProjectTask.ProjectGroup.GroupNo):
+        <br />
+        @Html.DisplayFor(model => model.ProjectTask.ProjectGroup.Name)
+        @Html.HiddenFor(model => model.ProjectTask.ProjectGroup.Name)
+        @Html.HiddenFor(x => x.ProjectTask.ProjectGroup.GroupNo)
+    </td>
+    <td class="timesheet-heading-value timesheet-task-variation-value">
+        @Html.DisplayFor(model => model.ProjectTask.TaskNo):
+        @Html.DisplayFor(model => model.ProjectTask.Name)
+        @Html.HiddenFor(model => model.ProjectTask.Name)
+        @Html.HiddenFor(model => model.ProjectTask.TaskNo)
+        <hr />
+        @Html.DisplayFor(model => model.Variation.DisplayName)
+        @Html.HiddenFor(model => model.Variation.VariationNo)
+        @Html.HiddenFor(model => model.Variation.Description)
+        <hr />
+        @Html.DisplayFor(model => model.TimeCodeText)
+        @Html.HiddenFor(model => model.TimeCode, new { @class = "item-container-time-code" })
+    </td>
+
+    <td class="tdDay1 tdDay">
+        @Html.TextBoxFor(model => model.Day1Hrs, "{0:0.##}", new { @class = "form-control hoursInput disableInReadOnly", data_day = Html.DisplayNameFor(model => model.Day1Hrs), @data_day_number = 1 })
+        @Html.ValidationMessageFor(model => model.Day1Hrs, "", new { @class = "text-danger" })
+    </td>
+    <td class="tdDay">
+        @Html.TextBoxFor(model => model.Day2Hrs, "{0:0.##}", new { @class = "form-control hoursInput disableInReadOnly", data_day = Html.DisplayNameFor(model => model.Day2Hrs), @data_day_number = 2 })
+        @Html.ValidationMessageFor(model => model.Day2Hrs, "", new { @class = "text-danger" })
+    </td>
+    <td class="tdDay">
+        @Html.TextBoxFor(model => model.Day3Hrs, "{0:0.##}", new { @class = "form-control hoursInput disableInReadOnly", data_day = Html.DisplayNameFor(model => model.Day3Hrs), @data_day_number = 3 })
+        @Html.ValidationMessageFor(model => model.Day3Hrs, "", new { @class = "text-danger" })
+    </td>
+    <td class="tdDay">
+        @Html.TextBoxFor(model => model.Day4Hrs, "{0:0.##}", new { @class = "form-control hoursInput disableInReadOnly", data_day = Html.DisplayNameFor(model => model.Day4Hrs), @data_day_number = 4 })
+        @Html.ValidationMessageFor(model => model.Day4Hrs, "", new { @class = "text-danger" })
+    </td>
+    <td class="tdDay">
+        @Html.TextBoxFor(model => model.Day5Hrs, "{0:0.##}", new { @class = "form-control hoursInput disableInReadOnly", data_day = Html.DisplayNameFor(model => model.Day5Hrs), @data_day_number = 5 })
+        @Html.ValidationMessageFor(model => model.Day5Hrs, "", new { @class = "text-danger" })
+    </td>
+    <td class="tdDay">
+        @Html.TextBoxFor(model => model.Day6Hrs, "{0:0.##}", new { @class = "form-control hoursInput disableInReadOnly", data_day = Html.DisplayNameFor(model => model.Day6Hrs), @data_day_number = 6 })
+        @Html.ValidationMessageFor(model => model.Day6Hrs, "", new { @class = "text-danger" })
+    </td>
+    <td class="tdDay7 tdDay">
+        @Html.TextBoxFor(model => model.Day7Hrs, "{0:0.##}", new { @class = "form-control hoursInput disableInReadOnly", data_day = Html.DisplayNameFor(model => model.Day7Hrs), @data_day_number = 7 })
+        @Html.ValidationMessageFor(model => model.Day7Hrs, "", new { @class = "text-danger" })
+    </td>
+    <td class="totalTaskHours">0</td>
+    <td>
+        @Html.TextAreaFor(model => model.Comments, new { @class = "form-control disableInReadOnly generalCommentsField" })
+        @Html.ValidationMessageFor(model => model.Comments, "", new { @class = "text-danger" })
+    </td>
+    @if (!readOnly)
+    {
+        <td>
+            <a class="btn btn-primary deleteitem disableInReadOnly@(Model.ReadOnly ? " disabled" : string.Empty)" role="button" onclick="deleteTimesheetItem('@Model.TimesheetItemID');"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+        </td>
+    }
+</tr>
+
+<tr class="userTypeNotificationDisplay @(Model.TimesheetItemID)" data-id="@(Model.TimesheetItemID)" style="display: none;">
+    <td colspan="2"></td>
+    <td colspan="2"></td>
+    <td colspan="7">
+        <div class="alert alert-danger">
+            <div class="userTypeNotificationDisplayText"></div>
+        </div>
+    </td>
+    <td></td>
+    <td colspan="2"></td>
+</tr>
+
+<tr class="tdTaskComments @(Model.TimesheetItemID)" data-id="@(Model.TimesheetItemID)" style="display: none;">
+    <td colspan="2"></td>
+    <td colspan="2" class="dayCommentsLabel" id='comments_@Model.TimesheetItemID'>Comments</td>
+    <td colspan="7" class="tdTaskCommentsOLD">
+        @Html.TextAreaFor(model => model.Day1Comments, new { @class = "form-control commentsInput disableInReadOnly fullWidth", @style = "display: none;" })
+        @Html.TextAreaFor(model => model.Day2Comments, new { @class = "form-control commentsInput disableInReadOnly fullWidth", @style = "display: none;" })
+        @Html.TextAreaFor(model => model.Day3Comments, new { @class = "form-control commentsInput disableInReadOnly fullWidth", @style = "display: none;" })
+        @Html.TextAreaFor(model => model.Day4Comments, new { @class = "form-control commentsInput disableInReadOnly fullWidth", @style = "display: none;" })
+        @Html.TextAreaFor(model => model.Day5Comments, new { @class = "form-control commentsInput disableInReadOnly fullWidth", @style = "display: none;" })
+        @Html.TextAreaFor(model => model.Day6Comments, new { @class = "form-control commentsInput disableInReadOnly fullWidth", @style = "display: none;" })
+        @Html.TextAreaFor(model => model.Day7Comments, new { @class = "form-control commentsInput disableInReadOnly fullWidth", @style = "display: none;" })
+    </td>
+    <td></td>
+    <td colspan="2"></td>
+</tr>

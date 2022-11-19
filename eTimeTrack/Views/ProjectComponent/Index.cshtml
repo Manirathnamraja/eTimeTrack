@@ -1,0 +1,285 @@
+﻿@using eTimeTrack.Controllers
+@using eTimeTrack.Extensions
+@using eTimeTrack.Helpers
+@using eTimeTrack.Models
+@model ProjectComponentViewModel
+
+@{
+    if (Model.Type == ProjectComponentType.ProjectPart)
+    {
+        ViewBag.BannerColour = AecomColour.Yellow;
+    }
+    else if (Model.Type == ProjectComponentType.ProjectGroup)
+    {
+        ViewBag.BannerColour = AecomColour.WarmGrey;
+    }
+    else if (Model.Type == ProjectComponentType.ProjectTask)
+    {
+        ViewBag.BannerColour = AecomColour.Orange;
+    }
+
+
+    ViewBag.Title = Model.Type.GetDisplayName();
+
+    string multipleTitleText = ViewBag.Title + "s";
+
+    //bool displayError = ViewBag.InfoMessage != null;
+
+    string selectedProjectPart = ViewBag.SelectedProjectPart != null ? ViewBag.SelectedProjectPart.ToString() : "null";
+    string selectedProjectGroup = ViewBag.SelectedProjectGroup != null ? ViewBag.SelectedProjectGroup.ToString() : "null";
+
+}
+
+<!-- Modal Delete Dialog -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this item?
+            </div>
+            <div class="modal-footer">
+                @using (Html.BeginForm("DeleteConfirmed", "ProjectComponent", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <input type="hidden" id="deleteId" name="id" />
+                    <input type="hidden" name="type" value="@Model.Type.ToString()" />
+                    <input type="submit" class="btn btn-primary" id="btnDeleteConfirm" value="Delete">
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.Partial("_Banner", new ViewDataDictionary { { "title", multipleTitleText }, { "BannerColour", ViewBag.BannerColour } })
+@Html.Partial("_InfoMessageRender")
+
+<div class="alert alert-danger" id="messageText" role="alert" style="display: none;">Please ensure that the project component fields are selected.</div>
+
+
+@using (Html.BeginForm("Create", "ProjectComponent", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.Hidden("type", Model.Type)
+
+    <div id="ProjectDiv" class="row form-group">
+        <div class="col-md-2 col-xs-3">Project</div>
+
+        <div class="col-md-10 col-xs-12">
+            @if (Session["SelectedProject"] != null)
+            {
+                @Html.Hidden("ProjectSelector", Session["SelectedProject"])
+                <label class="labelFormValue" id="selectedProjectDisplay">@Session["SelectedProjectName"]</label>
+            }
+            else
+            {
+                @Html.DropDownList("ProjectSelector", null, "Select", new { id = "ProjectSelector", @class = "form-control selector" })
+            }
+        </div>
+
+    </div>
+
+    if (Model.Type > ProjectComponentType.ProjectPart)
+    {
+        <div id="ProjectPartDiv" class="row form-group">
+            <div class="col-md-2">Project Part</div>
+            <div class="col-md-10 col-xs-12">
+                <select name="ProjectPartSelector" id="ProjectPartSelector" class="form-control selector" disabled></select>
+            </div>
+        </div>
+    }
+
+    if (Model.Type > ProjectComponentType.ProjectGroup)
+    {
+        <div id="ProjectGroupDiv" class="row form-group">
+            <div class="col-md-2 col-sm-12">Project Group</div>
+            <div class="col-md-10 col-xs-12">
+                <select name="ProjectGroupSelector" id="ProjectGroupSelector" class="form-control selector" disabled></select>
+            </div>
+        </div>
+    }
+
+    <input type="submit" id="submit" data-to="@Url.Action("Create", "ProjectComponent")" class="btn btn-primary" value="Create New" />
+
+    if (Model.Type > ProjectComponentType.ProjectPart)
+    {
+        <input type="submit" id="filter" data-to="@Url.Action("IndexPost")" class="btn btn-primary" value="Filter Table" />
+    }
+}
+
+<table class="table data-table" width="100%">
+    <thead>
+        <tr>
+            @if (Model.Type >= ProjectComponentType.ProjectGroup)
+            {
+                <th data-priority="1">Project Part</th>
+            }
+            @if (Model.Type >= ProjectComponentType.ProjectTask)
+            {
+                <th data-priority="2">Project Group</th>
+            }
+            <th data-priority="3">@ViewBag.Title</th>
+            <th>Description</th>
+            <th data-orderable="false">Active</th>
+            <th data-orderable="false" data-priority="4">Edit</th>
+            <th data-orderable="false" data-priority="5">Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (ProjectComponent item in Model.ProjectComponents)
+        {
+            <tr>
+                @if (Model.Type >= ProjectComponentType.ProjectGroup)
+                {
+                    <td>@item.Item.GetParentProjectPart().DisplayName</td>
+                }
+                @if (Model.Type >= ProjectComponentType.ProjectTask)
+                {
+                    <td>@item.Item.GetParentProjectGroup().DisplayName</td>
+                }
+                <td>@item.Item.GetDisplayName()</td>
+                <td>@item.Item.GetDescription()</td>
+                <td>@Html.CheckBox("active", item.Item.IsActive(), new { data_id = item.Item.GetId(), @class = "activeCheckbox" })</td>
+                <td><a href='@Url.Action("Edit", new {type = Model.Type, id = item.Item.GetId()})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+                <td>
+                    @if (item.CanDelete)
+                    {
+                        <button class="btn btn-primary delete" data-id="@item.Item.GetId()" role="button"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                    }
+                    else
+                    {
+                        <a class="btn btn-primary disabled glyphicon glyphicon-trash"></a>
+                    }
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/notify")
+    <script>
+
+        $(document).ready(function() {
+
+            // Assignment
+            $(document).on('click',
+                '.activeCheckbox',
+                function() {
+                    var checkbox = $(this);
+                    var checked = checkbox.is(":checked");
+                    $.post('@Url.Action("SetActiveStatus", "ProjectComponent")',
+                        {
+                            id: $(this).data('id'),
+                            componentType: '@Model.Type',
+                            active: checked
+                        }).done(function(data) {
+                            if (!data.Success) {
+                                checkbox.notify("Server error updating active state", { position: "right bottom", className: "error", autoHideDelay: 2500 });
+                            } else {
+                                checkbox.notify("Successfully " + (checked ? "Opened" : "Closed"), { position: "right bottom", className: "success", autoHideDelay: 1500 });
+                            }
+                        });
+                });
+
+            var selectedProjectPart = @selectedProjectPart;
+            var selectedProjectGroup = @selectedProjectGroup;
+
+            // load the selector dropdowns
+            // project change
+            $('#ProjectSelector').change(function() {
+                $.post('@Url.Action("GetProjectPartList", "EmployeeTimesheets")',
+                    { projectId: $('#ProjectSelector').val() }).done(function(data) {
+
+                        $('#ProjectPartSelector').empty();
+                        $('#ProjectGroupSelector').empty();
+
+                        $('#ProjectPartSelector').prop('disabled', false);
+                        $('#ProjectGroupSelector').prop('disabled', true);
+
+                        $('#ProjectPartSelector').append($('<option>').text('Select'));
+                        for (var i = 0; i < data.length; i++) {
+                            $('#ProjectPartSelector').append($('<option>', { value: data[i].PartID }).text(data[i].Name));
+                        }
+                        if (selectedProjectPart != null) {
+                            $('#ProjectPartSelector').val(selectedProjectPart);
+                            $('#ProjectPartSelector').change();
+                        } else if (data.length === 1 && $("#ProjectPartSelector").length > 0) {
+                            $('#ProjectPartSelector')[0].selectedIndex = 1;
+                            $('#ProjectPartSelector').change();
+                        }
+                    });
+            });
+
+            // pre-select first project value
+            if ($('#ProjectSelector > option').length === 2) { // default option plus one 'real' option
+                $('#ProjectSelector')[0].selectedIndex = 1;
+            }
+            $('#ProjectSelector').change();
+
+            // project part change
+            $('#ProjectPartSelector').change(function() {
+
+                $.post('@Url.Action("GetProjectGroupList", "EmployeeTimesheets")',
+                    { projectPartId: $('#ProjectPartSelector').val() }).done(function(data) {
+
+                        $('#ProjectGroupSelector').empty();
+                        $('#ProjectGroupSelector').prop('disabled', false);
+
+                        $('#ProjectGroupSelector').append($('<option>').text('Select'));
+                        for (var i = 0; i < data.length; i++) {
+                            $('#ProjectGroupSelector').append($('<option>', { value: data[i].GroupID }).text(data[i].Name));
+                        }
+                        if (selectedProjectGroup != null) {
+                            $('#ProjectGroupSelector').val(selectedProjectGroup);
+                            $('#ProjectGroupSelector').change();
+                        }
+                        if (data.length === 1 && $("#ProjectGroupSelector").length > 0) {
+                            $('#ProjectGroupSelector').change();
+                        }
+
+                        var value = $('#ProjectPartSelector').val();
+
+                        if (value === 'Select') {
+                            $('#ProjectGroupSelector').prop('disabled', true);
+                            $('#ProjectGroupSelector').empty();
+                        }
+
+                    });
+            });
+
+            $('form').submit(function(e) {
+                var to = $(document.activeElement).data('to');
+                $(this).attr("action", to);
+
+                if (to === "@Url.Action("Create", "ProjectComponent")") {
+                    var validSelections = true;
+                    $('.selector').each(function() {
+
+                        if ($(this).val() === null || $(this).val() === "Select") {
+                            validSelections = false;
+                        }
+                    });
+
+                    if (!validSelections) {
+                        $('#messageText').show();
+                        e.preventDefault();
+                    }
+                }
+            });
+            
+            $("body").on("click", ".delete", function(){
+                $('#deleteId').val($(this).data('id'));
+                $('#confirmDeleteModal').modal('show');
+            });
+
+        });
+
+    </script>
+}

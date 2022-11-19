@@ -1,0 +1,197 @@
+﻿@using eTimeTrack.Controllers
+@using eTimeTrack.Extensions
+@using eTimeTrack.Helpers
+@using eTimeTrack.ViewModels
+@model ReconciliationEntriesIndexViewModel
+
+@{
+    ViewBag.Title = "Reconciliation Entries";
+    ViewBag.BannerColour = AecomColour.Blue;
+}
+
+@Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
+
+<div class="row">
+    <div class="col-md-4 form-group">
+        <label>Reconciliation Type Filter</label>
+        @Html.DropDownList("ReconciliationTypeIdFilter", new SelectList(ViewBag.ReconciliationTypeFilterSelectList, "Value", "Text"), "All", new { @class = "form-control", id = "filter-reconciliation-type" })
+    </div>
+    <div class="col-md-4">
+        <label>Hide Complete</label>
+        <span style="display: none;">@(Model.HideComplete)</span>
+        @Html.CheckBoxFor(model => Model.HideComplete, new { @class = "form-control", id = "filter-complete", style = "width: max-content;" })
+    </div>
+    <div class="col-md-4"></div>
+</div>
+
+<table class="table data-table" width="100%" id="resultsTable">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => Model.ReconciliationEntries[0].CompanyName)</th>
+            <th>@Html.DisplayNameFor(model => Model.ReconciliationEntries[0].EmployeeNo)</th>
+            <th>@Html.DisplayNameFor(model => Model.ReconciliationEntries[0].EmployeeNames)</th>
+            <th>@Html.DisplayNameFor(model => Model.ReconciliationEntries[0].TimesheetPeriodEndDate)</th>
+            <th>@Html.DisplayNameFor(model => Model.ReconciliationEntries[0].HoursExternal)</th>
+            <th>@Html.DisplayNameFor(model => Model.ReconciliationEntries[0].HoursETT)</th>
+            <th>@Html.DisplayNameFor(model => Model.ReconciliationEntries[0].ReconciliationTypeId)</th>
+            <th style="min-width: 150px;">@Html.DisplayNameFor(model => Model.ReconciliationEntries[0].Comments)</th>
+            <th>@Html.DisplayNameFor(model => Model.ReconciliationEntries[0].EmployeeComments)</th>
+            <th>@Html.DisplayNameFor(model => Model.ReconciliationEntries[0].Complete)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (ReconciliationEntryItemViewModel item in Model.ReconciliationEntries)
+        {
+            <tr id="@item.Id">
+                <td>@Html.DisplayFor(modelItem => item.CompanyName)</td>
+                <td>@Html.DisplayFor(modelItem => item.EmployeeNo)</td>
+                <td>@Html.DisplayFor(modelItem => item.EmployeeNames)</td>
+                <td>
+                    <span style="display: none;">@(item.TimesheetPeriodEndDate.ToStringDateAndTimeReverse())</span>
+                    @(item.TimesheetPeriodEndDate.ToDateStringGeneral())
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.HoursExternal)</td>
+                <td>@Html.DisplayFor(modelItem => item.HoursETT)</td>
+                <td>
+                    <span style="display: none;">@(item.ReconciliationTypeId)</span>
+                    @Html.DropDownListFor(modelItem => item.ReconciliationTypeId, new SelectList(ViewBag.ReconciliationTypes, "Value", "Text", item.ReconciliationTypeId), ReconciliationEntriesController.UnclassifiedText, new { @class = "form-control reconciliation-type", style="font-size: smaller;" })
+                </td>
+                <td>
+                    <div class="comment-readonly-container">
+                        <div class="row">
+                            <div class="col-xs-10">
+                                <div class="comment-readonly" style="display: inline;">@Html.DisplayFor(modelItem => item.Comments)</div>
+                            </div>
+                            <div class="col-xs-2">
+                                <a class="btn btn-default comment-edit pull-right" title="Edit comment">
+                                    <i class='glyphicon glyphicon-edit'></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="edit-comment-container" style="display: none;">
+                        <div class="row">
+                            <div class="col-xs-10">
+                                @Html.TextAreaFor(modelItem => item.Comments, new { @class = "form-control comment", style = "display: inline;max-width: none;" })
+                            </div>
+                            <div class="col-xs-2">
+                                <a class="btn btn-default comment-save pull-right" title="Save comment changes">
+                                    <i class='glyphicon glyphicon-ok'></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.EmployeeComments)</td>
+                <td>
+                    <span style="display: none;">@(item.Complete)</span>
+                    @Html.CheckBoxFor(modelItem => item.Complete, new { @class = "form-control complete-checkbox", style = "width: max-content;"})
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/notify")
+    <script>
+
+        $(document).ready(function () {
+
+            $('#filter-reconciliation-type').change(function () {
+                updatePage();
+            });
+
+            $('#filter-complete').change(function () {
+                updatePage();
+            });
+
+            $('#resultsTable').on('draw.dt', function () {
+                setupChangeActions();
+            });
+
+            setupChangeActions();
+        });
+
+        function updatePage() {
+            var reconciliationTypeFilter = $('#filter-reconciliation-type').val();
+            var completeFilter = $('#filter-complete').is(":checked");
+            window.location = 'ReconciliationEntries?reconciliationTypeId=' + reconciliationTypeFilter + '&hideComplete=' + completeFilter;
+        }
+
+        function setupChangeActions() {
+            $('.comment-edit').click(function () {
+                var editButton = $(this);
+                var tableCell = editButton.closest('td');
+                var editCommentContainer = tableCell.find('.edit-comment-container');
+                var readonlyComment = tableCell.find('.comment-readonly');
+                //var saveButton = tableCell.find('comment-save');
+
+                readonlyComment.hide();
+                editButton.hide();
+                //saveButton.show();
+                editCommentContainer.show();
+            });
+
+            $('.comment-save').click(function () {
+                var saveButton = $(this);
+                var tableCell = saveButton.closest('td');
+                var editCommentContainer = tableCell.find('.edit-comment-container');
+                var tableRow = saveButton.closest('tr');
+                var readonlyComment = tableCell.find('.comment-readonly');
+                var id = tableRow.attr('id');
+
+                var editButton = tableCell.find('.comment-edit');
+                var commentElement = tableCell.find('.comment');
+                var commentText = commentElement.val();
+
+                editButton.show();
+                //saveButton.hide();
+                readonlyComment.text(commentText);
+                readonlyComment.show();
+                editCommentContainer.hide();
+
+                $.post('@Url.Action("SaveComment")', { id: id, comment: commentText }).done(function (saved) {
+                    if (saved) {
+                        tableRow.notify("Comment saved", { position: "right", className: "success", autoHideDelay: 6000 });
+                    } else {
+                        tableRow.notify("Comment could not be saved", { position: "right", className: "warning", autoHideDelay: 6000 });
+                    }
+                });
+            });
+
+            $('.reconciliation-type').change(function () {
+                var reconciliationTypeElement = $(this);
+                var tableRow = reconciliationTypeElement.closest('tr');
+                var id = tableRow.attr('id');
+
+                $.post('@Url.Action("SaveReconciliationType")', { id: id, reconciliationTypeId: reconciliationTypeElement.val() }).done(function (saved) {
+                    if (saved) {
+                        tableRow.notify("Reconciliation type saved", { position: "right", className: "success", autoHideDelay: 6000 });
+                    } else {
+                        tableRow.notify("Reconciliation type could not be saved", { position: "right", className: "warning", autoHideDelay: 6000 });
+                    }
+                });
+            });
+
+            $('.complete-checkbox').change(function () {
+                var completeElement = $(this);
+                var tableRow = completeElement.closest('tr');
+                var id = tableRow.attr('id');
+
+                $.post('@Url.Action("SaveCompleteStatus")', { id: id, complete: completeElement.is(':checked') }).done(function (saved) {
+                    if (saved) {
+                        completeElement.notify("Completion status saved", { position: "right", className: "success", autoHideDelay: 6000 });
+                    } else {
+                        completeElement.notify("Completion status could not be saved", { position: "right", className: "warning", autoHideDelay: 6000 });
+                    }
+                });
+            });
+        }
+
+    </script>
+}

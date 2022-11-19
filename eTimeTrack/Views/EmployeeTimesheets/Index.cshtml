@@ -1,0 +1,102 @@
+﻿@model eTimeTrack.ViewModels.EmployeeTimesheetIndexViewModel
+@using eTimeTrack.Extensions
+@using eTimeTrack.Models
+@using eTimeTrack.ViewModels
+
+@{
+    ViewBag.Title = "Timesheets";
+
+    bool mobileMode = ViewBag.MobileMode != null && ViewBag.MobileMode;
+}
+
+@Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
+
+@if (Model.Employee.IsActive)
+{
+    <a href='@Url.Action("Create", "EmployeeTimesheets")' class="btn btn-primary">New Timesheet</a>
+    if (mobileMode)
+    {
+        <a href='@Url.Action("NewTimesheet", "Mobile")' class="btn btn-primary">Quick Start</a>
+    }
+}
+else
+{
+    <p>You are not authorised to create new timesheets</p>
+}
+
+
+<h3>Existing Timesheets</h3>
+
+<table class="table data-table" style="margin-top: 20px;" width="100%">
+    <thead>
+        <tr>
+            <th style="min-width: 100px;">Date Range</th>
+            @*<th data-orderable="false">Date Approved</th>*@
+            <th>Reconciliation Discrepancy</th>
+            <th data-orderable="false">Discrepancy Comments</th>
+            <th data-orderable="false">Edit</th>
+            <th data-orderable="false">View</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (OpenEmployeeTimesheet item in Model.EmployeeTimesheets)
+        {
+            string dateRange = item.EmployeeTimesheet.TimesheetPeriod.GetStartEndDates();
+
+            <tr>
+                <td>
+                    @dateRange
+                </td>
+                @*<td>
+                    @{
+                        if (item.EmployeeTimesheet.DateApproved == null)
+                        {
+                            <span>Not Approved</span>
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(modelItem => item.EmployeeTimesheet.DateApproved)
+                        }
+                    }
+                </td>*@
+                
+                <td>
+                    @{
+                        if (item.EmployeeTimesheet.ReconciliationEntries.Any(x => !x.HoursEqual))
+                        {
+                            <span>Hours Discrepency</span>
+                        }
+                    }
+                </td>
+                
+                <td>
+                    @{
+                        List<ReconciliationEntry> hoursNotEqual = item.EmployeeTimesheet.ReconciliationEntries.Where(x => !x.HoursEqual).ToList();
+                        if (hoursNotEqual.Any())
+                        {
+                            if (hoursNotEqual.All(x => !string.IsNullOrWhiteSpace(x.EmployeeComment)))
+                            {
+                                <span class="glyphicon glyphicon-ok" aria-hidden="true" title="Employee comments associated with all outstanding discrepancies"></span>
+                            }
+                        }
+                    }
+                </td>
+
+                <td>
+
+                    @if (item.Open)
+                    {
+                        <a href='@Url.Action("Timesheet", "EmployeeTimesheets", new {id = item.EmployeeTimesheet.TimesheetID})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                    }
+                </td>
+
+                <td>
+                    <a href='@Url.Action("Details", "EmployeeTimesheets", new {id = item.EmployeeTimesheet.TimesheetID})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>

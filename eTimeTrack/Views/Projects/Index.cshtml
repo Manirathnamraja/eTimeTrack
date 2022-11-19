@@ -1,0 +1,53 @@
+﻿@using eTimeTrack.Models
+@model IEnumerable<Project>
+
+@{
+    ViewBag.Title = "Projects";
+}
+
+@Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
+
+<p>
+    <div class="btn-toolbar">
+    @Html.ActionLink("Create New", "CreateEdit", null, new {@class = "btn btn-primary"})
+    @Html.ActionLink("Import Project Structure", "ImportProjectElements", null, new {@class = "btn btn-primary"})
+        </div>
+</p>
+
+<table class="table data-table" width="100%">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ProjectNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>Active</th>
+            <th>Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (Project p in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => p.ProjectNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => p.Name)
+                </td>
+                <td>
+                    @Html.CheckBox("active", !(p.IsClosed || p.IsArchived), new { disabled = true })
+                </td>
+                <td>
+                    <a href='@Url.Action("CreateEdit", new {id = p.ProjectID})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>

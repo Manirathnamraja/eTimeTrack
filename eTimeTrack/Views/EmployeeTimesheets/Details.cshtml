@@ -1,0 +1,186 @@
+﻿@model eTimeTrack.Models.EmployeeTimesheet
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>EmployeeTimesheet</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ApprovedBy.EmployeeNo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ApprovedBy.EmployeeNo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Employee.EmployeeNo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Employee.EmployeeNo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastModifiedByUser.EmployeeNo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastModifiedByUser.EmployeeNo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TimesheetPeriod.TimesheetPeriodID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TimesheetPeriod.TimesheetPeriodID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateApproved)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateApproved)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UseDayTimeEntry)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UseDayTimeEntry)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Day1StartTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Day1StartTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Day1EndTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Day1EndTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Day2StartTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Day2StartTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Day2EndTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Day2EndTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Day3StartTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Day3StartTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Day3EndTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Day3EndTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Day4StartTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Day4StartTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Day4EndTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Day4EndTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Day5StartTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Day5StartTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Day5EndTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Day5EndTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Day6StartTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Day6StartTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Day6EndTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Day6EndTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Day7StartTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Day7StartTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Day7EndTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Day7EndTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastModifiedDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastModifiedDate)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Timesheet", new { id = Model.TimesheetID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

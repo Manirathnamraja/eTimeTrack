@@ -1,0 +1,45 @@
+﻿@using eTimeTrack.Extensions
+@using eTimeTrack.Helpers
+@using eTimeTrack.ViewModels
+@model List<ReconciliationTemplatesIndexViewModel>
+
+@{
+    ViewBag.Title = "Reconciliation Import Templates";
+    ViewBag.BannerColour = AecomColour.Blue;
+}
+
+@Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
+
+<p>
+    <a href="@Url.Action("CreateReconciliationTemplate")" class="btn btn-primary">Create Reconciliation Import Template</a>
+</p>
+
+<table class="table data-table" width="100%">
+    <thead>
+    <tr>
+        <th>@Html.DisplayNameFor(model => Model[0].CompanyName)</th>
+        <th>@Html.DisplayNameFor(model => Model[0].Name)</th>
+        <th>@Html.DisplayNameFor(model => Model[0].LastModifiedDateTime)</th>
+        <th data-orderable="false">Edit</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach (ReconciliationTemplatesIndexViewModel item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.CompanyName)</td>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.LastModifiedDateTime)</td>
+                <td>
+                    @if (User.IsSuperUser())
+                    {
+                        <a href='@Url.Action("EditReconciliationTemplate", new {reconciliationTemplateId = item.Id})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>

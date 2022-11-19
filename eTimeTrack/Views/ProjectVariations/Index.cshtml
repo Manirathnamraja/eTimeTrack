@@ -1,0 +1,117 @@
+﻿@using eTimeTrack.Helpers
+@using eTimeTrack.Models
+@model IEnumerable<ProjectVariation>
+
+@{
+    ViewBag.Title = "Project Variations";
+    ViewBag.BannerColour = AecomColour.Black;
+}
+
+<!-- Modal Delete Dialog -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this project variation?
+            </div>
+            <div class="modal-footer">
+                @using (Html.BeginForm("DeleteConfirmed", "ProjectVariations", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <input type="hidden" id="deleteId" name="id" />
+                    <input type="submit" class="btn btn-primary" id="btnDeleteConfirm" value="Delete">
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.Partial("_Banner")
+
+@Html.Partial("_InfoMessageRender")
+
+@using (Html.BeginForm("Create", "ProjectVariations", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+
+    <div id="ProjectDiv" class="row form-group">
+        <div class="col-md-2 col-sm-12">Project</div>
+
+        <div class="col-md-10 col-xs-12">
+            @if (Session["SelectedProject"] != null)
+            {
+                @Html.Hidden("ProjectID", Session["SelectedProject"])
+                <label class="labelFormValue" id="selectedProjectDisplay">@Session["SelectedProjectName"]</label>
+            }
+        </div>
+    </div>
+
+    <input type="submit" class="btn btn-primary" value="Create New" />
+}
+
+<hr />
+
+<table class="table data-table dt-responsive" width="100%">
+    <thead>
+        <tr>
+            <th data-priority="1">@Html.DisplayNameFor(model => model.ProjectID)</th>
+            <th data-priority="2">@Html.DisplayNameFor(model => model.VariationNo)</th>
+            <th>@Html.DisplayNameFor(model => model.Description)</th>
+            <th data-orderable="false">@Html.DisplayNameFor(model => model.Notes)</th>
+            <th data-orderable="false">Active</th>
+            <th data-orderable="false">@Html.DisplayNameFor(model => model.IsApproved)</th>
+            <th data-orderable="false">Assigned</th>
+            <th data-priority="3" data-orderable="false">Edit</th>
+            <th data-priority="4" data-orderable="false">Assign</th>
+            <th data-priority="5" data-orderable="false">Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (ProjectVariation item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Project.ProjectNo)</td>
+                <td>@Html.DisplayFor(modelItem => item.VariationNo)</td>
+                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                <td>@Html.DisplayFor(modelItem => item.Notes)</td>
+                <td>@Html.CheckBox("active", !item.IsClosed, new { disabled = true })</td>
+                <td>@Html.DisplayFor(modelItem => item.IsApproved)</td>
+                <td>@Html.DisplayFor(modelItem => item.ProjectVariationItems.Count)</td>
+                <td>
+                    <a href='@Url.Action("CreateEdit", new {id = item.VariationID})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                </td>
+                <td>
+                    <a href='@Url.Action("Assign", new {id = item.VariationID})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
+                </td>
+                <td>
+                @if (!item.ProjectVariationItems.Any())
+                {
+                    <button class="btn btn-primary delete" data-variationid="@item.VariationID" role="button"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                }
+                else
+                {
+                    <a class="btn btn-primary disabled glyphicon glyphicon-trash"></a>
+                }
+            </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("body").on("click", ".delete", function () {
+                $('#deleteId').val($(this).data('variationid'));
+                $('#confirmDeleteModal').modal('show');
+            });
+        });
+    </script>
+}

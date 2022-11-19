@@ -1,0 +1,126 @@
+﻿@using eTimeTrack.Controllers
+@using eTimeTrack.Helpers
+@model eTimeTrack.Models.ProjectVariation
+
+@{
+    ViewBag.Title = ViewBag.Source + " Project Variation";
+    ViewBag.BannerColour = AecomColour.Black;
+}
+
+@Html.Partial("_Banner")
+<h4>@Model.DisplayName</h4>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @if (Model.DisplayName != null)
+        {
+            <hr/>
+        }
+        @Html.ValidationSummary(true, "", new {@class = "text-danger"})
+        @Html.HiddenFor(model => model.VariationID)
+        @Html.HiddenFor(model => model.DateSubmitted)
+        @Html.HiddenFor(model => model.DateApproved)
+        @Html.HiddenFor(model => model.RevNo)
+        @Html.Hidden("Source", (Source) ViewBag.Source)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ProjectID, new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+
+                @if (Session["SelectedProject"] != null)
+                {
+                    if (Model.VariationID == 0)
+                    {
+                        @Html.Hidden("ProjectID", Session["SelectedProject"], new {id = "selectedProjectId"})
+                        <label class="labelFormValue" id="selectedProjectDisplay">@Session["SelectedProjectName"]</label>
+                    }
+                    else
+                    {
+                        @Html.HiddenFor(model => model.ProjectID)
+                        @Html.HiddenFor(model => model.Project.ProjectNo)
+                        @Html.HiddenFor(model => model.Project.Name)
+                        <label class="labelFormValue">@Model.Project.DisplayName</label>
+                    }
+                }
+                else
+                {
+                    @Html.DropDownList("ProjectID", null, new {@class = "form-control"})
+                    @Html.ValidationMessageFor(model => model.ProjectID, "", new {@class = "text-danger"})
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.VariationNo, new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.VariationNo, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.VariationNo, "", new {@class = "text-danger"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Description, new {htmlAttributes = new {@class = "form-control fullWidth"}})
+                @Html.ValidationMessageFor(model => model.Description, "", new {@class = "text-danger"})
+            </div>
+        </div>
+
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Reference, new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Reference, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.Reference, "", new {@class = "text-danger"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Notes, new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Notes, new {@class = "form-control fullWidth", rows = 3})
+                @Html.ValidationMessageFor(model => model.Notes, "", new {@class = "text-danger"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsClosed, new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.IsClosed)
+                    @Html.ValidationMessageFor(model => model.IsClosed, "", new {@class = "text-danger"})
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsApproved, new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.IsApproved)
+                    @Html.ValidationMessageFor(model => model.IsApproved, "", new {@class = "text-danger"})
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsOriginalScope, new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.IsOriginalScope)
+                    @Html.ValidationMessageFor(model => model.IsOriginalScope, "", new {@class = "text-danger"})
+                </div>
+            </div>
+        </div>
+
+
+        <div class="pull-right">
+            <input type="submit" value="Save" class="btn btn-primary"/>
+        </div>
+        <a href="@Url.Action("Index")" class="btn btn-primary">Back</a>
+    </div>
+}

@@ -1,0 +1,48 @@
+select employees.EmployeeID, employees.EmployeeNo, projects.Name from
+ProjectTasks join EmployeeTimesheetItems on ProjectTasks.TaskID = EmployeeTimesheetItems.TaskID
+join Projects on ProjectTasks.ProjectID = projects.ProjectID join EmployeeTimesheets on EmployeeTimesheetItems.TimesheetID = EmployeeTimesheets.TimesheetID join Employees on EmployeeTimesheets.EmployeeID = Employees.EmployeeID
+where Employees.Email is null and employees.EmployeeNo in ('8858', '8865', '8868', '8904', '8914', '8926', 'AZ2000', 'AZ3812', 'AZ3844', 'AZ3865', 'AZ3937')
+group by employees.EmployeeID, employees.EmployeeNo, projects.Name
+
+
+select employees.EmployeeID, employees.EmployeeNo, projects.Name, EmployeeTimesheets.TimesheetID, TimesheetPeriods.EndDate, projecttasks.TaskNo, projecttasks.Name, ProjectGroups.GroupNo, ProjectGroups.Name, ProjectParts.PartNo, ProjectParts.Name,EmployeeTimesheetItems.day1hrs, EmployeeTimesheetItems.day2hrs, EmployeeTimesheetItems.day3hrs, EmployeeTimesheetItems.day4hrs, EmployeeTimesheetItems.day5hrs, EmployeeTimesheetItems.day6hrs, EmployeeTimesheetItems.day7hrs  from
+ProjectTasks 
+join EmployeeTimesheetItems on ProjectTasks.TaskID = EmployeeTimesheetItems.TaskID
+join ProjectGroups on ProjectGroups.groupid = ProjectTasks.groupid
+join ProjectParts on ProjectParts.partid = ProjectGroups.partid
+join Projects on ProjectTasks.ProjectID = projects.ProjectID 
+join EmployeeTimesheets on EmployeeTimesheetItems.TimesheetID = EmployeeTimesheets.TimesheetID 
+join TimesheetPeriods on TimesheetPeriods.TimesheetPeriodID = EmployeeTimesheets.TimesheetPeriodID
+join Employees on EmployeeTimesheets.EmployeeID = Employees.EmployeeID
+--where employees.EmployeeNo in ('8858', 'AZ3875')
+where employees.EmployeeNo in ('8858', '8865', '8868', '8904', '8914', '8926', 'AZ2000', 'AZ3812', 'AZ3844', 'AZ3865', 'AZ3937', 'AZ3875', 'AZ3592', 'AZ3749', '112978', '111460', '113154')
+--group by employees.EmployeeID, employees.EmployeeNo, projects.Name, EmployeeTimesheets.TimesheetID, TimesheetPeriods.EndDate
+
+
+
+/****** Script for SelectTopNRows command from SSMS  ******/
+SELECT TOP (30000) [EmployeeID]
+      ,[EmployeeNo]
+      ,[IsActive]
+      ,[ManagerID]
+      ,[CompanyID]
+      ,[OfficeID]
+      ,[AllowOT]
+      ,[LastModifiedBy]
+      ,[LastModifiedDate]
+      ,[Email]
+      ,[EmailConfirmed]
+      ,[PasswordHash]
+      ,[SecurityStamp]
+      ,[PhoneNumber]
+      ,[PhoneNumberConfirmed]
+      ,[TwoFactorEnabled]
+      ,[LockoutEndDateUtc]
+      ,[LockoutEnabled]
+      ,[AccessFailedCount]
+      ,[UserName]
+      ,[Names]
+      ,[LockoutDateTimeUtc]
+  FROM [eTimeTrack].[dbo].[Employees]
+  where [EmployeeID] not in
+  (select distinct [EmployeeID] from [EmployeeTimesheets])

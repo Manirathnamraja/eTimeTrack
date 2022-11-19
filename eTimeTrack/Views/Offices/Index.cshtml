@@ -1,0 +1,48 @@
+﻿@model IEnumerable<eTimeTrack.Models.Office>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a href="@Url.Action("Create", "Offices")" class="btn btn-primary">Add Office</a>
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Company.Company_Code)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Office_Code)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Office_Name)
+        </th>
+        <th>Edit</th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Company.Company_Code)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Office_Code)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Office_Name)
+        </td>
+        <td>
+           @* @Html.ActionLink("Edit", "Edit", new { id=item.Office_Id })*@
+            @*@Html.ActionLink("Details", "Details", new { id=item.Office_Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Office_Id })*@
+            <a href='@Url.Action("Edit", new {id=item.Office_Id})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+        </td>
+    </tr>
+}
+
+</table>
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>

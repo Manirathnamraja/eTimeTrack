@@ -1,0 +1,86 @@
+﻿@using eTimeTrack.Helpers
+@using eTimeTrack.Models
+@model eTimeTrack.ViewModels.ProjectEmployeeIndexUserVm
+@{
+    ViewBag.Title = "Assigned Project Users";
+    ViewBag.BannerColour = AecomColour.Blue;
+}
+
+<div class="modal fade" id="projectUserDetailsModal" tabindex="-1" role="dialog"></div>
+
+@Html.Partial("_Banner")
+
+<label>Project User Type Filter</label>
+<td>@Html.DropDownList("ProjectUserTypeIdFilter", new SelectList(Model.ProjectUserTypes, "Value", "Text"), "All", new { @class = "form-control", id = "filter-user-type" })</td>
+
+<table class="table data-table" width="100%">
+    <thead>
+        <tr>
+            <th data-priority="1">Employee Number</th>
+            <th data-priority="1">Name</th>
+            <th data-priority="1">Project User Type</th>
+            <th data-priority="3" data-orderable="false">Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (EmployeeProject item in Model.EmployeeProjects)
+        {
+            <tr data-user-id="@item.EmployeeId">
+                <td>@Html.DisplayFor(modelItem => item.Employee.EmployeeNo)</td>
+                <td>@Html.DisplayFor(modelItem => item.Employee.Names)</td>
+                <td>
+                    <span style="display: none;">@item.ProjectUserTypeID</span>
+                    @Html.DropDownListFor(modelItem => item.ProjectUserTypeID, new SelectList(Model.ProjectUserTypes, "Value", "Text", item.ProjectUserTypeID), new {@class = "form-control select-user-type"})
+                </td>
+                <td>
+                    <a href='@Url.Action("Details", new {employeeId = item.EmployeeId})' class="btn btn-primary modal-link" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>
+
+
+@section Scripts {
+
+    @Scripts.Render("~/bundles/notify")
+
+    <script>
+
+    var projectId = @ViewBag.ProjectId;
+
+    $(document).ready(function() {
+
+        $('#filter-user-type').change(function() {
+            window.location = 'EmployeeProjects?projectUserTypeId=' + $(this).val();
+        });
+
+        $('body').on('click', '.modal-link', function(e) {
+            e.preventDefault();
+            $(this).attr('data-target', '#projectUserDetailsModal');
+            $(this).attr('data-toggle', 'modal');
+        });
+
+        $('#projectUserDetailsModal').on('hidden.bs.modal',
+            function() {
+                $(this).removeData('bs.modal');
+            });
+
+        $('body').on('change', '.select-user-type', function() {
+            var dropdown = $(this);
+            var employeeId = dropdown.closest('tr').data('user-id');
+
+            $.post('@Url.Action("UpdateUserProjectUserType")',{ employeeId: employeeId, projectUserTypeId: dropdown.val(), projectId: projectId }).done(
+                function(data) {
+                    dropdown.notify("Successfully Saved", { position: "right bottom", className: "success", autoHideDelay: 1500 });
+                }
+            );
+        });
+
+    });
+
+    </script>
+
+}

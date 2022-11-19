@@ -1,0 +1,64 @@
+﻿@using eTimeTrack.Extensions
+@using eTimeTrack.Helpers
+@using eTimeTrack.Models
+
+@model IEnumerable<TimesheetPeriod>
+
+@{
+    ViewBag.Title = "Timesheet Periods";
+    ViewBag.BannerColour = AecomColour.Orange;
+}
+
+@Html.Partial("_Banner")
+
+@Html.Partial("_InfoMessageRender")
+
+<a href='@Url.Action("CreateTimesheetPeriods", "TimesheetPeriods")' class="btn btn-primary">Create Periods</a>
+
+<br /><br />
+
+<table class="table data-table" width="100%">
+    <thead>
+    <tr>
+        <th data-orderable="false">Month</th>
+        <th data-orderable="false">Date Range</th>
+        <th data-orderable="false">Period Closed</th>
+    </tr>
+    </thead>
+    
+    <tbody>
+
+    @foreach (TimesheetPeriod item in Model)
+    {
+        string dateRange = item.GetStartEndDates();
+        <tr>
+            <td>@item.EndDate.ToString("MMM-yy")</td>
+            <td>@dateRange</td>
+            <td>@Html.CheckBoxFor(modelItem => item.IsClosed, new {@class = "closed", @id = item.TimesheetPeriodID})</td>
+        </tr>
+    }
+
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/notify")
+
+    <script>
+
+        $(document).ready(function() {
+            $('.closed').click(function(event) {
+                var id = $(this).attr('id');
+                var state = $(this).is(":checked");
+                $.post('@Url.Action("PeriodClosure", "TimesheetPeriods")', { timesheetId: id, state: state }).done(
+                    function() {
+                        $('#' + id).notify("Successfully Saved",
+                            { position: "right bottom", className: "success", autoHideDelay: 1500 });
+                    });
+            });
+
+        });
+    </script>
+}

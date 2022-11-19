@@ -1,0 +1,71 @@
+﻿@using eTimeTrack.Controllers
+@model eTimeTrack.ViewModels.ProjectStructureImportViewModel
+
+@{
+    ViewBag.Title = "Import Project";
+}
+
+@Html.Partial("_Banner")
+
+@using (Html.BeginForm("ImportProjectElements", "Projects", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <p>
+        This import tool adds all project parts, groups and tasks to an existing Project in the system. If your project does not yet exist in the system, please create one from the previous page.
+    </p>
+
+    <p>
+        @Html.LabelFor(model => model.ProjectId)
+        @Html.DropDownListFor(model => model.ProjectId, Model.ProjectList, "Select", new { id = "ProjectSelector", @class = "form-control", required = true})
+    </p>
+
+    <div class="form-group">
+        <label class="control-label">
+            Select XLSX file
+        </label>
+        <input type="file" name="File" accept=".xlsx" required>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.ConcatenateCodes)
+        @Html.CheckBoxFor(model => model.ConcatenateCodes, new {id= "ConcatenateCodes" })
+        <select class="form-control" name="ConcatenateCharacter" id="ConcatenateCharacter" style="display: none;">
+            <option value="-">Hyphen</option>
+            <option value=" ">Space</option>
+            <option value="_">Underscore</option>
+            <option value=".">Full Stop / Period</option>
+        </select>
+    </div>
+
+    <div class="form-group" style="margin-top: 3em;">
+        <label class="control-label">Download the excel template for populating with project structure here:</label>
+        <br />
+        @Html.ActionLink("Download Template", "DownloadStructureTemplate")
+        
+    </div>
+
+    <a href='@Url.Action("Index", "Projects")' class="btn btn-primary" role="button">Back</a>
+    <input type="submit" id="submit" class="btn btn-primary pull-right" value="Import" />
+}
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+
+            $('form').submit(function () {
+                $('#submit').prop('disabled', true);
+            });
+
+            $('#ConcatenateCodes').change(function() {
+                if ($(this).is(':checked')) {
+                    $('#ConcatenateCharacter').show();
+                } else {
+                    $('#ConcatenateCharacter').hide();
+                }
+            });
+        });
+    </script>
+
+}

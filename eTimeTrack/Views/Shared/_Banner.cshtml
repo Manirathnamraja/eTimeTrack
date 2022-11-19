@@ -1,0 +1,41 @@
+﻿@using eTimeTrack.Helpers
+
+@{
+    string title = ViewData["title"] ?? ViewBag.Title;
+
+    string colourClass = "banner-green";
+
+    if (ViewData["BannerColour"] != null)
+    {
+        switch ((AecomColour)ViewData["BannerColour"])
+        {
+            case AecomColour.Blue:
+                colourClass = "banner-blue";
+                break;
+            case AecomColour.Green:
+                colourClass = "banner-green";
+                break;
+            case AecomColour.Orange:
+                colourClass = "banner-orange";
+                break;
+            case AecomColour.Magenta:
+                colourClass = "banner-magenta";
+                break;
+            case AecomColour.Yellow:
+                colourClass = "banner-yellow";
+                break;
+            case AecomColour.WarmGrey:
+                colourClass = "banner-warm-grey";
+                break;
+            case AecomColour.Black:
+                colourClass = "banner-black";
+                break;
+        }
+    }
+}
+
+<div class="banner-container">
+    <div class="banner @colourClass">
+        <h2>@title</h2>
+    </div>
+</div>

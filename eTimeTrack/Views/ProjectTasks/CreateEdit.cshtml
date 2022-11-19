@@ -1,0 +1,173 @@
+﻿@using eTimeTrack.Controllers
+@using eTimeTrack.Helpers
+@model eTimeTrack.Models.ProjectTask
+
+@{
+    ViewBag.Title = ViewBag.Source + " Project Task";
+    ViewBag.BannerColour = AecomColour.Orange;
+}
+
+@Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.TaskID)
+        @Html.Hidden("Source", (Source)ViewBag.Source)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ProjectID, new { @class = "control-label col-md-2 required" })
+            <div class="col-md-10">
+
+                @if (Session["SelectedProject"] != null)
+                {
+                    if (Model.TaskID == 0)
+                    {
+                        @Html.Hidden("ProjectID", Session["SelectedProject"], new { id = "selectedProjectId" })
+                        <label class="labelFormValue" id="selectedProjectDisplay">@Session["SelectedProjectName"]</label>
+                    }
+                    else
+                    {
+                        @Html.HiddenFor(model => model.ProjectID)
+                        @Html.HiddenFor(model => model.ProjectGroup.GroupNo)
+                        @Html.HiddenFor(model => model.ProjectGroup.ProjectPart.PartNo)
+                        @Html.HiddenFor(model => model.ProjectGroup.ProjectPart.Project.ProjectNo)
+                        @Html.HiddenFor(model => model.ProjectGroup.ProjectPart.Project.Name)
+                        <label class="labelFormValue">@Model.ProjectGroup.ProjectPart.Project.DisplayName</label>
+                    }
+                }
+                else
+                {
+                    @Html.DropDownListFor(model => model.ProjectID, null, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.ProjectID, "", new { @class = "text-danger" })
+                }
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Project Part", new { @class = "control-label col-md-2 required" })
+            <div class="col-md-10">
+                @Html.DropDownList("ProjectPartSelector", (SelectList)ViewBag.PartID, "Select", new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.GroupID, new { @class = "control-label col-md-2 required" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.GroupID, null, "Select", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.GroupID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TaskNo, new { @class = "control-label col-md-2 required" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.TaskNo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.TaskNo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AliasCode, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.AliasCode, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AliasCode, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.OracleCode, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.OracleCode, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.OracleCode, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Notes, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Notes, new { @class = "form-control fullWidth", rows = 3 } )
+                @Html.ValidationMessageFor(model => model.Notes, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsClosed, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.IsClosed)
+                    @Html.ValidationMessageFor(model => model.IsClosed, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="pull-right">
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
+
+    </div>
+}
+
+<a href='@Url.Action("Index", "ProjectComponent", new {type = ProjectComponentType.ProjectTask})' class="btn btn-primary" role="button">Back</a>
+
+@section scripts
+{
+
+    <script>
+
+        // load the selector dropdowns
+        // project change
+        $('#ProjectID').change(function () {
+            $.post('@Url.Action("GetProjectPartList", "EmployeeTimesheets")',
+                { projectId: $('#ProjectID').val() }).done(function (data) {
+
+                    $('#ProjectPartSelector').empty();
+                    $('#GroupID').empty();
+
+                    $('#ProjectPartSelector').prop('disabled', false);
+                    $('#GroupID').prop('disabled', true);
+
+                    $('#ProjectPartSelector').append($('<option>').text('Select'));
+                    for (var i = 0; i < data.length; i++) {
+                        $('#ProjectPartSelector').append($('<option>', { value: data[i].PartID }).text(data[i].Name));
+                    }
+                    if (data.length === 1) {
+                        $('#ProjectPartSelector')[0].selectedIndex = 1;
+                        $('#ProjectPartSelector').change();
+                    }
+                });
+        });
+
+
+        // project part change
+        $('#ProjectPartSelector').change(function () {
+            $.post('@Url.Action("GetProjectGroupList", "EmployeeTimesheets")',
+                { projectPartId: $('#ProjectPartSelector').val() }).done(function (data) {
+                    $('#GroupID').empty();
+                    $('#GroupID').prop('disabled', false);
+                    $('#GroupID').append($('<option>').text('Select'));
+                    for (var i = 0; i < data.length; i++) {
+                        $('#GroupID').append($('<option>', { value: data[i].GroupID }).text(data[i].Name));
+                    }
+                    if (data.length === 1) {
+                        $('#GroupID').change();
+                    }
+                });
+        });
+
+    </script>
+}

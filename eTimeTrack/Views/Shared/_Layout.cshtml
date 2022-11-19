@@ -1,0 +1,94 @@
+﻿@using eTimeTrack.Controllers
+@using eTimeTrack.Extensions
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - eTimeTrack</title>
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/tablegraphicscss")
+    @Scripts.Render("~/bundles/modernizr")
+    <link rel="icon" href="@Url.Content("~/favicon.png")" />
+</head>
+<body>
+    <div id="page-container">
+        <div id="page-header-body">
+            <div class="navbar navbar-inverse">
+                <div class="container body-content">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a href="@Url.Action("Index", "EmployeeTimesheets")" class="logo-img navbar-brand">
+                            <img src="@Url.Content("~/Content/images/logo3.png")" height="50" alt="eTimeTrack" />
+                        </a>
+                    </div>
+                    <div class="navbar-collapse collapse">
+
+                        @if (User.IsInAnyAdminRole())
+                        {
+                            <div class="col-md-4" style="margin-top: 8px;">@Html.Action("Index", "ProjectSelector")</div>
+                        }
+
+                        @Html.Partial("_LoginPartial")
+                    </div>
+                </div>
+            </div>
+
+            <div class="container body-content">
+                @RenderBody()
+            </div>
+        </div>
+
+        <div id="page-footer">
+            <footer class="footer">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-4"><img src="@Url.Content("~/Content/images/AECOM_color_cmyk.png")" title="@Html.AssemblyVersion()" /></div>
+                        <div class="col-xs-8 text-right"><span>&copy; @DateTime.Now.Year AECOM. All Rights Reserved.</span></div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/datatables")
+    @Scripts.Render("~/bundles/bootstrap")
+@*@Scripts.Render("~/bundles/tablesaw")*@
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+
+
+@if (User.IsUserPlusOrAbove())
+{
+    <script>
+
+        $(document).ready(function () {
+
+            // preset the value
+            $('#selectedProjectDisplay').empty().text($('#selectProject').find('option:selected').text());
+            $('#selectedProjectId').val($('#selectProject').val());
+
+            // update the selected project on change
+            $('#selectProject').change(function () {
+                $.post('@Url.Action("UpdateProject", "ProjectSelector")', { projectId: $(this).val() }, function (data) {
+                    location.reload(true); // true ignores caching
+                });
+            });
+
+            // set DataTable search to use bootstrap
+            $('.dataTables_filter input').addClass('form-control');
+
+            // tooltips
+            $("a.tool-tip").tooltip();
+
+        });
+
+    </script>
+}

@@ -1,0 +1,7 @@
+﻿@model eTimeTrack.ViewModels.ProjectSelectorViewModel
+
+@{
+    Layout = null;
+}
+
+@Html.DropDownListFor(x => x.SelectedProjectId, Model.Projects, new {@class="form-control", id = "selectProject" })

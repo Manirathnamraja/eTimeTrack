@@ -1,0 +1,21 @@
+SELECT        dbo.EmployeeTimesheetItems.TimesheetItemID, dbo.EmployeeTimesheetItems.LastModifiedBy, dbo.EmployeeTimesheetItems.LastModifiedDate, dbo.EmployeeTimesheetItems.TimesheetID, 
+                         dbo.EmployeeTimesheetItems.Day1Hrs, dbo.EmployeeTimesheetItems.Day2Hrs, dbo.EmployeeTimesheetItems.Day3Hrs, dbo.EmployeeTimesheetItems.Day4Hrs, dbo.EmployeeTimesheetItems.Day5Hrs, 
+                         dbo.EmployeeTimesheetItems.Day6Hrs, dbo.EmployeeTimesheetItems.Day7Hrs, 
+                         dbo.EmployeeTimesheetItems.Day1Hrs + dbo.EmployeeTimesheetItems.Day2Hrs + dbo.EmployeeTimesheetItems.Day3Hrs + dbo.EmployeeTimesheetItems.Day4Hrs + dbo.EmployeeTimesheetItems.Day5Hrs + dbo.EmployeeTimesheetItems.Day6Hrs
+                          + dbo.EmployeeTimesheetItems.Day7Hrs AS Total, CASE TimeCode WHEN 0 THEN 'NT' WHEN 1 THEN 'OT1' WHEN 2 THEN 'OT2' WHEN 3 THEN 'OT3' END AS TimeCode, dbo.EmployeeTimesheetItems.Comments, 
+                         dbo.Employees.EmployeeID, dbo.Employees.EmployeeNo, dbo.Employees.Names,  dbo.Projects.ProjectNo, dbo.Projects.Name as 'Project Name', dbo.ProjectTasks.TaskID, dbo.ProjectTasks.TaskNo, dbo.ProjectVariations.VariationID, dbo.ProjectVariations.VariationNo, 
+                         dbo.ProjectVariations.Description AS [Variation Description], dbo.ProjectTasks.Name, dbo.ProjectGroups.GroupID, dbo.ProjectGroups.GroupNo, dbo.ProjectGroups.Name AS GroupName, dbo.ProjectParts.PartID, 
+                         dbo.ProjectParts.PartNo, dbo.ProjectParts.Name AS PartName, dbo.TimesheetPeriods.WeekNo, dbo.TimesheetPeriods.TimesheetPeriodID, dbo.TimesheetPeriods.StartDate, dbo.TimesheetPeriods.EndDate, 
+                         dbo.Companies.Company_Id, dbo.Companies.Company_Code, dbo.Companies.Company_Name
+FROM            dbo.EmployeeTimesheetItems INNER JOIN
+                         dbo.EmployeeTimesheets ON dbo.EmployeeTimesheetItems.TimesheetID = dbo.EmployeeTimesheets.TimesheetID INNER JOIN
+                         dbo.TimesheetPeriods ON dbo.EmployeeTimesheets.TimesheetPeriodID = dbo.TimesheetPeriods.TimesheetPeriodID INNER JOIN
+                         dbo.Employees ON dbo.EmployeeTimesheets.EmployeeID = dbo.Employees.EmployeeID INNER JOIN
+                         dbo.Companies ON dbo.Employees.CompanyID = dbo.Companies.Company_Id INNER JOIN
+                         dbo.ProjectTasks ON dbo.EmployeeTimesheetItems.TaskID = dbo.ProjectTasks.TaskID INNER JOIN
+                         dbo.ProjectGroups ON dbo.ProjectTasks.GroupID = dbo.ProjectGroups.GroupID INNER JOIN
+                         dbo.ProjectParts ON dbo.ProjectGroups.PartID = dbo.ProjectParts.PartID INNER JOIN
+                         dbo.Projects ON dbo.ProjectParts.ProjectID = dbo.Projects.ProjectID INNER JOIN
+                         dbo.ProjectVariations ON dbo.EmployeeTimesheetItems.VariationID = dbo.ProjectVariations.VariationID
+						 where EndDate >= '2019-07-01'
+						 and (Day1Hrs <> 0 OR Day2Hrs <> 0 OR Day3Hrs <> 0 OR Day4Hrs <> 0 OR Day5Hrs <> 0 OR Day6Hrs <> 0 OR Day7Hrs <> 0)

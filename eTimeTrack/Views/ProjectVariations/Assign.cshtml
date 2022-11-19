@@ -1,0 +1,167 @@
+﻿@using eTimeTrack.Helpers
+@using eTimeTrack.Models
+@using eTimeTrack.ViewModels
+@model ProjectVariationAssignmentModel
+
+@{
+    ViewBag.Title = "Assign";
+    ViewBag.BannerColour = AecomColour.Black;
+
+    string selectedProjectPart = ViewBag.SelectedProjectPart != null ? ViewBag.SelectedProjectPart.ToString() : "null";
+    string selectedProjectGroup = ViewBag.SelectedProjectGroup != null ? ViewBag.SelectedProjectGroup.ToString() : "null";
+}
+
+@Html.Partial("_Banner")
+
+@using (Html.BeginForm("IndexPost", "ProjectVariations", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.Hidden("VariationId", Model.ProjectVariation.VariationID)
+
+    <div id="ProjectDiv" class="row form-group">
+        <div class="col-md-2 col-sm-12">Project</div>
+        <span id="selectedProjectDisplay">@Model.ProjectVariation.Project.DisplayName</span>
+    </div>
+
+    <div id="ProjectPartDiv" class="row form-group">
+        <div class="col-md-2">Project Part</div>
+        @Html.DropDownList("ProjectPartSelector", null, "Select", new { id = "ProjectPartSelector", @class = "form-control selector" })
+    </div>
+
+    <div id="ProjectGroupDiv" class="row form-group">
+        <div class="col-md-2 col-sm-12">Project Group</div>
+        <select name="ProjectGroupSelector" id="ProjectGroupSelector" class="form-control selector" disabled></select>
+    </div>
+
+    <input type="submit" id="filter" class="btn btn-primary" value="Filter Table" />
+}
+
+<table class="table data-table" width="100%">
+    <thead>
+        <tr>
+            <th>Task</th>
+            <th data-orderable="false">Assigned</th>
+            <th data-orderable="false">Approved</th>
+            <th data-orderable="false">Closed</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (ProjectTask task in Model.ProjectTasks)
+        {
+            ProjectVariationItem variationItem = task.ProjectVariationItems.SingleOrDefault(x => x.VariationID == Model.ProjectVariation.VariationID);
+
+            bool approved = variationItem?.IsApproved ?? false;
+            bool closed = variationItem?.IsClosed ?? false;
+
+            <tr>
+                <td>@task.DisplayName</td>
+                <td>
+                    @Html.CheckBox("Assigned", variationItem != null, new { data_taskid = task.TaskID, @class = "assignCheckbox" })
+                </td>
+                <td>
+                    @Html.CheckBox("Approved", approved, new { data_taskid = task.TaskID, @class = "approvedCheckbox" })
+                </td>
+                <td>
+                    @Html.CheckBox("Closed", closed, new { data_taskid = task.TaskID, @class = "closedCheckbox" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a href="@Url.Action("Index")" class="btn btn-primary">Back</a>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/notify")
+
+    <script>
+
+
+
+        $(document).ready(function() {
+
+
+            // Assignment
+            $(document).on('click', '.assignCheckbox', function() {
+                var checkbox = $(this);
+                var checked = checkbox.is(":checked");
+                $.post('@Url.Action("AssignToTask", "ProjectVariations")',
+                    { projectVariationId: @Model.ProjectVariation.VariationID,
+                        taskId: $(this).data('taskid'),
+                        assigned: checked
+                    }).done(function() {
+                        checkbox.notify("Successfully Saved",
+                            { position: "right bottom", className: "success", autoHideDelay: 1500 });
+                        $('.approvedCheckbox[data-taskid="' + checkbox.data('taskid') + '"]').prop('checked', false)
+                            .prop('disabled', !checked);
+                        $('.closedCheckbox[data-taskid="' + checkbox.data('taskid') + '"]').prop('checked', false)
+                            .prop('disabled', !checked);
+                    });
+            });
+
+            // Approved
+            $(document).on('click', '.approvedCheckbox', function() {
+                var checkbox = $(this);
+                var checked = checkbox.is(":checked");
+                $.post('@Url.Action("Approval", "ProjectVariations")',
+                    { projectVariationId: @Model.ProjectVariation.VariationID,
+                        taskId: $(this).data('taskid'),
+                        approved: checked
+                    }).done(function() {
+                        checkbox.notify("Successfully Saved",
+                            { position: "right bottom", className: "success", autoHideDelay: 1500 });
+                    });
+            });
+
+            // Closed
+            $(document).on('click', '.closedCheckbox', function() {
+                var checkbox = $(this);
+                var checked = checkbox.is(":checked");
+                $.post('@Url.Action("Close", "ProjectVariations")',
+                    { projectVariationId: @Model.ProjectVariation.VariationID,
+                        taskId: $(this).data('taskid'),
+                        closed: checked
+                    }).done(function() {
+                        checkbox.notify("Successfully Saved",
+                            { position: "right bottom", className: "success", autoHideDelay: 1500 });
+                    });
+            });
+
+
+            var selectedProjectPart = @selectedProjectPart;
+            var selectedProjectGroup = @selectedProjectGroup;
+
+            // project part change
+            $('#ProjectPartSelector').change(function() {
+
+                $.post('@Url.Action("GetProjectGroupList", "EmployeeTimesheets")',
+                    { projectPartId: $('#ProjectPartSelector').val() }).done(function(data) {
+                        $('#ProjectGroupSelector').empty();
+                        $('#ProjectGroupSelector').prop('disabled', false);
+
+                        $('#ProjectGroupSelector').append($('<option>').text('Select'));
+                        for (var i = 0; i < data.length; i++) {
+                            $('#ProjectGroupSelector').append($('<option>', { value: data[i].GroupID }).text(data[i].Name));
+                        }
+                        if (selectedProjectGroup != null) {
+                            $('#ProjectGroupSelector').val(selectedProjectGroup);
+                        } else {
+                            $('#ProjectGroupSelector')[0].selectedIndex = 0;
+                        }
+                        selectedProjectGroup = null;
+                    });
+            });
+
+            if (selectedProjectPart != null) {
+                $('#ProjectPartSelector').val(selectedProjectPart);
+                $('#ProjectPartSelector').change();
+            }
+
+        });
+
+    </script>
+
+}

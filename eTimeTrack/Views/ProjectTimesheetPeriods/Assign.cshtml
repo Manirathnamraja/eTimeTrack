@@ -1,0 +1,72 @@
+﻿@using eTimeTrack.Extensions
+@using eTimeTrack.Helpers
+@using eTimeTrack.Models
+@using eTimeTrack.ViewModels
+@model GenericAssignmentModel<Project, TimesheetPeriod, ProjectTimesheetPeriod>
+
+@{
+    ViewBag.Title = "Project Timesheet Periods";
+    ViewBag.BannerColour = AecomColour.Orange;
+}
+
+@Html.Partial("_Banner")
+
+<h4>@Model.AssignmentRecipient.Name</h4>
+
+<table class="table data-table" width="100%">
+    <thead>
+    <tr>
+        <th data-orderable="false">Month</th>
+        <th data-orderable="false">Date Range</th>
+        <th data-orderable="false">Open</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach (TimesheetPeriod period in Model.AvailableList)
+            {
+                ProjectTimesheetPeriod assignedPeriod = Model.AssignedList.SingleOrDefault(x => x.TimesheetPeriod.TimesheetPeriodID == period.TimesheetPeriodID);
+                <tr>
+                    <td>@period.EndDate.ToString("MMM-yy")</td>
+                    <td>@period.GetStartEndDates()</td>
+                    <td>
+                        @Html.CheckBox("Assigned", assignedPeriod != null, new {data_periodid = period.TimesheetPeriodID, @class = "assignCheckbox"})
+                    </td>
+                </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>
+
+@section scripts {
+    @Scripts.Render("~/bundles/notify")
+    <script>
+
+        $(document).ready(function() {
+
+            // Assignment
+                $(document).on('click', '.assignCheckbox', function() {
+                var checkbox = $(this);
+
+                var checked = checkbox.is(":checked");
+                $.post('@Url.Action("AssignPeriods", "ProjectTimesheetPeriods")',
+                    {
+                        projectId: @Model.AssignmentRecipient.ProjectID,
+                        periodId: $(this).data('periodid'),
+                        assigned: checked
+                    })
+                .done(function(data) {
+                        checkbox.notify("Successfully Saved",
+                            { position: "right bottom", className: "success", autoHideDelay: 1500 });
+                    })
+                .error(function() {
+                    checkbox.notify("Save Failed! Refresh page.",
+                        { position: "right bottom", className: "error", autoHideDelay: 1500 });
+                });
+            });
+
+        });
+
+    </script>
+
+}

@@ -1,0 +1,12 @@
+﻿@model eTimeTrack.Models.EmployeeTimesheet
+@{
+    Layout = null;
+
+    string templateName = "EmployeeTimesheetItem";
+    if (ViewBag.MobileMode != null && ViewBag.MobileMode)
+    {
+        templateName = "EmployeeTimesheetItemMobile";
+    }
+}
+
+@Html.EditorForMany(x => x.TimesheetItems, templateName, x => x.TimesheetItemID.ToString(), false)

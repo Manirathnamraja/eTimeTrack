@@ -1,0 +1,66 @@
+﻿@using eTimeTrack.Models
+@using eTimeTrack.ViewModels
+@model GenericAssignmentModel<Company, Project, ProjectCompany>
+
+@{
+    ViewBag.Title = "Assign";
+}
+
+@Html.Partial("_Banner")
+
+<h4>@Model.AssignmentRecipient.Company_Code</h4>
+
+<table class="table data-table" width="100%">
+    <thead>
+        <tr>
+            <th>Project</th>
+            <th data-orderable="false">Assigned</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Project project in Model.AvailableList)
+        {
+            ProjectCompany assignedProject = Model.AssignedList.SingleOrDefault(x => x.ProjectId == project.ProjectID);
+
+            <tr>
+                <td>@project.Name</td>
+                <td>
+                    @Html.CheckBox("Assigned", assignedProject != null, new { data_projectid = project.ProjectID, @class = "assignCheckbox" })
+                </td>
+            </tr>
+
+        }
+    </tbody>
+</table>
+
+<div>
+    <a href="@Url.Action("Index")" class="btn btn-primary">Back</a>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/notify")
+    <script>
+
+        $(document).ready(function () {
+
+            // Assignment
+            $(document).on('click', '.assignCheckbox', function() {
+                var checkbox = $(this);
+                var checked = checkbox.is(":checked");
+                $.post('@Url.Action("AssignToProject", "Companies")',
+                        { companyId: @Model.AssignmentRecipient.Company_Id, projectId: $(this).data('projectid'), assigned: checked })
+                    .done(function(data) {
+                        checkbox.notify("Successfully Saved",
+                            { position: "right bottom", className: "success", autoHideDelay: 1500 });
+                    })
+                    .error(function() {
+                        checkbox.notify("Save Failed! Refresh page.",
+                            { position: "right bottom", className: "error", autoHideDelay: 1500 });
+                    });
+            });
+
+        });
+
+    </script>
+
+}

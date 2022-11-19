@@ -1,0 +1,11 @@
+﻿@model eTimeTrack.Models.EmployeeTimesheet
+
+@{
+    bool readOnly = false;
+    if (ViewBag.ReadOnly != null && ViewBag.ReadOnly)
+    {
+        readOnly = true;
+    }
+}
+
+

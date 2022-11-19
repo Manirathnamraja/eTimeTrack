@@ -1,0 +1,56 @@
+﻿@using eTimeTrack.Helpers
+@using eTimeTrack.Models
+@model IEnumerable<Employee>
+
+@{
+    ViewBag.Title = "Manage Users";
+    ViewBag.BannerColour = AecomColour.Blue;
+}
+
+@Html.Partial("_Banner")
+
+<p>
+    <a href="@Url.Action("Register", "Account")" class="btn btn-primary">Create User</a>
+</p>
+
+<table class="table data-table" width="100%">
+    <thead>
+    <tr>
+        <th data-priority="1">@Html.DisplayNameFor(model => model.EmployeeNo)</th>
+        <th data-priority="1">@Html.DisplayNameFor(model => model.Names)</th>
+        <th>@Html.DisplayNameFor(model => model.Company.Company_Code)</th>
+        <th>@Html.DisplayNameFor(model => model.IsActive)</th>
+        <th data-priority="2">@Html.DisplayNameFor(model => model.Email)</th>
+        <th data-priority="3">Locked Out</th>
+        <th data-priority="3" data-orderable="false">Edit</th>
+        <th data-priority="4" data-orderable="false">Assign to Projects</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (Employee item in Model)
+    {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.EmployeeNo)</td>
+            <td>@Html.DisplayFor(modelItem => item.Names)</td>
+            <td>@Html.DisplayFor(modelItem => item.Company.Company_Code)</td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsActive)
+                <span class="checkbox-sort-value">@(!item.IsActive ? "0" : "1")</span>
+            </td>
+            <td>@Html.DisplayFor(modelItem => item.Email)</td>
+            <td>
+                @Html.CheckBox("lockout", item.LockoutEndDateUtc.HasValue, new {@disabled = true})
+                <span class="checkbox-sort-value">@(!item.LockoutEndDateUtc.HasValue ? "0" : "1")</span>
+            </td>
+            <td>
+                <a href='@Url.Action("Edit", new {id = item.Id})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+            </td>
+            <td>
+                <a href='@Url.Action("Assign", "EmployeeProjects", new {id = item.Id})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>

@@ -1,0 +1,223 @@
+﻿@using eTimeTrack.Extensions
+@using eTimeTrack.Helpers
+@model eTimeTrack.ViewModels.ApplicationUserViewModel
+
+@{
+    ViewBag.Title = "Edit User";
+    ViewBag.BannerColour = AecomColour.Blue;
+}
+
+@Html.Partial("_Banner")
+
+@Html.Partial("_InfoMessageRender")
+
+@using (Html.BeginForm())
+{
+    <!-- Modal Edit Dialog -->
+    <div class="modal fade" id="confirmEditModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Confirm Employee Edit</h4>
+                </div>
+                <div class="modal-body">
+                    WARNING: Please do not overwrite existing employee records. All timesheets across all projects linked to this employee record will not be recognised if changed. Contact a Superuser for further information
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <input type="submit" value="Continue" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <div class="row">
+            <div class="col-md-8">
+                <h4>@Model.Employee.UserName</h4>
+            </div>
+
+            <div class="col-md-4">
+                <a href="@Url.Action("ResetPassword", new {id = Model.Employee.Id})" class="btn btn-default pull-right">Reset Password</a>
+            </div>
+        </div>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Employee.Id)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Employee.EmployeeNo, new { @class = "control-label col-md-2 required" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Employee.EmployeeNo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Employee.EmployeeNo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.Employee.FirstName, new { @class = "control-label col-md-2 required" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Employee.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Employee.FirstName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.Employee.Surname, new { @class = "control-label col-md-2 required" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Employee.Surname, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Employee.Surname, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.Employee.Email, new { @class = "control-label col-md-2 required" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Employee.Email, new { htmlAttributes = new { @class = "form-control", required = "required", type = "email" } })
+                @Html.ValidationMessageFor(model => model.Employee.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Employee.ManagerID, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.Employee.ManagerID, (SelectList)ViewBag.ManagerID, "Select", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Employee.ManagerID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Employee.CompanyID, new { @class = "control-label col-md-2 required" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.Employee.CompanyID, (SelectList)ViewBag.CompanyID, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Employee.CompanyID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Employee.AllowOT, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.CheckBox("Employee.AllowOT", Model.Employee.AllowOT.GetValueOrDefault())
+                    @Html.ValidationMessageFor(model => model.Employee.AllowOT, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Employee.IsActive, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.Employee.IsActive)
+                    <a class='tool-tip tool-tip-indent' data-toggle="tooltip" data-placement="right" title="Not used in web enabled eTimeTrack. Used in some versions of the Management Database only. Please consider the impact of this field on all projects prior to changing the Active status.">
+                        <i class='glyphicon glyphicon-info-sign'></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.Employee.Lockout, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.Employee.Lockout)
+                    <a class='tool-tip tool-tip-indent' data-toggle="tooltip" data-placement="right" title="Used as a security measure when an employee is no longer using eTimeTrack. This may be for reasons of resignation of employment, or due to completion of all project work.">
+                        <i class='glyphicon glyphicon-info-sign'></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        @if (User.IsSuperUser() || (User.IsAdmin() && Model.RoleType != RoleType.RoleSuperUser))
+        {
+            <h4>Permissions</h4>
+            <hr />
+
+            <div class="form-group">
+                <label class="col-md-2 control-label">User</label>
+                <div class="col-md-10">
+                    <div class="checkbox">
+                        @Html.RadioButtonFor(model => model.RoleType, RoleType.RoleUser)
+                        <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Regular user.">
+                            <i class='glyphicon glyphicon-info-sign'></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-2 control-label">User Administrator</label>
+                <div class="col-md-10">
+                    <div class="checkbox">
+                        @Html.RadioButtonFor(model => model.RoleType, RoleType.RoleUserAdministrator)
+                        <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Has the ability to add and edit users and assign them to projects. No other admin rights. ">
+                            <i class='glyphicon glyphicon-info-sign'></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-2 control-label">Timesheet Editor</label>
+                <div class="col-md-10">
+                    <div class="checkbox">
+                        @Html.RadioButtonFor(model => model.RoleType, RoleType.RoleTimesheetEditor)
+                        <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Has the ability to do timesheets on behalf of others on projects they’re assigned to. No other admin rights. ">
+                            <i class='glyphicon glyphicon-info-sign'></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-2 control-label">UserPlus</label>
+                <div class="col-md-10">
+                    <div class="checkbox">
+                        @Html.RadioButtonFor(model => model.RoleType, RoleType.RoleUserPlus)
+                        <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Visibility limited to projects they’re assigned to. User Plus and above can add users, assign them to a project, create, view and edit timesheets for others, add to/edit the WBS as required. ">
+                            <i class='glyphicon glyphicon-info-sign'></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-2 control-label">Administrator</label>
+                <div class="col-md-10">
+                    <div class="checkbox">
+                        @Html.RadioButtonFor(model => model.RoleType, RoleType.RoleAdmin)
+                        <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="User plus functions + can also assign other Administrator and “User Plus” responsibilities on projects they are assigned to.">
+                            <i class='glyphicon glyphicon-info-sign'></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            if (User.IsSuperUser())
+            {
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Super User</label>
+                    <div class="col-md-10">
+                        <div class="checkbox">
+                            @Html.RadioButtonFor(model => model.RoleType, RoleType.RoleSuperUser)
+                            <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="All Admin rights + Visibility and edit rights across all projects with the ability to set up new projects from scratch.">
+                                <i class='glyphicon glyphicon-info-sign'></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            @Html.HiddenFor(model => model.RoleType)
+        }
+
+        <div class="pull-right">
+            <button type="button" data-toggle="modal" data-target="#confirmEditModal" class="btn btn-primary">Save</button>
+        </div>
+        <a href="@Url.Action("Index")" class="btn btn-secondary">Back</a>
+    </div>
+}

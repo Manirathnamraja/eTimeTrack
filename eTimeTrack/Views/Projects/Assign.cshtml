@@ -1,0 +1,82 @@
+﻿@using eTimeTrack.Models
+@using eTimeTrack.ViewModels
+@model GenericAssignmentModel<Project, ProjectEmployeesViewModel, EmployeeProject>
+
+@{
+    ViewBag.Title = "Assign Employees to Project";
+}
+
+@Html.Partial("_Banner")
+
+<h4>@Model.AssignmentRecipient.Name</h4>
+
+<table class="table data-table" width="100%">
+    <thead>
+        <tr>
+            <th>Employee Number</th>
+            <th>Email</th>
+            <th>Administrator Privileges</th>
+            <th>Assigned</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (ProjectEmployeesViewModel emp in Model.AvailableList)
+            {
+                EmployeeProject assignedProject = Model.AssignedList.SingleOrDefault(x => x.EmployeeId == emp.Employee.Id);
+            <tr>
+                <td>@emp.Employee.EmployeeNo</td>
+                <td>@emp.Employee.Email</td>
+                <td>
+                    @if (emp.IsAdmin)
+                    {
+                        <span style="color: red;">Administrator</span>
+                    }
+                </td>
+                <td>
+                    @Html.CheckBox("Assigned", assignedProject != null, new {data_employeeid = emp.Employee.Id, @class = "assignCheckbox", data_isadmin = emp.IsAdmin.ToString().ToLower()})
+                    <span class="checkbox-sort-value">@(assignedProject == null ? "0" : "1")</span>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>
+
+@section scripts {
+    @Scripts.Render("~/bundles/notify")
+    <script>
+
+        $(document).ready(function() {
+
+            // Assignment
+                $(document).on('click', '.assignCheckbox', function() {
+                var checkbox = $(this);
+
+                var checked = checkbox.is(":checked");
+                $.post('@Url.Action("AssignUsers", "Projects")',
+                    {
+                        projectId: @Model.AssignmentRecipient.ProjectID,
+                        userId: $(this).data('employeeid'),
+                        assigned: checked
+                    })
+                .done(function(data) {
+                    if (checkbox.data('isadmin') && !checked) {
+                        checkbox.notify("ADMINISTRATOR Rights Removed & Successfully Saved",
+                            { position: "right bottom", className: "warning", autoHideDelay: 6000 });
+                    } else {
+                        checkbox.notify("Successfully Saved",
+                            { position: "right bottom", className: "success", autoHideDelay: 1500 });
+                    }
+                })
+                .error(function() {
+                    checkbox.notify("Save Failed! Refresh page.",
+                        { position: "right bottom", className: "error", autoHideDelay: 1500 });
+                });
+            });
+
+        });
+
+    </script>
+
+}

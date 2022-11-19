@@ -1,0 +1,18 @@
+﻿@using eTimeTrack.Models
+
+@if (ViewBag.InfoMessage != null && !string.IsNullOrWhiteSpace(ViewBag.InfoMessage.MessageContent))
+{
+    InfoMessage message = (InfoMessage)ViewBag.InfoMessage;
+    switch (message.MessageType)
+    {
+        case InfoMessageType.Success:
+            <text><div class="alert alert-success" role="alert">@Html.Raw(message.MessageContent)</div></text>
+            break;
+        case InfoMessageType.Warning:
+            <text><div class="alert alert-warning" role="alert">@Html.Raw(message.MessageContent)</div></text>
+            break;
+        case InfoMessageType.Failure:
+            <text><div class="alert alert-danger" role="alert">@Html.Raw(message.MessageContent)</div></text>
+            break;
+    }
+}

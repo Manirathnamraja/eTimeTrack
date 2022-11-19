@@ -1,0 +1,32 @@
+﻿@model HandleErrorInfo
+
+@{
+    ViewBag.Title = "Error";
+}
+
+<h2 class="text-danger">Unknown Error</h2>
+
+<p>An unexpected error has occurred. An automated email regarding this error has been sent to the system administrators.</p>
+
+
+@if (Model != null && HttpContext.Current.IsDebuggingEnabled)
+{
+    <div>
+        <p>
+            <b>Exception:</b> @Model.Exception.Message<br/>
+            <b>Controller:</b> @Model.ControllerName<br/>
+            <b>Action:</b> @Model.ActionName
+        </p>
+        <b>Stack Trace:</b>
+        <pre>
+            @Model.Exception.StackTrace
+        </pre>
+        @if (Model.Exception.InnerException != null)
+        {
+            <b>Inner Exception:</b>
+            <pre>
+                @Model.Exception.InnerException
+            </pre>
+        }
+    </div>
+}

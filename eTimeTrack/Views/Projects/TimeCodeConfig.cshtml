@@ -1,0 +1,108 @@
+﻿@using eTimeTrack.Enums
+@using eTimeTrack.Extensions
+@model eTimeTrack.ViewModels.TimeCodeConfigVm
+
+@{
+    ViewBag.Title = "Time Code Config";
+}
+
+@Html.Partial("_Banner")
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Html.HiddenFor(x => x.ProjectTimeCodeConfig.ProjectID)
+        @Html.HiddenFor(x => x.ProjectTimeCodeConfig.ProjectTimeCodeConfigId)
+
+        <div class="col-xs-12">
+
+            <div class="data-header row">
+                <div class="col-xs-2">
+                    Enabled
+                </div>
+                <div class="col-xs-2">
+                    Code
+                </div>
+                <div class="col-xs-4">
+                    Name
+                </div>
+                <div class="col-xs-4">
+                    Notes
+                </div>
+            </div>
+
+            <div class="data-row row">
+                <div class="col-xs-2">
+                    <input type="checkbox" disabled checked>
+                </div>
+                <div class="col-xs-2">
+                    @TimeCode.NT.ToString()
+                    </div>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(x => x.ProjectTimeCodeConfig.NTName, new { @class = "form-control", placeholder = TimeCode.NT.GetDisplayName() })
+                    </div>
+                    <div class="col-xs-4">
+                        @Html.TextAreaFor(x => x.ProjectTimeCodeConfig.NTNotes, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="data-row row">
+                    <div class="col-xs-2">
+                        @Html.CheckBoxFor(x => x.ProjectTimeCodeConfig.DisplayOT1)
+                    </div>
+                    <div class="col-xs-2">
+                        @TimeCode.OT1.ToString()
+                    </div>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(x => x.ProjectTimeCodeConfig.OT1Name, new { @class = "form-control", placeholder = TimeCode.OT1.GetDisplayName() })
+                    </div>
+                    <div class="col-xs-4">
+                        @Html.TextAreaFor(x => x.ProjectTimeCodeConfig.OT1Notes, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="data-row row">
+                    <div class="col-xs-2">
+                        @Html.CheckBoxFor(x => x.ProjectTimeCodeConfig.DisplayOT2)
+                    </div>
+                    <div class="col-xs-2">
+                        @TimeCode.OT2.ToString()
+                    </div>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(x => x.ProjectTimeCodeConfig.OT2Name, new { @class = "form-control", placeholder = TimeCode.OT2.GetDisplayName() })
+                    </div>
+                    <div class="col-xs-4">
+                        @Html.TextAreaFor(x => x.ProjectTimeCodeConfig.OT2Notes, new { @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="data-row row">
+                    <div class="col-xs-2">
+                        @Html.CheckBoxFor(x => x.ProjectTimeCodeConfig.DisplayOT3)
+                    </div>
+                    <div class="col-xs-2">
+                        @TimeCode.OT3.ToString()
+                    </div>
+                    <div class="col-xs-4">
+                        @Html.TextBoxFor(x => x.ProjectTimeCodeConfig.OT3Name, new { @class = "form-control", placeholder = TimeCode.OT3.GetDisplayName() })
+                    </div>
+                    <div class="col-xs-4">
+                        @Html.TextAreaFor(x => x.ProjectTimeCodeConfig.OT3Notes, new { @class = "form-control" })
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="pull-right">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+            <a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>
+
+        </div>
+}

@@ -1,0 +1,1233 @@
+﻿@using eTimeTrack.Extensions
+@using eTimeTrack.Helpers
+@using eTimeTrack.Models
+@model EmployeeTimesheet
+
+@{
+    string titleText = "Timesheet";
+    if (UserHelpers.GetCurrentUserId() != Model.EmployeeID)
+    {
+        titleText += " - " + UserHelpers.GetUser(Model.EmployeeID).UserName;
+    }
+    ViewBag.Title = titleText;
+
+    bool readOnly = ViewBag.ReadOnly != null && ViewBag.ReadOnly;
+    //bool mobileMode = true;
+    bool mobileMode = ViewBag.MobileMode != null && ViewBag.MobileMode;
+}
+
+<!-- Modal Delete Dialog -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Confirm Delete</h4>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this timesheet entry?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btnDeleteConfirm">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Save Dialog -->
+<div class="modal fade" id="confirmSaveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Confirm Save</h4>
+            </div>
+            <div class="modal-body">
+                This timesheet has no hours entered. Do you want to continue saving?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" id="btnSaveConfirm">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Cancel (Unsaved Changes) Dialog -->
+<div class="modal fade" id="confirmBackModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Confirm Cancel</h4>
+            </div>
+            <div class="modal-body">
+                There are unsaved changes. Proceed?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <a href='@Url.Action("Index")' class="btn btn-primary">Yes</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-danger alert-dismissable">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>Error:</strong> @ViewBag.Message
+    </div>
+}
+
+@if (Model.ReconciliationEntries != null && Model.ReconciliationEntries.Any(x => !x.HoursEqual))
+{
+    <div class="alert alert-warning">
+        The following reconciliation entries were recorded with different hours:
+            @foreach (ReconciliationEntry entry in Model.ReconciliationEntries.Where(x => !x.HoursEqual))
+            {
+                <div class="reconciliation-entry-response-container" id="@entry.Id">
+                    <div class="reconciliation-entry-response-item-text">@(entry.CurrentReconciliationUpload.Project.DisplayName): @(entry.Hours) hours</div>
+
+                    <div class="reconciliation-entry-response-readonly-container row">
+                        <div class="col-xs-9 col-md-11">
+                            <label>Employee Comment: </label>
+                            <br/>
+                            <div class="reconciliation-entry-response-readonly" style="display: inline;">
+                                @{
+                                    if (!string.IsNullOrWhiteSpace(entry.EmployeeComment))
+                                    {
+                                        @Html.DisplayFor(modelItem => entry.EmployeeComment)
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw("No comment")
+                                    }
+                                }
+                               
+                            </div>
+                        </div>
+                        <div class="col-xs-3 col-md-1">
+                            <a class="btn btn-primary reconciliation-entry-response-edit pull-right" title="Add/Edit comment">
+                                <i class='glyphicon glyphicon-edit'></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="reconciliation-entry-response-edit-container row" style="display: none;">
+                        <div class="col-xs-9 col-md-11">
+                            @Html.TextAreaFor(modelItem => entry.EmployeeComment, new { @class = "form-control reconciliation-entry-response-comment", style = "display: inline;max-width: none;" })
+                        </div>
+                        <div class="col-xs-3 col-md-1">
+                            <a class="btn btn-primary reconciliation-entry-response-save pull-right" title="Save comment changes">
+                                <i class='glyphicon glyphicon-ok'></i>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            }
+    </div>
+}
+
+@Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
+
+@if (mobileMode)
+{
+    //Floating menu
+    <div id="float-menu">
+        @*style="display: none;"*@
+
+        <div class="col-xs-2 float-menu-section">
+
+        </div>
+        <div class="col-xs-7 float-menu-section">
+            <div>
+                Total Hours: <span class="totalWeeklyHours"></span>
+            </div>
+
+        </div>
+        <div class="col-xs-3" style="padding-right: 0">
+            <a class="btn btn-primary add-task-float-button pull-right">+</a>
+        </div>
+    </div>
+}
+
+<h4></h4>
+
+<div class="row">
+    <div class="col-md-6">
+        <h4>@Model.TimesheetPeriod.GetStartEndDates()</h4>
+    </div>
+    <div class="col-md-6">
+        <div class="btn-toolbar pull-right">
+
+            @using (Html.BeginForm("PrintFriendly", "EmployeeTimesheets", FormMethod.Post, new { id = "exportForm", target = "_blank" }))
+            {
+                <div class="row form-group">
+                    <div class="col-md-12">
+                        @Html.Hidden("id", Model.TimesheetID)
+                        <button type="submit" id="export" class="btn btn-primary">Export</button>
+
+                        @if (!readOnly)
+                        {
+                            if (ViewBag.DuplicatesAvailable != null && ViewBag.DuplicatesAvailable)
+                            {
+                                <button type="button" id="DuplicateItems" class="btn btn-primary">Duplicate From Most Recent</button>
+                            }
+                            else
+                            {
+                                <button type="button" class="btn btn-primary" disabled>Duplicate From Most Recent</button>
+                            }
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Details", new {id = ViewBag.PreviousTimesheet?.TimesheetID})" class="btn btn-default" @(ViewBag.PreviousTimesheet == null ? "disabled" : string.Empty)><span class="glyphicon glyphicon-chevron-left"></span> Previous</a>
+
+                            <a href="@Url.Action("Details", new {id = ViewBag.NextTimesheet?.TimesheetID})" class="btn btn-default" @(ViewBag.NextTimesheet == null ? "disabled" : string.Empty)>Next <span class="glyphicon glyphicon-chevron-right"></span></a>
+                        }
+                    </div>
+                </div>
+
+                if (!readOnly && User.IsInAnyAdminRole())
+                {
+                    <div class="row pull-right">
+                        <div class="col-md-12">
+                            <button id="previous" type="button" class="btn btn-default" data-next="@(ViewBag.PreviousTimesheet?.TimesheetID)" @(ViewBag.PreviousTimesheet == null ? "disabled" : null)><span class="glyphicon glyphicon-chevron-left"></span> Previous (Save)</button>
+
+                            <button id="next" type="button" class="btn btn-default" data-next="@(ViewBag.NextTimesheet?.TimesheetID)" @(ViewBag.NextTimesheet == null ? "disabled" : null)>Next (Save)<span class="glyphicon glyphicon-chevron-right"></span></button>
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "timesheetForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("nextTimesheetAfterSave")
+
+    if (!readOnly)
+    {
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.TimesheetID)
+        @Html.HiddenFor(model => model.EmployeeID)
+        @Html.HiddenFor(x => x.TimesheetPeriodID)
+        @Html.HiddenFor(x => x.TimesheetPeriod.StartDate)
+        @Html.HiddenFor(x => x.TimesheetPeriod.EndDate)
+
+        <div class="add-task-section" style="display: @(mobileMode && Model.TimesheetItems.Any() ? "none;" : string.Empty)">
+            <div class="row">
+                <div class="col-md-7">
+
+
+                    <div id="ProjectDiv" class="row form-group">
+                        <div class="col-md-2 col-sm-12">Project</div>
+                        <div class="col-md-10">
+                            @Html.DropDownList("ProjectSelector", null, "Select", htmlAttributes: new { @id = "ProjectSelector", @class = "form-control selector" })
+                        </div>
+                    </div>
+
+                    <div id="ProjectPartDiv" class="row form-group">
+                        <div class="col-md-2 col-sm-12">Project Part</div>
+                        <div class="col-md-10">
+                            <select id="ProjectPartSelector" class="form-control selector" disabled></select>
+                        </div>
+                    </div>
+
+                    <div id="ProjectGroupDiv" class="row form-group">
+                        <div class="col-md-2 col-sm-12">Project Group</div>
+                        <div class="col-md-10">
+                            <select id="ProjectGroupSelector" class="form-control selector" disabled></select>
+                        </div>
+                    </div>
+
+                    <div id="TaskDiv" class="row form-group">
+                        <div class="col-md-2 col-sm-12">Task</div>
+                        <div class="col-md-10">
+                            <select id="TaskSelector" class="form-control selector" disabled></select>
+                        </div>
+                    </div>
+
+                    <div id="VariationDiv" class="row form-group">
+                        <div class="col-md-2 col-sm-12">Variation Items</div>
+                        <div class="col-md-10">
+                            <select id="VariationSelector" class="form-control selector" disabled></select>
+                        </div>
+                    </div>
+
+                    <div id="TimeCodeDiv" class="row form-group" style="display: none;">
+                        <div class="col-md-2 col-sm-12">Time Code</div>
+                        <div class="col-md-10">
+                            <select id="TimeCodeSelector" class="form-control selector" disabled></select>
+                        </div>
+                    </div>
+                    
+                    <div id="UserTypeDescriptionDiv" class="row form-group" style="display: none;">
+                        <div class="col-md-2 col-sm-12"></div>
+                        <div class="col-md-10">
+                            <span id="UserTypeDescriptionText"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 col-sm-12"></div>
+
+                    @if (mobileMode)
+                    {
+                        <input id="cancel-add-task" class="btn btn-default" type="button" value="Cancel Add">
+                        <input id="AddTimesheetItem" class="btn btn-primary pull-right" type="button" value="Add Task" disabled>
+                    }
+                    else
+                    {
+                        <input id="AddTimesheetItem" class="btn btn-primary" type="button" value="Add Task" disabled>
+                    }
+                </div>
+
+                <div id="task-notes-display-container" style="display: none;" class="col-md-5 notes-container">
+                    <div id="task-notes-display-content">
+                        <div class="alert alert-info">
+                            <h4>Task Description</h4>
+                            <span id="task-notes"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="time-code-notes-display-container" style="display: none;" class="col-md-5 notes-container">
+                    <div id="time-code-notes-display-content">
+                        <div class="alert alert-info">
+                            <h4>Time Code Description - <span id="time-code-notes-code"></span></h4>
+                            <span id="time-code-notes"></span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+    <div class="items-section">
+        <div id="items-container">
+
+            @if (mobileMode)
+            {
+                @Html.EditorForMany(model => model.TimesheetItems, "EmployeeTimesheetItemMobile", x => x.TimesheetItemID.ToString(), false)
+            }
+            else
+            {
+                @*Headers*@
+                <table id="timesheet" class="table table-custom-stripe" width="100%">
+                    <thead>
+                        <tr>
+                            <th class="heading-col">Project</th>
+                            <th class="heading-col">Project Part</th>
+                            <th class="heading-col">Project Group</th>
+                            <th class="heading-col heading-col-task-variation">Project Task / Variation</th>
+
+                            <th class="dayHeader">Sat</th>
+                            <th class="dayHeader">Sun</th>
+                            <th class="dayHeader">Mon</th>
+                            <th class="dayHeader">Tue</th>
+                            <th class="dayHeader">Wed</th>
+                            <th class="dayHeader">Thu</th>
+                            <th class="dayHeader">Fri</th>
+                            <th>Total Hours</th>
+                            <th>
+                                <div style="width: 190px">General Comments</div>
+                            </th>
+                            @if (!readOnly)
+                    {
+                                <th>Delete</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr class="totalHoursRow">
+                            <td colspan="4">Total Daily Hours</td>
+                            <td class="totalDailyHours tdDay1" data-day-number="1"></td>
+                            <td class="totalDailyHours" data-day-number="2"></td>
+                            <td class="totalDailyHours" data-day-number="3"></td>
+                            <td class="totalDailyHours" data-day-number="4"></td>
+                            <td class="totalDailyHours" data-day-number="5"></td>
+                            <td class="totalDailyHours" data-day-number="6"></td>
+                            <td class="totalDailyHours tdDay7" data-day-number="7"></td>
+                            <td class="totalWeeklyHours"></td>
+                            <td colspan="2"></td>
+                        </tr>
+                    </tfoot>
+                    <tbody id="timesheetItemList">
+                        @Html.EditorForMany(x => x.TimesheetItems, "EmployeeTimesheetItem", x => x.TimesheetItemID.ToString(), false)
+                    </tbody>
+                </table>
+            }
+
+        </div>
+
+
+        @if (!readOnly)
+        {
+            <div class="pull-right">
+                <span class="text-danger" id="unsavedChanges" style="margin-right:20px;display:none;">Unsaved Changes</span>
+                <span id="savingChanges" style="margin-right:20px;display:none;">Saving...</span>
+                <input type="button" id="Save" value="Save" class="btn btn-primary disableInReadOnly" />
+            </div>
+        }
+
+
+        @if (readOnly)
+        {
+            <a href="@Url.Action("TimesheetIndex")" class="btn btn-primary">Back</a>
+        }
+        else
+        {
+            if (UserHelpers.GetCurrentUserId() != Model.EmployeeID)
+            {
+                if (Session["_EditTimesheetFromCreate"] != null)
+                {
+                    <a href="@Url.Action("CreateSelect", "EmployeeTimesheets")" class="btn btn-primary" id="Back">Cancel</a>
+                }
+                else
+                {
+                    <a href="@Url.Action("EditSelect", "EmployeeTimesheets")" class="btn btn-primary" id="Back">Cancel</a>
+                }
+            }
+            else
+            {
+                <a href="@Url.Action("TimesheetIndex")" class="btn btn-primary" id="Back">Cancel</a>
+            }
+        }
+
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/notify")
+
+    <script>
+
+        var employeeId = @(Model.EmployeeID);
+
+        function UnsavedChanges() {
+            $('#unsavedChanges').show();
+            $('#export').prop('disabled', true);
+        }
+
+        var mobileMode = @mobileMode.ToString().ToLower();
+
+        function adjustHeight(ta) {
+            var style = (window.getComputedStyle) ? window.getComputedStyle(ta[0]) : ta[0].currentStyle,
+                // This will get the line-height only if it is set in the css, otherwise it's "normal"
+                taLineHeight = parseInt(style.lineHeight, 10),
+                // Get the scroll height of the textarea
+                taHeight = calculateContentHeight(ta[0], taLineHeight),
+                // calculate the number of lines
+                numberOfLines = Math.floor(taHeight / taLineHeight);
+
+            $(ta[0]).attr('rows', numberOfLines);
+        }
+
+        function selectorChange() {
+            var value = $('#VariationSelector').val();
+            if (value != null && value !== 'Select') {
+                $('#AddTimesheetItem').prop("disabled", false);
+            } else {
+                $('#AddTimesheetItem').prop("disabled", true);
+            }
+        }
+
+        function closest(array, number) {
+            var num = 0;
+            for (var i = array.length - 1; i >= 0; i--) {
+                if (Math.abs(number - array[i].position) < Math.abs(number - array[num].position)) {
+                    num = i;
+                }
+            }
+            return array[num].element;
+        }
+
+        function setupReconciliationResponseChangeActions() {
+            $('.reconciliation-entry-response-edit').click(function() {
+                var editButton = $(this);
+                var itemContainer = editButton.closest('.reconciliation-entry-response-container');
+                var editCommentContainer = itemContainer.find('.reconciliation-entry-response-edit-container');
+                var readonlyComment = itemContainer.find('.reconciliation-entry-response-readonly');
+
+                readonlyComment.hide();
+                editButton.hide();
+                editCommentContainer.show();
+            });
+
+            $('.reconciliation-entry-response-save').click(function() {
+                var saveButton = $(this);
+                var itemContainer = saveButton.closest('.reconciliation-entry-response-container');
+                var editCommentContainer = itemContainer.find('.reconciliation-entry-response-edit-container');
+                var readonlyComment = itemContainer.find('.reconciliation-entry-response-readonly');
+                var readonlyCommentContainer = itemContainer.find('.reconciliation-entry-response-readonly-container');
+                var id = itemContainer.attr('id');
+
+                var editButton = itemContainer.find('.reconciliation-entry-response-edit');
+                var commentElement = itemContainer.find('.reconciliation-entry-response-comment');
+                var commentText = commentElement.val();
+
+                editButton.show();
+                readonlyComment.text(commentText ? commentText : 'No comment');
+                readonlyComment.show();
+                readonlyCommentContainer.show();
+                editCommentContainer.hide();
+
+                $.post('@Url.Action("SaveEmployeeComment", "ReconciliationEntries")', { id: id, comment: commentText })
+                    .done(function(saved) {
+                        if (saved) {
+                            itemContainer.notify("Comment saved",
+                                { position: "right", className: "success", autoHideDelay: 6000 });
+                        } else {
+                            itemContainer.notify("Comment could not be saved",
+                                { position: "right", className: "warning", autoHideDelay: 6000 });
+                        }
+                    });
+            });
+        }
+
+        function AppendNewItemsToTimesheet(html) {
+            @if (!mobileMode)
+            {
+                <text>
+                    $("#timesheet").find('tbody').append(html);
+                    $("#timesheet").show();
+                </text>
+            }
+            else
+            {
+                <text>
+                    $("#items-container").append(html);
+                    $('body').animate({ scrollTop: $('.timesheet:last').offset().top - 15 });
+                </text>
+            }
+
+
+            UnsavedChanges();
+
+            // revalidate the form
+            var form = $('#timesheetForm').removeData("validator").removeData("unobtrusiveValidation");
+            $.validator.unobtrusive.parse(form);
+
+            UpdateTotalDailyHoursAll();
+            UpdateTotalTaskHoursAll();
+
+            @if (mobileMode)
+            {
+                <text>
+                    $('.hoursInput').prop("type", "number");
+                </text>
+            }
+        }
+
+        var projectUserTypesAndMandatoryCommentsInfo = [];
+        var userTypeError = false;
+
+        function checkUserTypeAndMandatoryCommentCompliance() {
+
+            var anyErrors = false;
+
+            $('.item-container').each(function() {
+
+                var rowErrorText = null;
+
+                var itemContainer = $(this);
+                var itemContainerTimesheetItemId = itemContainer.data('id');
+
+                var projectIdString = itemContainer.find('.item-container-project-id').val();
+                var timeCodeString = itemContainer.find('.item-container-time-code').val();
+
+                var projectId = parseInt(projectIdString);
+
+                var foundUserTypeAndMandatoryCommentsInfo;
+                for (var i = 0; i < projectUserTypesAndMandatoryCommentsInfo.length; i++) {
+                    if (projectUserTypesAndMandatoryCommentsInfo[i].ProjectID === projectId) {
+                        foundUserTypeAndMandatoryCommentsInfo = projectUserTypesAndMandatoryCommentsInfo[i];
+                        break;
+                    }
+                }
+
+                if (!foundUserTypeAndMandatoryCommentsInfo) {
+                    return true;
+                }
+
+                var rowTimeCode = itemContainer.find('.item-container-time-code').val();
+                var maxHoursToUse = null;
+
+                switch (rowTimeCode) {
+                case 'NT':
+                    maxHoursToUse = foundUserTypeAndMandatoryCommentsInfo.MaxNTHours;
+                    break;
+                case 'OT1':
+                    maxHoursToUse = foundUserTypeAndMandatoryCommentsInfo.MaxOT1Hours;
+                    break;
+                case 'OT2':
+                    maxHoursToUse = foundUserTypeAndMandatoryCommentsInfo.MaxOT2Hours;
+                    break;
+                case 'OT3':
+                    maxHoursToUse = foundUserTypeAndMandatoryCommentsInfo.MaxOT3Hours;
+                    break;
+                default:
+                }
+
+                var userTypeNotificationDisplayRow = itemContainer.parent().find('.userTypeNotificationDisplay.' + itemContainerTimesheetItemId);
+                var userTypeNotificationDisplayRowText = userTypeNotificationDisplayRow.find('.userTypeNotificationDisplayText');
+
+                if (foundUserTypeAndMandatoryCommentsInfo.MandatoryComments) {
+                    itemContainer.find('.hoursInput').each(function() {
+                        var stringHoursVal = $(this).val();
+                        if (stringHoursVal && !isNaN(stringHoursVal)) {
+                            var commentsBoxId = $(this).attr('id').slice(0, -3) + 'Comments';
+                            var commentForDayNumber = $('#' + commentsBoxId);
+                            if (commentForDayNumber == null || !commentForDayNumber.val() || !commentForDayNumber.val().length) {
+                                rowErrorText = 'Daily comments required for ' + foundUserTypeAndMandatoryCommentsInfo.ProjectName;
+                                return false;
+                            }
+                        }
+                    });
+                }
+
+                if (maxHoursToUse !== null && !rowErrorText) {
+
+                    var totalHoursForSameProjectAndTimeCodeRows = 0;
+
+                    $('.item-container').each(function() {
+                        var itemContainerSameProjectAndTimeCode = $(this);
+
+                        var projectIdStringSameProjectAndTimeCode = itemContainerSameProjectAndTimeCode.find('.item-container-project-id').val();
+                        var timeCodeStringSameProjectAndTimeCode = itemContainerSameProjectAndTimeCode.find('.item-container-time-code').val();
+
+                        if(projectIdString === projectIdStringSameProjectAndTimeCode && timeCodeString === timeCodeStringSameProjectAndTimeCode) {
+                            itemContainerSameProjectAndTimeCode.find('.hoursInput').each(function() {
+                                var stringHoursVal = $(this).val();
+                                if (stringHoursVal && !isNaN(stringHoursVal)) {
+                                    totalHoursForSameProjectAndTimeCodeRows += parseFloat(stringHoursVal);
+                                }
+                            });
+                        }
+                    });
+
+                    var hoursAreValid = totalHoursForSameProjectAndTimeCodeRows <= maxHoursToUse;
+
+                    var hoursAreValid = totalHoursForSameProjectAndTimeCodeRows.toFixed(2) <= maxHoursToUse;
+
+                    if (!hoursAreValid) {
+                        rowErrorText = 'Your maximum hours for ' + rowTimeCode + ' on ' + foundUserTypeAndMandatoryCommentsInfo.ProjectName + ' is ' + maxHoursToUse + ' hours';
+                    }
+                } 
+
+                // display error if any
+                if (rowErrorText) {
+                    userTypeNotificationDisplayRow.show();
+                    userTypeNotificationDisplayRowText.text(rowErrorText);
+                    anyErrors = true;
+                } else {
+                    userTypeNotificationDisplayRow.hide();
+                    userTypeNotificationDisplayRowText.text();
+                }
+            });
+
+            userTypeError = anyErrors;
+        }
+
+        $(document).ready(function() {
+
+            // add this to stop accidental navigation away from page when pressing backspace for instance
+            history.pushState(null, null, location.href);
+            window.onpopstate = function () {
+                history.go(1);
+            };
+
+            setupReconciliationResponseChangeActions();
+
+
+            $.post('@Url.Action("GetProjectUserTypeAndMandatoryCommentsInfo", "EmployeeTimesheets")',
+                { employeeId: employeeId }).done(function(data) {
+                projectUserTypesAndMandatoryCommentsInfo = data;
+                checkUserTypeAndMandatoryCommentCompliance();
+            });
+
+            $('#exportForm').submit(function() {
+                //$('#export-date-time').val(new Date().toISOString());
+                $('<input />').attr('type', 'hidden')
+                    .attr('name', "dateTime")
+                    .attr('value', new Date().toISOString())
+                    .appendTo('#exportForm');
+                $(this).submit();
+            });
+
+            // mobile adjustments
+            if (mobileMode) {
+                $('.hoursInput').prop("type", "number");
+
+
+                $('.add-task-float-button').click(function() {
+                    if ($('.items-section').is(":visible")) {
+                        $('.items-section').hide();
+                        $('.add-task-section').show();
+                    } else {
+                        $('.items-section').show();
+                        $('.add-task-section').hide();
+                    }
+                });
+
+                $('#cancel-add-task').click(function() {
+                    $('.items-section').show();
+                    $('.add-task-section').hide();
+                });
+            }
+
+            function CompleteSubmit() {
+                $("#timesheetForm").validate();
+                if ($("#timesheetForm").valid() && !userTypeError) {
+                    SetSaveIcon();
+                    $("#timesheetForm").submit();
+                }
+            }
+
+            // set total daily and task hours
+            UpdateTotalDailyHoursAll();
+            UpdateTotalTaskHoursAll();
+
+            // set readonly for entire sheet if required
+            var readOnly = "@readOnly.ToString().ToLower()";
+            if (readOnly === "true") {
+                $('.disableInReadOnly').each(function() {
+                    $(this).prop('readonly', true);
+                });
+            }
+
+            // set readonly for individual rows
+            $('.itemReadOnly').each(function() {
+                $(this).find('input, textarea').prop('readonly', true);
+            });
+
+            // initially hide table if empty
+            if ($('#timesheet tr').length === 1) {
+                $('#timesheet').hide();
+            }
+
+            // Establish comments colours at page load
+            UpdateComments();
+
+            // Confirmed delete
+            $('#btnDeleteConfirm').click(function() {
+                confirmDelete();
+            });
+
+            // intercept form submission if no hours entered
+            $("#Save").click(function() {
+                $('#NextTimesheetAfterSave').val(null);
+                formSubmitChecks();
+            });
+
+            // form submit process
+            function formSubmitChecks() {
+                var hoursCount = 0;
+                $('.hoursInput').each(function() {
+                    hoursCount = hoursCount + parseFloat($(this).val());
+                });
+                if (hoursCount === 0) {
+                    $('#confirmSaveModal').modal('show');
+                } else {
+                    CompleteSubmit();
+                }
+            };
+
+            // intercept form submission if no hours entered
+            $("#Back").click(function(e) {
+                if ($('#unsavedChanges').css('display') !== 'none') {
+                    e.preventDefault();
+                    $('#confirmBackModal').modal('show');
+                }
+            });
+
+            // set next timesheet after save
+            $('#next, #previous').click(function() {
+                $('#nextTimesheetAfterSave').val($(this).data('next'));
+                formSubmitChecks();
+            });
+
+            // Confirmed save submission from modal
+            $('#btnSaveConfirm').click(function() {
+                CompleteSubmit();
+            });
+
+            // clear previous comment boxes
+            $("body").on("focus",
+                ".hoursInput",
+                function() {
+                    // remove existing display of comments boxes
+                    $('.hoursInput').removeClass("selectedHoursInput");
+                    $('.commentsInput').hide();
+                    $('.tdTaskComments').hide();
+
+                    // highlight current hours
+                    $(this).addClass("selectedHoursInput");
+
+                    var currentComments = $(this).attr('id').slice(0, - 3) + "Comments";
+                    $('#' + currentComments).show();
+                    $('#' + currentComments).closest('.tdTaskComments').show();
+
+                    // update comments box header text per day
+                    var id = $(this).closest('tr').attr('data-id');
+                    $('#comments_' + id).text($(this).attr('data-day') + " Comments");
+                });
+
+            // comment box blur - hide
+            $("#timesheet, .timesheet").on("blur",
+                ".commentsInput",
+                function() {
+                    $(this).hide();
+                    $('.tdTaskComments').hide();
+                    $('.hoursInput').removeClass("selectedHoursInput");
+                });
+
+            $(document).on("keyup change", "input, textarea", function() {
+                    var input = $(this);
+
+                    // display the 'Unsaved Changes' notification
+                    UnsavedChanges();
+
+                    // check project user type restrictions
+                    if (input.hasClass('hoursInput')) {
+                    }
+
+                    checkUserTypeAndMandatoryCommentCompliance();
+
+                    // update total daily hours
+                    var totalDailyDisplay = $('.totalDailyHours').filter(function() {
+                        return $(this).attr("data-day-number") === input.attr("data-day-number");
+                    });
+
+                    // update total task hours
+                    var totalTaskDisplay = $(this).closest('.item-container').find('.totalTaskHours');
+
+                    UpdateTotalDailyHoursSingle(totalDailyDisplay);
+                    UpdateTotalTaskHoursSingle(totalTaskDisplay);
+                    UpdateTotalHours();
+                });
+
+
+            var timeCodes = [];
+
+            // load the selector dropdowns
+            // project change
+            $('#ProjectSelector').change(function() {
+
+                $('#ProjectPartSelector').empty();
+                $('#ProjectGroupSelector').empty();
+                $('#TaskSelector').empty();
+                $('#VariationSelector').empty();
+                $('#TimeCodeSelector').empty();
+                $('#task-notes-display-container').hide();
+                $('#time-code-notes-display-container').hide();
+
+                $('#ProjectPartSelector').prop('disabled', true);
+                $('#ProjectGroupSelector').prop('disabled', true);
+                $('#TaskSelector').prop('disabled', true);
+                $('#VariationSelector').prop('disabled', true);
+                $('#TimeCodeSelector').prop('disabled', true);
+
+                if ($(this).val() !== 'Select') {
+                    $.post('@Url.Action("GetProjectPartListAndTimeCodes", "EmployeeTimesheets")',
+                        { projectId: $('#ProjectSelector').val() }).done(function(data) {
+                        timeCodes = data.TimeCodes;
+
+                        // time codes
+                        if (timeCodes.length) {
+                            for (var tc = 0; tc < timeCodes.length; tc++) {
+                                $('#TimeCodeSelector').append($('<option>', { value: timeCodes[tc].TimeCode })
+                                    .text(timeCodes[tc].Name));
+                            }
+                        }
+
+                        var noCustomTimeCodes = timeCodes.length === 1 &&
+                            timeCodes[0].Name === 'NT: Normal Time' &&
+                            timeCodes[0].Notes == null;
+
+                        if (!timeCodes.length || noCustomTimeCodes) {
+                            $('#TimeCodeDiv').hide();
+                        } else {
+                            $('#TimeCodeDiv').show();
+                        }
+
+                        var projectParts = data.ProjectParts;
+                        $('#ProjectPartSelector').append($('<option>').text('Select'));
+                        for (var i = 0; i < projectParts.length; i++) {
+                            $('#ProjectPartSelector')
+                                .append($('<option>', { value: projectParts[i].PartID }).text(projectParts[i].Name));
+                        }
+                        if (projectParts.length === 1) {
+                            $('#ProjectPartSelector')[0].selectedIndex = 1;
+                            $('#ProjectPartSelector').change();
+                        }
+                        $('#ProjectPartSelector').prop('disabled', false);
+
+                    });
+                }
+                selectorChange();
+            });
+
+            // pre-select first project value
+            if ($('#ProjectSelector > option').length === 2) { // default option plus one 'real' option
+                $('#ProjectSelector')[0].selectedIndex = 1;
+                $('#ProjectSelector').change();
+            } else if ($('#ProjectSelector > option').length === 1) { // no values
+                $('#ProjectPartSelector').prop('disabled', true);
+            }
+
+            // project part change
+            $('#ProjectPartSelector').change(function() {
+
+                $('#ProjectGroupSelector').empty();
+                $('#TaskSelector').empty();
+                $('#VariationSelector').empty();
+                $('#task-notes-display-container').hide();
+                $('#time-code-notes-display-container').hide();
+
+                $('#ProjectGroupSelector').prop('disabled', true);
+                $('#TaskSelector').prop('disabled', true);
+                $('#VariationSelector').prop('disabled', true);
+                $('#TimeCodeSelector').prop('disabled', true);
+
+                if ($(this).val() !== 'Select') {
+                    $.post('@Url.Action("GetProjectGroupList", "EmployeeTimesheets")',
+                        { projectPartId: $('#ProjectPartSelector').val() }).done(function(data) {
+                        $('#ProjectGroupSelector').append($('<option>').text('Select'));
+                        for (var i = 0; i < data.length; i++) {
+                            $('#ProjectGroupSelector')
+                                .append($('<option>', { value: data[i].GroupID }).text(data[i].Name));
+                        }
+                        if (data.length === 1) {
+                            $('#ProjectGroupSelector')[0].selectedIndex = 1;
+                            $('#ProjectGroupSelector').change();
+                        }
+                        $('#ProjectGroupSelector').prop('disabled', false);
+                    });
+                }
+                selectorChange();
+            });
+
+            // Set colours at page load
+            SetHoursCommentsColours();
+
+            // project group change
+            $('#ProjectGroupSelector').change(function() {
+
+                $('#TaskSelector').empty();
+                $('#VariationSelector').empty();
+                $('#task-notes-display-container').hide();
+                $('#time-code-notes-display-container').hide();
+
+                $('#TaskSelector').prop('disabled', true);
+                $('#VariationSelector').prop('disabled', true);
+                $('#TimeCodeSelector').prop('disabled', true);
+
+                if ($(this).val() !== 'Select') {
+                    $.post('@Url.Action("GetTaskList", "EmployeeTimesheets")',
+                        { projectGroupId: $('#ProjectGroupSelector').val() }).done(function(data) {
+                        $('#TaskSelector').append($('<option>').text('Select'));
+                        for (var i = 0; i < data.length; i++) {
+                            $('#TaskSelector').append($('<option>', { value: data[i].TaskID }).text(data[i].Name));
+                        }
+                        if (data.length === 1) {
+                            $('#TaskSelector')[0].selectedIndex = 1;
+                            $('#TaskSelector').change();
+                        }
+                        $('#TaskSelector').prop('disabled', false);
+                    });
+                }
+                selectorChange();
+            });
+
+            // task change
+            $('#TaskSelector').change(function() {
+
+                $('#VariationSelector').empty();
+                $('#task-notes-display-container').hide();
+                $('#time-code-notes-display-container').hide();
+                $('#task-notes').empty();
+
+                $('#VariationSelector').prop('disabled', true);
+                $('#TimeCodeSelector').prop('disabled', true);
+
+                if ($(this).val() !== 'Select') {
+
+                    // get variations list
+                    $.post('@Url.Action("GetVariationList", "EmployeeTimesheets")',
+                        { projectTaskId: $('#TaskSelector').val() }).done(function(data) {
+                        $('#VariationSelector').append($('<option>').text('Select'));
+                        for (var i = 0; i < data.length; i++) {
+                            $('#VariationSelector').append($('<option>', { value: data[i].VariationID })
+                                .text(data[i].Description));
+                        }
+                        if (data.length === 1) {
+                            $('#VariationSelector')[0].selectedIndex = 1;
+                            $('#VariationSelector').change();
+                        }
+                        $('#VariationSelector').prop('disabled', false);
+
+                        $('#TimeCodeSelector').prop('disabled', false);
+
+                    });
+
+                    // get task notes text
+                    $.post('@Url.Action("GetTaskDescription", "EmployeeTimesheets")',
+                        { projectTaskId: $(this).val() }).done(function(data) {
+                        if (data != null && data.length > 0) {
+                            $('#task-notes').append(data);
+                            $('#task-notes-display-container').show();
+                        }
+                    });
+                }
+                selectorChange();
+            });
+
+            $('#VariationSelector').change(function() {
+                selectorChange();
+                $('#TimeCodeSelector').change();
+            });
+
+            $('#TimeCodeSelector').change(function() {
+                var val = $(this).val();
+
+                var foundTimeCode = null;
+                for (var i = 0; i < timeCodes.length; i++) {
+                    if (timeCodes[i].TimeCode == val) {
+                        foundTimeCode = timeCodes[i];
+                        break;
+                    }
+                }
+
+                var userTypeDescDiv = $('#UserTypeDescriptionDiv');
+                if (foundTimeCode) {
+                    $.post('@Url.Action("GetUserTypeDescription")',
+                        { employeeId: employeeId, projectId: $('#ProjectSelector').val() }).done(function(description) {
+                        if (description) {
+                            userTypeDescDiv.show();
+                            var userTypeDescText = $('#UserTypeDescriptionText');
+                            userTypeDescText.text(description);
+                        } else {
+                            userTypeDescDiv.hide();
+                        }
+                    });
+                } else {
+                    userTypeDescDiv.hide();
+                }
+
+                if (foundTimeCode != null && foundTimeCode.Notes) {
+                    $('#time-code-notes-code').empty().append(foundTimeCode.Name);
+                    $('#time-code-notes').empty().append(foundTimeCode.Notes);
+                    $('#time-code-notes-display-container').show();
+                } else {
+                    $('#time-code-notes-display-container').hide();
+                }
+                selectorChange();
+            });
+
+            // Adding a task to the timesheet
+            $('#AddTimesheetItem').click(function() {
+                $(this).prop('disabled', true);
+
+                @if (mobileMode)
+                {
+                    <text>
+                        $('.add-task-section').hide();
+                    </text>
+                }
+
+                $('.items-section').show();
+
+                var timeCodeText = $('#TimeCodeSelector option:selected').text();
+
+                $.get('@Url.Action("AddTimesheetItem", "EmployeeTimesheets")',
+                    {
+                        timesheetId: @Model.TimesheetID,
+                        variationId: $('#VariationSelector').val(),
+                        taskId: $('#TaskSelector').val(),
+                        timeCode: $('#TimeCodeSelector').val(),
+                        timeCodeText: timeCodeText
+                    }).done(function(html) {
+                    AppendNewItemsToTimesheet(html);
+
+                });
+            });
+
+
+            $('#DuplicateItems').click(function() {
+                $(this).prop('disabled', true);
+                $.get('@Url.Action("DuplicateAddItems", "EmployeeTimesheets")', { timesheetId: @Model.TimesheetID })
+                    .done(function(html) {
+                        AppendNewItemsToTimesheet(html);
+                    });
+            });
+
+            // set heights of long textbox inputs
+            $("body").on("keyup",
+                ".generalCommentsField",
+                function() {
+                    UnsavedChanges();
+                    adjustHeight($(this));
+                });
+            $('.generalCommentsField').each(function() {
+                adjustHeight($(this));
+            });
+        });
+
+        // remove an item from the list (show modal first)
+        function deleteTimesheetItem(itemId) {
+            $('#confirmDeleteModal').data("itemId", itemId).modal('show');
+        }
+
+        // confirm delete (note that this needs to be outside document.ready due to ajax insertion of rows)
+        function confirmDelete() {
+            var itemId = $('#confirmDeleteModal').data('itemId');
+            $('#confirmDeleteModal').modal('hide');
+            $('.' + itemId).remove();
+            UpdateTotalDailyHoursAll();
+            UpdateTotalTaskHoursAll();
+        }
+
+        // update hours colours based on comments while typing
+        function SetHoursCommentsColoursSingle(commentBox) {
+            var commentsBoxId = $(commentBox).attr('id');
+            var hoursId = $(commentBox).attr('id').slice(0, -8) + 'Hrs';
+            if ($('#' + commentsBoxId).val().length > 0) {
+                $('#' + hoursId).addClass('hoursInputWithComments');
+            } else {
+                $('#' + hoursId).removeClass('hoursInputWithComments');
+            }
+        }
+
+        // update hours colours based on comments on page load
+        function SetHoursCommentsColours() {
+            $('.hoursInput').each(function() {
+                var hoursId = $(this).attr('id');
+                var commentsBoxId = $(this).attr('id').slice(0, -3) + 'Comments';
+                if ($('#' + commentsBoxId).val().length > 0) {
+                    $('#' + hoursId).addClass('hoursInputWithComments');
+                } else {
+                    $('#' + hoursId).removeClass('hoursInputWithComments');
+                }
+            });
+        }
+
+        function UpdateComments() {
+            $("body").on("keyup",
+                ".commentsInput",
+                function() {
+                    UnsavedChanges();
+                    SetHoursCommentsColoursSingle(this);
+                });
+        }
+
+        // Update daily total hours
+        function UpdateTotalDailyHoursAll() {
+            $('.totalDailyHours').each(function() {
+                UpdateTotalDailyHoursSingle($(this));
+                UpdateTotalHours();
+            });
+        }
+
+        function UpdateTotalDailyHoursSingle(output) {
+            var sum = 0;
+            $('.hoursInput').each(function() {
+                if ($(this).attr("data-day-number") === output.attr("data-day-number") && $.isNumeric($(this).val())) {
+                    sum += parseFloat($(this).val());
+                }
+            });
+            output.html(parseFloat(sum.toFixed(2)));
+        }
+
+        // Update task total hours
+        function UpdateTotalTaskHoursAll() {
+            $('.totalTaskHours').each(function() {
+                UpdateTotalTaskHoursSingle($(this));
+            });
+        }
+
+        function TotalTaskHours(task) {
+            var item = task.closest('.item-container');
+            var hoursInputFieldsInRow = item.find('.hoursInput');
+            var sum = 0;
+            hoursInputFieldsInRow.each(function() {
+                if ($.isNumeric($(this).val())) {
+                    sum += parseFloat($(this).val());
+                }
+            });
+            return parseFloat(sum.toFixed(2));
+        }
+
+        function UpdateTotalTaskHoursSingle(output) {
+            var hoursInputFieldsInRow = output.closest('.item-container').find('.hoursInput');
+            var sum = 0;
+            hoursInputFieldsInRow.each(function() {
+                if ($.isNumeric($(this).val())) {
+                    sum += parseFloat($(this).val());
+                }
+            });
+            output.html(parseFloat(sum.toFixed(2)));
+        }
+
+        // Update weekly total field
+        function UpdateTotalHours() {
+            var weekTotal = 0;
+            $('.hoursInput').each(function() {
+                var value = parseFloat($(this).val());
+                if ($.isNumeric(value)) {
+                    weekTotal += parseFloat($(this).val());
+                }
+            });
+            $('.totalWeeklyHours').html(parseFloat(weekTotal.toFixed(2)));
+        }
+
+        function SetSaveIcon() {
+            $('#savingChanges').show();
+        }
+
+        //http://jsfiddle.net/Mottie/PfD7L/100/
+        var calculateContentHeight = function(ta, scanAmount) {
+            var origHeight = ta.style.height,
+                height = ta.offsetHeight,
+                scrollHeight = ta.scrollHeight,
+                overflow = ta.style.overflow;
+            // only bother if the ta is bigger than content
+            if (height >= scrollHeight) {
+                // check that our browser supports changing dimension
+                // calculations mid-way through a function call...
+                ta.style.height = (height + scanAmount) + 'px';
+                // because the scrollbar can cause calculation problems
+                ta.style.overflow = 'hidden';
+                // by checking that scrollHeight has updated
+                if (scrollHeight < ta.scrollHeight) {
+                    // now try and scan the ta's height downwards
+                    // until scrollHeight becomes larger than height
+                    while (ta.offsetHeight >= ta.scrollHeight) {
+                        ta.style.height = (height -= scanAmount) + 'px';
+                    }
+                    // be more specific to get the exact height
+                    while (ta.offsetHeight < ta.scrollHeight) {
+                        ta.style.height = (height++) + 'px';
+                    }
+                    // reset the ta back to it's original height
+                    ta.style.height = origHeight;
+                    // put the overflow back
+                    ta.style.overflow = overflow;
+                    return height;
+                }
+            } else {
+                return scrollHeight;
+            }
+            return null;
+        }
+
+    </script>
+}

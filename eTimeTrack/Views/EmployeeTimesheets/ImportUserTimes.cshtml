@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "Import User Times";
+}
+
+@Html.Partial("_Banner")
+
+<div id="ProjectDiv" class="row form-group">
+    <div class="col-md-12">Project: @Session["SelectedProjectName"]</div>
+</div>
+
+@using (Html.BeginForm("ImportUserTimes", "EmployeeTimesheets", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <label class="btn btn-default" for="my-file-selector">
+        <input id="my-file-selector" type="file" name="file" style="display:none;" onchange="$('#upload-file-info').html($(this).val());">
+        Browse
+    </label>
+    <span class='label label-default' id="upload-file-info"></span>
+
+    <div class="form-group" style="margin-top: 3em;">
+        <label class="control-label">Download the excel template for populating user timesheets here:</label>
+        <br />
+        @Html.ActionLink("Download Template", "DownloadUserTimesTemplate")
+        
+    </div>
+
+    <input type="submit" class="btn btn-primary pull-right" value="Import" />
+}
+<hr />
+<a href='@Url.Action("Index", "Home")' role="button" class="btn btn-primary">Back</a>

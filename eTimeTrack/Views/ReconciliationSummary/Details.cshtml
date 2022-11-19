@@ -1,0 +1,89 @@
+﻿@using eTimeTrack.Extensions
+@using eTimeTrack.Helpers
+@using eTimeTrack.ViewModels
+@model eTimeTrack.ViewModels.ReconciliationSummaryDetailsViewModel
+
+@{
+    ViewBag.Title = "Reconciliation Summary";
+    ViewBag.BannerColour = AecomColour.Blue;
+}
+
+@Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
+
+<div class="row">
+    <div class="col-md-4 form-group">
+        <label>Company Filter</label>
+        @Html.DropDownList("companyId", new SelectList(ViewBag.Companies, "Value", "Text"), "All", new { @class = "form-control", id = "companyDropdown" })
+    </div>
+    <div class="col-md-4"></div>
+    <div class="col-md-4"></div>
+</div>
+
+<b>Project:</b> @Model.ProjectName<br />
+<b>Week Ending:</b> @(Model.TimesheetPeriod.GetStartEndDates())<br />
+<b>Company:</b> @(Model.CompanyName)
+
+<br /><br />
+<table class="table">
+    <tr style="border-bottom: 2px solid black;">
+        <th></th>
+        <th>eTimeTrack Hours</th>
+        <th>Home Office Hours</th>
+        <th>Employees Count</th>
+    </tr>
+    @foreach (ReconciliationTypeHourSummary type in Model.ReconciliationHours)
+    {
+        <tr>
+            <td>@(type.ReconciliationType?.Text ?? "Reconciled")</td>
+            <td>@type.EttHours</td>
+            <td>@type.OtherHours</td>
+            <td>@type.Employees</td>
+        </tr>
+    }
+    <tr style="border-top: 2px solid black;">
+        <td>Totals</td>
+        <td>@Model.TotalEttHours</td>
+        <td>@Model.TotalOtherHours</td>
+        <td>@(Model.TotalEmployees)</td>
+    </tr>
+    <tr style="border-top: 2px solid black;">
+        <td>Difference</td>
+        <td>@(Model.TotalEttHours - Model.TotalOtherHours)</td>
+        <td></td>
+        <td></td>
+    </tr>
+</table>
+
+@using (Html.BeginForm("PrintFriendly", "ReconciliationSummary", FormMethod.Post, new { id = "exportForm", target = "_blank" }))
+{
+    @Html.Hidden("timesheetPeriodId", Model.TimesheetPeriod.TimesheetPeriodID)
+    @Html.Hidden("companyId", Model.CompanyId)
+    <button type="submit" id="export" class="btn btn-primary">Export PDF Summary</button>
+}
+<br />
+@using (Html.BeginForm("PrintFriendlyExcelData", "ReconciliationSummary", FormMethod.Post, new { id = "exportForm", target = "_blank" }))
+{
+    @Html.Hidden("timesheetPeriodId", Model.TimesheetPeriod.TimesheetPeriodID)
+    @Html.Hidden("companyId", Model.CompanyId)
+    <button type="submit" id="export" class="btn btn-primary">Export Excel Data</button>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/notify")
+    <script>
+
+        $(document).ready(function () {
+
+            $('#companyDropdown').change(function () {
+                //window.location = 'ReconciliationEntries?reconciliationTypeId=' + $(this).val();
+                updatePage();
+            });
+        });
+
+        function updatePage() {
+            var companyId = $('#companyDropdown').val();
+            window.location = 'Details?timesheetPeriodId=@(Model.TimesheetPeriod.TimesheetPeriodID)&companyId=' + companyId;
+        }
+    </script>
+}

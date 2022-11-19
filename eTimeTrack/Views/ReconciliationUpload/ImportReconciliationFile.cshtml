@@ -1,0 +1,116 @@
+﻿@model eTimeTrack.ViewModels.ReconciliationFileViewModel
+
+@{
+    ViewBag.Title = "Import Reconciliation File";
+}
+
+@Html.Partial("_Banner")
+
+@Html.Partial("_InfoMessageRender")
+
+@using (Html.BeginForm("ImportReconciliationFile", "ReconciliationUpload", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="alert alert-info">
+        <b>Note: </b>eTimeTrack will upload data from the first worksheet in the data source (XL) file and must include all inception to date data. Any previously uploaded data that is now not included in the import file for the company will be deleted. Please ensure there are no gap rows in the data as the process will stop at the first break in data.
+    </div>
+
+    <div class="form-group">
+    <label for="ProjectID">Project</label>
+    @Html.DropDownListFor(model => model.ProjectID, Model.ProjectList, "Select", new { id = "ProjectSelector", @class = "form-control", required = true})
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.ReconciliationTemplateId)
+        @Html.DropDownListFor(model => model.ReconciliationTemplateId, Model.TemplateList, "Select", new { id = "template-select", @class = "form-control", required = true })
+    </div>
+
+    <div id="template-details-container" style="display: none; margin-bottom: 5rem;">
+        <div class="form-group row">
+            @Html.LabelFor(model => model.DummyTemplateVm.EmployeeNumberColumn, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <span id="EmployeeNumberColumn"></span>
+            </div>
+        </div>
+        
+        <div class="form-group row">
+            @Html.LabelFor(model => model.DummyTemplateVm.WeekEndingColumn, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <span id="WeekEndingColumn"></span>
+            </div>
+        </div>  
+        
+        <div class="form-group row">
+            @Html.LabelFor(model => model.DummyTemplateVm.HoursColumn, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <span id="HoursColumn"></span>
+            </div>
+        </div>
+        
+        <div class="form-group row">
+            @Html.LabelFor(model => model.DummyTemplateVm.DailyDates, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input id="DailyDates" disabled type="checkbox" />
+            </div>
+        </div>
+        
+        <div class="form-group row">
+            @Html.LabelFor(model => model.DummyTemplateVm.TypeIdentifierColumn, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <span id="TypeIdentifierColumn"></span>
+            </div>
+        </div>
+        
+        <div class="form-group row">
+            @Html.LabelFor(model => model.DummyTemplateVm.TypeIdentifierText, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <span id="TypeIdentifierText"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label">
+            Select XLSX file
+        </label>
+        <input type="file" name="File" accept=".xlsx" required>
+    </div>
+
+    <a href='@Url.Action("Index", "Manage")' class="btn btn-primary" role="button">Back</a>
+    <input type="submit" id="submit" class="btn btn-primary pull-right" value="Import" />
+}
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function() {
+
+            $('form').submit(function() {
+                $('#submit').prop('disabled', true);
+            });
+
+            $('#template-select, #ProjectSelector').change(function() {
+                var projectVal = $('#ProjectSelector').val();
+                var templateVal = $('#template-select').val();
+                if (!templateVal) {
+                    $('#template-details-container').hide();
+                } else {
+                    $('#template-details-container').show();
+                    if (projectVal) {
+                        $.post('@Url.Action("GetReconciliationTemplateDetails", "ReconciliationTemplates")',
+                            { id: templateVal }).done(function(data) {
+                            $('#EmployeeNumberColumn').text(data.EmployeeNumberColumn);
+                            $('#WeekEndingColumn').text(data.WeekEndingColumn);
+                            $('#HoursColumn').text(data.HoursColumn);
+                            $('#DailyDates').val(data.DailyDates);
+                            $('#TypeIdentifierColumn').text(data.TypeIdentifierColumn);
+                            $('#TypeIdentifierText').text(data.TypeIdentifierText);
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+
+}
