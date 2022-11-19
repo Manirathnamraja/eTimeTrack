@@ -63,9 +63,9 @@
                 </dd>
                 @if (User.IsUserPlusOrAbove())
                 {
-                <dd>
-                    @Html.ActionLink("User Details", "Index", "EmployeeProjects")
-                </dd>
+                    <dd>
+                        @Html.ActionLink("User Details", "Index", "EmployeeProjects")
+                    </dd>
                 }
             </dl>
         }
@@ -73,7 +73,7 @@
         if (User.IsUserPlusOrAbove())
         {
 
-        <dl class="dl-horizontal">
+            <dl class="dl-horizontal">
                 <dt>Project:</dt>
                 <dd>
                     @Html.ActionLink("Project Parts", "Index", "ProjectComponent", new { type = ProjectComponentType.ProjectPart }, null)
@@ -87,20 +87,20 @@
                 <dd>
                     @Html.ActionLink("Project Variations", "Index", "ProjectVariations", new { type = ProjectComponentType.ProjectTask }, null)
                 </dd>
-            <dd>
-                @Html.ActionLink("Time Codes", "TimeCodeConfig", "Projects")
-            </dd>
-            <dd>
-                @Html.ActionLink("Project User Types", "Index", "ProjectUserTypes")
-            </dd>
-            </dl>
-
-            <dl class="dl-horizontal">
-                <dt>Task Transfer:</dt>
                 <dd>
-                    @Html.ActionLink("Transfer Tasks / Variations", "TaskSelect", "TaskTransfer")
+                    @Html.ActionLink("Time Codes", "TimeCodeConfig", "Projects")
+                </dd>
+                <dd>
+                    @Html.ActionLink("Project User Types", "Index", "ProjectUserTypes")
                 </dd>
             </dl>
+
+            @*<dl class="dl-horizontal">
+                    <dt>Task Transfer:</dt>
+                    <dd>
+                        @Html.ActionLink("Transfer Tasks / Variations", "TaskSelect", "TaskTransfer")
+                    </dd>
+                </dl>*@
 
             <dl class="dl-horizontal">
                 <dt>Reconciliation:</dt>
@@ -126,8 +126,15 @@
                 <dd>
                     @Html.ActionLink("Edit Timesheets", "EditSelect", "EmployeeTimesheets")
                 </dd>
+                @if (User.IsUserPlusOrAbove())
+                {
+                    <dd>
+                        @Html.ActionLink("Transfer Tasks / Variations", "TaskSelect", "TaskTransfer")
+                    </dd>
+                }
             </dl>
         }
+       
 
         if (User.IsUserAdministratorOrAboveExcludeTimesheetEditor())
         {
@@ -139,6 +146,12 @@
                 <dd>
                     @Html.ActionLink("Users", "Index", "Employees")
                 </dd>
+                @if (User.IsSuperUser())
+                {
+                    <dd>
+                        @Html.ActionLink("User Types", "Index", "UserTypes")
+                    </dd>
+                }
             </dl>
 
             if (User.IsAdminOrAbove())
@@ -168,7 +181,7 @@
                 }
             }
 
-            if (User.IsSuperUser())
+            @*if (User.IsSuperUser())
             {
                 <dl class="dl-horizontal">
                     <dt>User Types:</dt>
@@ -176,7 +189,7 @@
                         @Html.ActionLink("User Types", "Index", "UserTypes")
                     </dd>
                 </dl>
-            }
+            }*@
 
             if (User.IsAdminOrAbove())
             {
@@ -197,14 +210,14 @@
         }
 
         @*if (User.IsAdminOrAbove())
-        {
-            <dl class="dl-horizontal">
-                <dt>Import Timesheets:</dt>
-                <dd>
-                    @Html.ActionLink("Import Timesheet Data", "ImportUserTimes", "EmployeeTimesheets")
-                </dd>
-            </dl>
-        }*@
+            {
+                <dl class="dl-horizontal">
+                    <dt>Import Timesheets:</dt>
+                    <dd>
+                        @Html.ActionLink("Import Timesheet Data", "ImportUserTimes", "EmployeeTimesheets")
+                    </dd>
+                </dl>
+            }*@
 
     }
 </div>

@@ -27,7 +27,7 @@ namespace eTimeTrack.ViewModels
         [DisplayName("Identifier Values")]
         [StringLength(255, ErrorMessage = "Maximum length is 255")]
         public string TypeIdentifierText { get; set; }
-        [DisplayName("Daily Notes")]
+        [DisplayName("Daily Hours")]
         public bool DailyDates { get; set; }
     }
 

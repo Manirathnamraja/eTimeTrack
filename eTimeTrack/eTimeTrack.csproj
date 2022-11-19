@@ -641,6 +641,7 @@
     <Content Include="Content\images\logo3.png" />
     <Content Include="Content\jquery-ui.css" />
     <Content Include="Content\jquery-ui.min.css" />
+    <Content Include="Content\DataTables\css\select2.min.css" />
     <Content Include="favicon.png" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -664,6 +665,7 @@
     <Content Include="Content\Templates\User Times Import Template.xlsx" />
     <None Include="Properties\PublishProfiles\eTimeTrack - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\eTimeTrack - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\eTimeTrack-Dev - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\TD007 UAT.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\data-tables-initializer.js" />
@@ -763,6 +765,7 @@
     <Content Include="Scripts\notify.min.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\select2.min.js" />
     <Content Include="Scripts\site.js" />
     <Content Include="Scripts\stacktable.js" />
     <Content Include="Scripts\Tablesaw\tablesaw-init.js" />

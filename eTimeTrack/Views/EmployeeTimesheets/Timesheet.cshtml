@@ -85,48 +85,49 @@
 {
     <div class="alert alert-warning">
         The following reconciliation entries were recorded with different hours:
-            @foreach (ReconciliationEntry entry in Model.ReconciliationEntries.Where(x => !x.HoursEqual))
-            {
-                <div class="reconciliation-entry-response-container" id="@entry.Id">
-                    <div class="reconciliation-entry-response-item-text">@(entry.CurrentReconciliationUpload.Project.DisplayName): @(entry.Hours) hours</div>
+        @foreach (ReconciliationEntry entry in Model.ReconciliationEntries.Where(x => !x.HoursEqual))
+        {
+            <div class="reconciliation-entry-response-container" id="@entry.Id">
+                <div class="reconciliation-entry-response-item-text">@(entry.CurrentReconciliationUpload.Project.DisplayName): @(entry.Hours) hours</div>
 
-                    <div class="reconciliation-entry-response-readonly-container row">
-                        <div class="col-xs-9 col-md-11">
-                            <label>Employee Comment: </label>
-                            <br/>
-                            <div class="reconciliation-entry-response-readonly" style="display: inline;">
-                                @{
-                                    if (!string.IsNullOrWhiteSpace(entry.EmployeeComment))
-                                    {
-                                        @Html.DisplayFor(modelItem => entry.EmployeeComment)
-                                    }
-                                    else
-                                    {
-                                        @Html.Raw("No comment")
-                                    }
+                <div class="reconciliation-entry-response-readonly-container row">
+                    <div class="col-xs-9 col-md-11">
+                        <label>Employee Comment: </label>
+                        <br />
+                        <div class="reconciliation-entry-response-readonly" style="display: inline;">
+                            @{
+                                if (!string.IsNullOrWhiteSpace(entry.EmployeeComment))
+                                {
+                                    @Html.DisplayFor(modelItem => entry.EmployeeComment)
                                 }
-                               
-                            </div>
-                        </div>
-                        <div class="col-xs-3 col-md-1">
-                            <a class="btn btn-primary reconciliation-entry-response-edit pull-right" title="Add/Edit comment">
-                                <i class='glyphicon glyphicon-edit'></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="reconciliation-entry-response-edit-container row" style="display: none;">
-                        <div class="col-xs-9 col-md-11">
-                            @Html.TextAreaFor(modelItem => entry.EmployeeComment, new { @class = "form-control reconciliation-entry-response-comment", style = "display: inline;max-width: none;" })
-                        </div>
-                        <div class="col-xs-3 col-md-1">
-                            <a class="btn btn-primary reconciliation-entry-response-save pull-right" title="Save comment changes">
-                                <i class='glyphicon glyphicon-ok'></i>
-                            </a>
-                        </div>
-                    </div>
+                                else
+                                {
+                                    @Html.Raw("No comment")
+                                }
+                            }
 
+                        </div>
+                    </div>
+                    <div class="col-xs-3 col-md-1">
+                        <a class="btn btn-primary reconciliation-entry-response-edit pull-right" title="Add/Edit comment">
+                            <i class='glyphicon glyphicon-edit'></i>
+                        </a>
+                    </div>
                 </div>
-            }
+                <div class="reconciliation-entry-response-edit-container row" style="display: none;">
+                    <div class="col-xs-9 col-md-11">
+                        @Html.TextAreaFor(modelItem => entry.EmployeeComment, new { @class = "form-control reconciliation-entry-response-comment", style = "display: inline;max-width: none;", maxlength = 254, id = "employeeCommentTextArea" })
+                        <span id="text-counter">254</span> character(s) left.
+                    </div>
+                    <div class="col-xs-3 col-md-1">
+                        <a class="btn btn-primary reconciliation-entry-response-save pull-right" title="Save comment changes">
+                            <i class='glyphicon glyphicon-ok'></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        }
     </div>
 }
 
@@ -266,7 +267,7 @@
                             <select id="TimeCodeSelector" class="form-control selector" disabled></select>
                         </div>
                     </div>
-                    
+
                     <div id="UserTypeDescriptionDiv" class="row form-group" style="display: none;">
                         <div class="col-md-2 col-sm-12"></div>
                         <div class="col-md-10">
@@ -340,7 +341,7 @@
                                 <div style="width: 190px">General Comments</div>
                             </th>
                             @if (!readOnly)
-                    {
+                            {
                                 <th>Delete</th>
                             }
                         </tr>
@@ -621,7 +622,7 @@
                     if (!hoursAreValid) {
                         rowErrorText = 'Your maximum hours for ' + rowTimeCode + ' on ' + foundUserTypeAndMandatoryCommentsInfo.ProjectName + ' is ' + maxHoursToUse + ' hours';
                     }
-                } 
+                }
 
                 // display error if any
                 if (rowErrorText) {
@@ -1080,6 +1081,11 @@
             $('.generalCommentsField').each(function() {
                 adjustHeight($(this));
             });
+
+            $("select").select2({
+                dropdownAutoWidth: true,
+                width: '100%'
+            });
         });
 
         // remove an item from the list (show modal first)
@@ -1228,6 +1234,16 @@
             }
             return null;
         }
+        $(function () {
+            $('#employeeCommentTextArea').keyup(function (e) {
+                var max = 254;
+                var len = $(this).val().length;
+                var char = max - len;
+                $('#text-counter').html(char);
+            });
+        });
 
     </script>
+    <link href="~/Content/DataTables/css/select2.min.css" rel="stylesheet" />
+    <script src="~/Scripts/select2.min.js"></script>
 }

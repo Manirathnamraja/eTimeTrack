@@ -19,7 +19,7 @@
         <th data-priority="1">@Html.DisplayNameFor(model => model.EmployeeNo)</th>
         <th data-priority="1">@Html.DisplayNameFor(model => model.Names)</th>
         <th>@Html.DisplayNameFor(model => model.Company.Company_Code)</th>
-        <th>@Html.DisplayNameFor(model => model.IsActive)</th>
+        @*<th>@Html.DisplayNameFor(model => model.IsActive)</th>*@
         <th data-priority="2">@Html.DisplayNameFor(model => model.Email)</th>
         <th data-priority="3">Locked Out</th>
         <th data-priority="3" data-orderable="false">Edit</th>
@@ -33,10 +33,10 @@
             <td>@Html.DisplayFor(modelItem => item.EmployeeNo)</td>
             <td>@Html.DisplayFor(modelItem => item.Names)</td>
             <td>@Html.DisplayFor(modelItem => item.Company.Company_Code)</td>
-            <td>
+            @*<td>
                 @Html.DisplayFor(modelItem => item.IsActive)
                 <span class="checkbox-sort-value">@(!item.IsActive ? "0" : "1")</span>
-            </td>
+            </td>*@
             <td>@Html.DisplayFor(modelItem => item.Email)</td>
             <td>
                 @Html.CheckBox("lockout", item.LockoutEndDateUtc.HasValue, new {@disabled = true})

@@ -27,7 +27,7 @@ namespace eTimeTrack.Controllers
             // super users can see everything
             if (User.IsSuperUser())
             {
-                return Db.Projects.Where(x => includeArchived || !x.IsArchived).OrderBy(x => x.ProjectNo).ToList();
+                return Db.Projects.Where(x => includeArchived || !x.IsArchived).OrderByDescending(x => x.ProjectNo).ToList();
             }
 
             int id = UserHelpers.GetCurrentUserId();
