@@ -32,7 +32,7 @@ namespace eTimeTrack.Controllers
             {
                 EmployeeProjects = employees,
                 ProjectUserTypeIdFilter = projectUserTypeId,
-                ProjectUserTypes = selectItems
+                ProjectUserTypes = selectItems,
             };
 
             return View(vm);
@@ -118,7 +118,8 @@ namespace eTimeTrack.Controllers
                 EmployeeNo = employee.EmployeeNo,
                 EmailAddress = employee.Email,
                 Names = employee.Names,
-                ProjectUserTypeID = employeeProject?.ProjectUserTypeID?.ToString()
+                ProjectUserTypeID = employeeProject?.ProjectUserTypeID?.ToString(),
+                ProjectRole = employeeProject?.ProjectRole
             };
 
             List<SelectListItem> selectItems = GetProjectUserTypeSelectItems(projectId);
@@ -177,6 +178,7 @@ namespace eTimeTrack.Controllers
             if (employeeProject != null)
             {
                 employeeProject.ProjectUserTypeID = projectUserTypeIsGeneric ? null : (!string.IsNullOrWhiteSpace(model.ProjectUserTypeID) ? intProjectUserTypeID : (int?)null);
+                employeeProject.ProjectRole = model.ProjectRole;
                 Db.SaveChanges();
                 message = new InfoMessage
                 {

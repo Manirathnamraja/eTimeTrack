@@ -21,34 +21,41 @@
             <div class="modal-body">
 
                 <div class="form-horizontal">
-                    @Html.ValidationSummary(true, "", new {@class = "text-danger"})
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                     @Html.HiddenFor(model => model.EmployeeID)
 
                     <div class="form-group">
-                        @Html.LabelFor(model => model.EmployeeNo, new {@class = "control-label col-md-2"})
+                        @Html.LabelFor(model => model.EmployeeNo, new { @class = "control-label col-md-2" })
                         <div class="col-md-10 bottom-align-text">
                             @Html.DisplayFor(model => model.EmployeeNo)
                         </div>
                     </div>
 
                     <div class="form-group">
-                        @Html.LabelFor(model => model.Names, new {@class = "control-label col-md-2"})
+                        @Html.LabelFor(model => model.Names, new { @class = "control-label col-md-2" })
                         <div class="col-md-10 bottom-align-text">
                             @Html.DisplayFor(model => model.Names)
                         </div>
                     </div>
 
                     <div class="form-group">
-                        @Html.LabelFor(model => model.EmailAddress, new {@class = "control-label col-md-2"})
+                        @Html.LabelFor(model => model.EmailAddress, new { @class = "control-label col-md-2" })
                         <div class="col-md-10 bottom-align-text">
                             @Html.DisplayFor(model => model.EmailAddress)
                         </div>
                     </div>
 
                     <div class="form-group">
-                        @Html.LabelFor(model => model.ProjectUserTypeID, new {@class = "control-label col-md-2"})
+                        @Html.LabelFor(model => model.ProjectUserTypeID, new { @class = "control-label col-md-2" })
                         <div class="col-md-10">
-                            @Html.DropDownList("ProjectUserTypeID", (SelectList) ViewBag.AvailableProjectUserTypes, new {@class = "form-control"})
+                            @Html.DropDownList("ProjectUserTypeID", (SelectList)ViewBag.AvailableProjectUserTypes, new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ProjectRole, new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(x => x.ProjectRole, new { @class = "form-control", placeholder = "Enter Project Role", maxlength = 50 })
                         </div>
                     </div>
                 </div>
@@ -69,6 +76,7 @@
             evt.preventDefault();
             $.post('@Url.Action("Details")', $('form').serialize()).done(function (result) {
                 $('#projectUserDetailsModal').modal('hide');
+                location.reload();
             });
         });
     });

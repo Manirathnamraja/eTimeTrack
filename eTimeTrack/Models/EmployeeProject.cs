@@ -13,6 +13,7 @@ namespace eTimeTrack.Models
         [Index("IX_EmployeeProjectRestraint", 2, IsUnique = true)]
         public int ProjectId { get; set; }
         public int? ProjectUserTypeID { get; set; }
+        public string ProjectRole { get; set; }
 
         [JsonIgnore]
         [ForeignKey("ProjectUserTypeID")]

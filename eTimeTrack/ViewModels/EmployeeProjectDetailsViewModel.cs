@@ -14,5 +14,7 @@ namespace eTimeTrack.ViewModels
         public string EmailAddress { get; set; }
         [DisplayName("Project User Type")]
         public string ProjectUserTypeID { get; set; }
+        [DisplayName("Project Role")]
+        public string ProjectRole { get; set; }
     }
 }

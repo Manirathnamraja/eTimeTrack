@@ -19,6 +19,7 @@
             <th data-priority="1">Employee Number</th>
             <th data-priority="1">Name</th>
             <th data-priority="1">Project User Type</th>
+            <th data-priority="1">Project Role</th>
             <th data-priority="3" data-orderable="false">Edit</th>
         </tr>
     </thead>
@@ -30,8 +31,9 @@
                 <td>@Html.DisplayFor(modelItem => item.Employee.Names)</td>
                 <td>
                     <span style="display: none;">@item.ProjectUserTypeID</span>
-                    @Html.DropDownListFor(modelItem => item.ProjectUserTypeID, new SelectList(Model.ProjectUserTypes, "Value", "Text", item.ProjectUserTypeID), new {@class = "form-control select-user-type"})
+                    @Html.DropDownListFor(modelItem => item.ProjectUserTypeID, new SelectList(Model.ProjectUserTypes, "Value", "Text", item.ProjectUserTypeID), new { @class = "form-control select-user-type" })
                 </td>
+                <td>@Html.DisplayFor(modelItem => item.ProjectRole)</td>
                 <td>
                     <a href='@Url.Action("Details", new {employeeId = item.EmployeeId})' class="btn btn-primary modal-link" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
                 </td>
