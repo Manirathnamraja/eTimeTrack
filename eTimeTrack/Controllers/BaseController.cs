@@ -169,21 +169,32 @@ namespace eTimeTrack.Controllers
             return employeeProjects.Where(x => projectCompanies.Select(y => y.ProjectId).Contains(x.ProjectId)).Select(x => x.Project).ToList();
         }
 
-        protected List<EmployeeProject> GetAllProjectEmployeesOrdered(int? projectId, int? projectUserTypeId = null)
+        protected List<EmployeeProject> GetAllProjectEmployeesOrdered(int? projectId, int? projectUserTypeId = null, int? projectDisciplineId = null)
         {
             IQueryable<ProjectUserType> projectUserTypes = Db.ProjectUserTypes.Where(x => x.ProjectID == projectId);
+
+            IQueryable<ProjectDiscipline> projectDisciplines = Db.ProjectDisciplines.Where(x => x.ProjectID == projectId);
             int? projectGenericUserTypeId = null;
+            int? projectGenericDisciplineId = null;
 
             if (projectUserTypeId.HasValue)
             {
                 projectGenericUserTypeId = projectUserTypes.SingleOrDefault(x => x.UserTypeID == null)?.ProjectUserTypeID;
             }
-  
+            if (projectDisciplineId.HasValue)
+            {
+                projectGenericDisciplineId = projectDisciplines.SingleOrDefault(x=>x.Text.StartsWith("Default"))?.ProjectDisciplineId;
+            }
+
             bool isGeneric = projectUserTypeId == null || projectUserTypeId == projectGenericUserTypeId;
+            bool isGenericDiscipline = projectDisciplineId == null || projectDisciplineId == projectGenericDisciplineId;
             return Db.EmployeeProjects.Where(x =>
                 x.ProjectId == projectId
                 && (
                     projectUserTypeId == null || ((isGeneric ? (x.ProjectUserTypeID == null || x.ProjectUserTypeID == projectGenericUserTypeId) : x.ProjectUserTypeID == projectUserTypeId
+                    )))
+                && (
+                    projectDisciplineId == null || ((isGenericDiscipline ? (x.ProjectDisciplineID == null || x.ProjectDisciplineID == projectGenericDisciplineId) : x.ProjectDisciplineID == projectDisciplineId
                     )))
                 ).OrderBy(x => x.Employee.Names).ThenBy(x => x.Employee.EmployeeNo).ToList();
         }

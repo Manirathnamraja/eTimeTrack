@@ -175,10 +175,10 @@ namespace eTimeTrack.Controllers
                 {
                     int empId;
 
-                    if (entry.EmployeeNumber == "AUR111764")
-                    {
-                        int xxx = 1;
-                    }
+                    //if (entry.EmployeeNumber == "AUR111764")
+                    //{
+                    //    int xxx = 1;
+                    //}
 
                     if (employees.TryGetValue(entry.EmployeeNumber, out empId))
                     {
@@ -242,11 +242,13 @@ namespace eTimeTrack.Controllers
                 //
                 List<ReconciliationEntry> existingEntries = context.ReconciliationEntries.Include(x => x.CurrentReconciliationUpload.ReconciliationTemplate).Where(x => x.OriginalReconciliationUpload.ReconciliationTemplateId == template.Id && !x.Deleted && x.OriginalReconciliationUpload.ProjectId == project.ProjectID).ToList();
 
-                List<int?> allEmployeeIds = tempEntries.Select(x => x.EmployeeId).Union(context.Users.Where(x => x.CompanyID == template.CompanyId).Select(x => (int?)x.Id)).ToList();
+               // List<int?> allEmployeeIds = tempEntries.Select(x => x.EmployeeId).Union(context.Users.Where(x => x.CompanyID == template.CompanyId).Select(x => (int?)x.Id)).ToList();
 
-                List<EmployeeTimesheetInPeriod> allRequiredTimesheets = context.EmployeeTimesheets.Where(x => allEmployeeIds.Contains(x.EmployeeID)).Select(x => new EmployeeTimesheetInPeriod { EmployeeId = x.EmployeeID, TimesheetPeriodId = x.TimesheetPeriodID, TimesheetId = x.TimesheetID }).ToList();
+                //List<EmployeeTimesheetInPeriod> allRequiredTimesheets = context.EmployeeTimesheets.Where(x => allEmployeeIds.Contains(x.EmployeeID)).Select(x => new EmployeeTimesheetInPeriod { EmployeeId = x.EmployeeID, TimesheetPeriodId = x.TimesheetPeriodID, TimesheetId = x.TimesheetID }).ToList();
+                List<EmployeeTimesheetInPeriod> allRequiredTimesheets = context.EmployeeTimesheets.Select(x => new EmployeeTimesheetInPeriod { EmployeeId = x.EmployeeID, TimesheetPeriodId = x.TimesheetPeriodID, TimesheetId = x.TimesheetID }).ToList();
 
-                List<EmployeeTimesheetItem> allTimesheetItemsForProject = context.EmployeeTimesheetItems.Where(x => allEmployeeIds.Contains(x.Timesheet.EmployeeID) && x.ProjectTask.ProjectID == project.ProjectID).Include(x => x.Timesheet).ToList();
+                //List<EmployeeTimesheetItem> allTimesheetItemsForProject = context.EmployeeTimesheetItems.Where(x => allEmployeeIds.Contains(x.Timesheet.EmployeeID) && x.ProjectTask.ProjectID == project.ProjectID).Include(x => x.Timesheet).ToList();
+                List<EmployeeTimesheetItem> allTimesheetItemsForProject = context.EmployeeTimesheetItems.Where(x => x.ProjectTask.ProjectID == project.ProjectID).Include(x => x.Timesheet).ToList();
 
                 int count = 0;
 

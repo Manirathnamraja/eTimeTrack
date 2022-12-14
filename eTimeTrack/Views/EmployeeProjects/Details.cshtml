@@ -58,6 +58,13 @@
                             @Html.TextBoxFor(x => x.ProjectRole, new { @class = "form-control", placeholder = "Enter Project Role", maxlength = 50 })
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ProjectDisciplineID, new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.DropDownList("ProjectDisciplineID", (SelectList)ViewBag.AvailableProjectDisciplines, new { @class = "form-control" })
+                        </div>
+                    </div>
                 </div>
 
 

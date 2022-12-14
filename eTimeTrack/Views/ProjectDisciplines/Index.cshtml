@@ -1,0 +1,35 @@
+﻿@using eTimeTrack.Helpers
+@using eTimeTrack.Models
+@model eTimeTrack.ViewModels.ProjectDisciplinesIndexViewModel
+
+@{
+    ViewBag.Title = "Project Disciplines";
+    ViewBag.BannerColour = AecomColour.Blue;
+}
+
+@Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
+
+<p>
+    <a href="@Url.Action("CreateProjectDiscipline")" class="btn btn-primary">Create Project Discipline</a>
+</p>
+
+<table class="table data-table" width="100%">
+    <thead>
+    <tr>
+        <th data-priority="1">@Html.DisplayNameFor(model => Model.ProjectDisciplines[0].Text)</th>
+        <th data-priority="1">@Html.DisplayNameFor(model => Model.ProjectDisciplines[0].Description)</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (ProjectDiscipline item in Model.ProjectDisciplines)
+    {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.Text)</td>
+            <td>@Html.DisplayFor(modelItem => item.Description)</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>

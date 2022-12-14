@@ -74,7 +74,7 @@
         {
 
             <dl class="dl-horizontal">
-                <dt>Project:</dt>
+                <dt>Project Definition:</dt>
                 <dd>
                     @Html.ActionLink("Project Parts", "Index", "ProjectComponent", new { type = ProjectComponentType.ProjectPart }, null)
                 </dd>
@@ -134,7 +134,7 @@
                 }
             </dl>
         }
-       
+
 
         if (User.IsUserAdministratorOrAboveExcludeTimesheetEditor())
         {
@@ -182,14 +182,14 @@
             }
 
             @*if (User.IsSuperUser())
-            {
-                <dl class="dl-horizontal">
-                    <dt>User Types:</dt>
-                    <dd>
-                        @Html.ActionLink("User Types", "Index", "UserTypes")
-                    </dd>
-                </dl>
-            }*@
+                {
+                    <dl class="dl-horizontal">
+                        <dt>User Types:</dt>
+                        <dd>
+                            @Html.ActionLink("User Types", "Index", "UserTypes")
+                        </dd>
+                    </dl>
+                }*@
 
             if (User.IsAdminOrAbove())
             {
@@ -205,6 +205,18 @@
                     <dd>
                         @Html.ActionLink("Import Templates", "Index", "ReconciliationTemplates")
                     </dd>
+                </dl>
+
+                <dl class="dl-horizontal">
+                    <dt>Project Disciplines:</dt>
+
+                    @if (User.IsSuperUser())
+                    {
+                        <dd>
+                            @Html.ActionLink("Project Disciplines", "Index", "ProjectDisciplines")
+                        </dd>
+                    }
+                   
                 </dl>
             }
         }

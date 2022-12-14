@@ -242,6 +242,7 @@
     <Compile Include="Controllers\ReconciliationTemplatesController.cs" />
     <Compile Include="Controllers\ProjectTimesheetPeriodsController.cs" />
     <Compile Include="Controllers\ProjectVariationsController.cs" />
+    <Compile Include="Controllers\ProjectDisciplinesController.cs" />
     <Compile Include="Controllers\ReconciliationUploadController.cs" />
     <Compile Include="Controllers\TaskTransferController.cs" />
     <Compile Include="Controllers\ProjectUserTypesController.cs" />
@@ -409,6 +410,7 @@
     <Compile Include="Models\ProjectUserTypeTimeCode.cs" />
     <Compile Include="Models\ReconciliationEntry.cs" />
     <Compile Include="Models\ReconciliationTemplate.cs" />
+    <Compile Include="Models\ProjectDiscipline.cs" />
     <Compile Include="Models\ReconciliationType.cs" />
     <Compile Include="Models\ReconciliationUpload.cs" />
     <Compile Include="Models\SystemEvent.cs" />
@@ -425,8 +427,10 @@
     <Compile Include="ViewModels\ReconciliationSummaryDetailsViewModel.cs" />
     <Compile Include="ViewModels\ReconciliationSummaryIndexViewModel.cs" />
     <Compile Include="ViewModels\ReconciliationTemplateCreateViewModel.cs" />
+    <Compile Include="ViewModels\ProjectDisciplineCreateViewModel.cs" />
     <Compile Include="ViewModels\ReconciliationTypeCreateViewModel.cs" />
     <Compile Include="ViewModels\ReconciliationTemplatesIndexViewModel.cs" />
+    <Compile Include="ViewModels\ProjectDisciplinesIndexViewModel.cs" />
     <Compile Include="ViewModels\ReconciliationTypesIndexViewModel.cs" />
     <Compile Include="ViewModels\EmployeeTimesheetIndexViewModel.cs" />
     <Compile Include="ViewModels\GenericAssignmentModel.cs" />
@@ -877,6 +881,8 @@
     <Content Include="Views\ReconciliationEntries\Index.cshtml" />
     <Content Include="Views\ReconciliationSummary\Details.cshtml" />
     <Content Include="Views\ReconciliationSummary\Index.cshtml" />
+    <Content Include="Views\ProjectDisciplines\CreateProjectDiscipline.cshtml" />
+    <Content Include="Views\ProjectDisciplines\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\ProjectTimesheetPeriods\Assign.cshtml" />
