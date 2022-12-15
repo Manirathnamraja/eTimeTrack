@@ -92,7 +92,6 @@ namespace eTimeTrack.Controllers
                 return View(model);
             }
 
-            // List<ProjectDiscipline> allExistingProjectDisciplines = Db.ProjectDisciplines.ToList();
             List<ProjectDiscipline> allExistingProjectDisciplines = Db.ProjectDisciplines.Where(x => x.ProjectID == model.ProjectID).ToList();
 
             InfoMessage message;
@@ -125,6 +124,6 @@ namespace eTimeTrack.Controllers
 
             TempData["message"] = message;
             return RedirectToAction("Index");
-        }
+        }            
     }
 }

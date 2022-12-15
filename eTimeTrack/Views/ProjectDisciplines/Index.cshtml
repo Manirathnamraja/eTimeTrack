@@ -16,17 +16,17 @@
 
 <table class="table data-table" width="100%">
     <thead>
-    <tr>
-        <th data-priority="1">@Html.DisplayNameFor(model => Model.ProjectDisciplines[0].Text)</th>
-        <th data-priority="1">@Html.DisplayNameFor(model => Model.ProjectDisciplines[0].Description)</th>
-    </tr>
+        <tr>
+            <th data-priority="1">@Html.DisplayNameFor(model => Model.ProjectDisciplines[0].Text)</th>
+            <th data-priority="1">@Html.DisplayNameFor(model => Model.ProjectDisciplines[0].Description)</th>
+        </tr>
     </thead>
     <tbody>
     @foreach (ProjectDiscipline item in Model.ProjectDisciplines)
     {
         <tr>
             <td>@Html.DisplayFor(modelItem => item.Text)</td>
-            <td>@Html.DisplayFor(modelItem => item.Description)</td>
+            <td>@Html.DisplayFor(modelItem => item.Description)</td>            
         </tr>
     }
     </tbody>
