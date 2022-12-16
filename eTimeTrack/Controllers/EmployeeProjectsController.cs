@@ -169,7 +169,7 @@ namespace eTimeTrack.Controllers
         private List<SelectListItem> GetProjectDisciplineSelectItems(int projectId)
         {
          
-            List<SelectListItem> selectItems = Db.ProjectDisciplines.Where(x => x.ProjectID == projectId).Select(x => new SelectListItem { Value = x.ProjectDisciplineId.ToString(), Text = x.Text }).ToList();
+            List<SelectListItem> selectItems = Db.ProjectDisciplines.Where(x => x.ProjectID == projectId || x.ProjectID == 0).Select(x => new SelectListItem { Value = x.ProjectDisciplineId.ToString(), Text = x.Text }).ToList();
             return selectItems;
 
         }
