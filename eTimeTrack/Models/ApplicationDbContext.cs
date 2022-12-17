@@ -84,6 +84,7 @@ namespace eTimeTrack.Models
         public DbSet<ReconciliationType> ReconciliationTypes { get; set; }
         public DbSet<ProjectDiscipline> ProjectDisciplines { get; set; }
         public DbSet<ProjectOffice> ProjectOffices { get; set; }
+        public DbSet<AECOMUserClassification> AECOMUserClassifications { get; set; }
         public DbSet<ReconciliationUpload> ReconciliationUploads { get; set; }
 
         internal int SaveChangesWithoutLogging()

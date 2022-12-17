@@ -227,7 +227,16 @@
                             @Html.ActionLink("Offices", "Index", "ProjectOffices")
                         </dd>
                     }
+                </dl>
+                <dl class="dl-horizontal">
+                    <dt>AECOM User Classifications:</dt>
 
+                    @if (User.IsSuperUser())
+                    {
+                        <dd>
+                            @Html.ActionLink("AECOM User Classifications", "Index", "AECOMUserClassifications")
+                        </dd>
+                    }
                 </dl>
             }
         }

@@ -1,0 +1,35 @@
+﻿@using eTimeTrack.Helpers
+@using eTimeTrack.Models
+@model eTimeTrack.ViewModels.AECOMUserClassificationsIndexViewModel
+
+@{
+    ViewBag.Title = "AECOM User Classifications";
+    ViewBag.BannerColour = AecomColour.Blue;
+}
+
+@Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
+
+<p>
+    <a href="@Url.Action("CreateAECOMUserClassification")" class="btn btn-primary">Create AECOM User Classifications</a>
+</p>
+
+<table class="table data-table" width="100%">
+    <thead>
+        <tr>
+            <th data-priority="1">@Html.DisplayNameFor(model => Model.AECOMUserClassifications[0].Classification)</th>
+          @*<th data-priority="1">@Html.DisplayNameFor(model => Model.AECOMUserClassifications[0].Description)</th>*@
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (AECOMUserClassification item in Model.AECOMUserClassifications)
+    {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.Classification)</td>
+            @*<td>@Html.DisplayFor(modelItem => item.Description)</td>*@            
+        </tr>
+    }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>

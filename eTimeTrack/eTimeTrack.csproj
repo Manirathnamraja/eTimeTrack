@@ -232,6 +232,7 @@
     <Compile Include="Controllers\MobileController.cs" />
     <Compile Include="Controllers\OfficesController.cs" />
     <Compile Include="Controllers\ProjectComponentController.cs" />
+    <Compile Include="Controllers\AECOMUserClassificationsController.cs" />
     <Compile Include="Controllers\ProjectOfficesController.cs" />
     <Compile Include="Controllers\ProjectGroupsController.cs" />
     <Compile Include="Controllers\ProjectPartsController.cs" />
@@ -403,6 +404,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BulkImportStatus.cs" />
+    <Compile Include="Models\AECOMUserClassification.cs" />
     <Compile Include="Models\ProjectOffice.cs" />
     <Compile Include="Models\ProjectTimeCodeConfig.cs" />
     <Compile Include="Migrations\202102260012546_EmployeeCommentOnReconEntry.cs" />
@@ -425,7 +427,9 @@
     <Compile Include="Models\Company.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\IMergeable.cs" />
+    <Compile Include="ViewModels\AECOMUserClassificationCreateViewModel.cs" />
     <Compile Include="ViewModels\OfficeCreateViewModel.cs" />
+    <Compile Include="ViewModels\AECOMUserClassificationsIndexViewModel.cs" />
     <Compile Include="ViewModels\OfficesIndexViewModel.cs" />
     <Compile Include="ViewModels\ReconciliationEntryItemViewModel.cs" />
     <Compile Include="ViewModels\ReconciliationSummaryDetailsViewModel.cs" />
@@ -889,6 +893,8 @@
     <Content Include="Views\ProjectDisciplines\Index.cshtml" />
     <Content Include="Views\ProjectOffices\CreateOffice.cshtml" />
     <Content Include="Views\ProjectOffices\Index.cshtml" />
+    <Content Include="Views\AECOMUserClassifications\CreateAECOMUserClassification.cshtml" />
+    <Content Include="Views\AECOMUserClassifications\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\ProjectTimesheetPeriods\Assign.cshtml" />
