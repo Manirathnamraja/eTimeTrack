@@ -1,0 +1,35 @@
+﻿@using eTimeTrack.Helpers
+@using eTimeTrack.Models
+@model eTimeTrack.ViewModels.OfficesIndexViewModel
+
+@{
+    ViewBag.Title = "Offices";
+    ViewBag.BannerColour = AecomColour.Blue;
+}
+
+@Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
+
+<p>
+    <a href="@Url.Action("CreateOffice")" class="btn btn-primary">Create Office</a>
+</p>
+
+<table class="table data-table" width="100%">
+    <thead>
+        <tr>
+            <th data-priority="1">@Html.DisplayNameFor(model => Model.Offices[0].OfficeName)</th>
+            <th data-priority="1">@Html.DisplayNameFor(model => Model.Offices[0].Description)</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (ProjectOffice item in Model.Offices)
+    {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.OfficeName)</td>
+            <td>@Html.DisplayFor(modelItem => item.Description)</td>            
+        </tr>
+    }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>

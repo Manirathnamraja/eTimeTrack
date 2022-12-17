@@ -217,7 +217,18 @@
                         </dd>
                     }
 
-                </dl>                
+                </dl>
+                <dl class="dl-horizontal">
+                    <dt>Offices:</dt>
+
+                    @if (User.IsSuperUser())
+                    {
+                        <dd>
+                            @Html.ActionLink("Offices", "Index", "ProjectOffices")
+                        </dd>
+                    }
+
+                </dl>
             }
         }
 

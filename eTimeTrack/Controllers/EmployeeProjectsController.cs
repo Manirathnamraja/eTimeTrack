@@ -12,7 +12,7 @@ namespace eTimeTrack.Controllers
     public class EmployeeProjectsController : BaseEmployeesController
     {
         [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
-        public ActionResult Index(int? projectUserTypeId,int? projectDisciplineId)
+        public ActionResult Index(int? projectUserTypeId,int? projectDisciplineId, int? officeId)
         {
             int projectId = (int?)Session["SelectedProject"] ?? 0;
             Project project = Db.Projects.Find(projectId) ?? Db.Projects.OrderBy(x => x.ProjectNo).First();
@@ -22,11 +22,13 @@ namespace eTimeTrack.Controllers
                 return InvokeHttp404(HttpContext);
             }
 
-            List<EmployeeProject> employees = GetAllProjectEmployeesOrdered(projectId, projectUserTypeId, projectDisciplineId).Where(x => !x.Employee.LockoutEndDateUtc.HasValue && x.Employee.IsActive).ToList();
+            List<EmployeeProject> employees = GetAllProjectEmployeesOrdered(projectId, projectUserTypeId, projectDisciplineId,officeId).Where(x => !x.Employee.LockoutEndDateUtc.HasValue && x.Employee.IsActive).ToList();
             
             List<SelectListItem> selectItems = GetProjectUserTypeSelectItems(projectId);
 
             List<SelectListItem> selectProjectDisciplineItems = GetProjectDisciplineSelectItems(projectId);
+
+            List<SelectListItem> selectOfficeItems = GetOfficeSelectItems(projectId);
 
             ViewBag.ProjectId = projectId;
 
@@ -38,8 +40,12 @@ namespace eTimeTrack.Controllers
                 //Project Disciplines
                 ProjectDisciplineIdFilter = projectDisciplineId,
                  ProjectDisciplines = selectProjectDisciplineItems,
+                //Offices
+                OfficeIdFilter = officeId,
+                Offices = selectOfficeItems,
             };
             //NOTE : If projectDisciplineId = NULL, need to update ProjectDisciplineId to 1 in SQL table
+            //NOTE : If officeId = NULL, need to update OfficeId to 1 in SQL table
 
             return View(vm);
         }
@@ -126,7 +132,8 @@ namespace eTimeTrack.Controllers
                 Names = employee.Names,
                 ProjectUserTypeID = employeeProject?.ProjectUserTypeID?.ToString(),
                 ProjectRole = employeeProject?.ProjectRole,
-                ProjectDisciplineID = employeeProject?.ProjectDisciplineID?.ToString()
+                ProjectDisciplineID = employeeProject?.ProjectDisciplineID?.ToString(),
+                OfficeID = employeeProject?.OfficeID?.ToString()
             };
 
             List<SelectListItem> selectItems = GetProjectUserTypeSelectItems(projectId);
@@ -140,7 +147,13 @@ namespace eTimeTrack.Controllers
 
             SelectList availableProjectDisciplines = new SelectList(selectProjectDisciplineItems, "Value", "Text", model.ProjectDisciplineID);
 
+            //Office
+            List<SelectListItem> selectOfficeItems = GetProjectDisciplineSelectItems(projectId);
+
+            SelectList availableOffices = new SelectList(selectOfficeItems, "Value", "Text", model.OfficeID);
+
             ViewBag.AvailableProjectDisciplines = availableProjectDisciplines;
+            ViewBag.AvailableOffices = availableOffices;
 
             return PartialView(model);
         }
@@ -174,6 +187,14 @@ namespace eTimeTrack.Controllers
 
         }
 
+        private List<SelectListItem> GetOfficeSelectItems(int projectId)
+        {
+
+            List<SelectListItem> selectItems = Db.ProjectOffices.Where(x => x.ProjectID == projectId || x.ProjectID == 0).Select(x => new SelectListItem { Value = x.OfficeId.ToString(), Text = x.OfficeName }).ToList();
+            return selectItems;
+
+        }
+
         [HttpPost]
         [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
         public JsonResult Details(EmployeeProjectDetailsViewModel model)
@@ -198,6 +219,9 @@ namespace eTimeTrack.Controllers
             //Project Disciplines
             var intProjectDisciplineID = string.IsNullOrWhiteSpace(model.ProjectDisciplineID) ? -1 : int.Parse(model.ProjectDisciplineID);
             bool projectDisciplineIsGeneric = !string.IsNullOrWhiteSpace(model.ProjectDisciplineID) && Db.ProjectDisciplines.Any(x => x.ProjectDisciplineId == intProjectDisciplineID);
+            //Offices
+            var intOfficeID = string.IsNullOrWhiteSpace(model.OfficeID) ? -1 : int.Parse(model.OfficeID);
+            bool officeIsGeneric = !string.IsNullOrWhiteSpace(model.OfficeID) && Db.ProjectOffices.Any(x => x.OfficeId == intOfficeID);
 
             InfoMessage message;
             if (employeeProject != null)
@@ -207,6 +231,8 @@ namespace eTimeTrack.Controllers
                 employeeProject.ProjectRole = model.ProjectRole;
 
                 employeeProject.ProjectDisciplineID = !projectDisciplineIsGeneric ? null : (!string.IsNullOrWhiteSpace(model.ProjectDisciplineID) ? intProjectDisciplineID : (int?)null);
+
+                employeeProject.OfficeID = !officeIsGeneric ? null : (!string.IsNullOrWhiteSpace(model.OfficeID) ? intOfficeID : (int?)null);
 
                 Db.SaveChanges();
                 message = new InfoMessage
@@ -249,6 +275,19 @@ namespace eTimeTrack.Controllers
             bool projectDisciplineIsGeneric = !projectDisciplineId.HasValue || Db.ProjectDisciplines.Any(x => x.ProjectDisciplineId == projectDisciplineId);
 
             employeeProject.ProjectDisciplineID = !projectDisciplineIsGeneric ? null : projectDisciplineId;
+            Db.SaveChanges();
+
+            return Json(true);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateOffice(int? employeeId, int? projectId, int? officeId)
+        {
+            EmployeeProject employeeProject = Db.EmployeeProjects.Single(x => x.EmployeeId == employeeId && x.ProjectId == projectId);
+
+            bool officeIsGeneric = !officeId.HasValue || Db.ProjectOffices.Any(x => x.OfficeId == officeId);
+
+            employeeProject.OfficeID = !officeIsGeneric ? null : officeId;
             Db.SaveChanges();
 
             return Json(true);

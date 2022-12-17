@@ -10,13 +10,17 @@
 
 @Html.Partial("_Banner")
 <div class="parent">
-    <div class="child" style="width:300px">
+    <div class="child" style="width:260px">
         <label>Project User Type Filter</label>
         <td>@Html.DropDownList("ProjectUserTypeIdFilter", new SelectList(Model.ProjectUserTypes, "Value", "Text"), "All", new { @class = "form-control", id = "filter-user-type" })</td>
     </div>
-    <div class="child" style="width:300px">
+    <div class="child" style="width:260px">
         <label>Project Discipline Filter</label>
         <td>@Html.DropDownList("ProjectDisciplineIdFilter", new SelectList(Model.ProjectDisciplines, "Value", "Text"), "All", new { @class = "form-control", id = "filter-discipline-type" })</td>
+    </div>
+    <div class="child" style="width:260px">
+        <label>Office Filter</label>
+        <td>@Html.DropDownList("OfficeIdFilter", new SelectList(Model.Offices, "Value", "Text"), "All", new { @class = "form-control", id = "filter-office-type" })</td>
     </div>
 </div>
 
@@ -30,6 +34,7 @@
             <th data-priority="1" width="25%">Project User Type</th>
             <th data-priority="1">Project Role</th>
             <th data-priority="1" width="20%">Project Disciplines</th>
+            <th data-priority="1" width="20%">Offices</th>
             <th data-priority="3" data-orderable="false">Edit</th>
         </tr>
     </thead>
@@ -47,6 +52,10 @@
                 <td>
                     <span style="display: none;">@item.ProjectDisciplineID</span>
                     @Html.DropDownListFor(modelItem => item.ProjectDisciplineID, new SelectList(Model.ProjectDisciplines, "Value", "Text", item.ProjectDisciplineID), new { @class = "form-control select-project-discipline" })
+                </td>
+                <td>
+                    <span style="display: none;">@item.OfficeID</span>
+                    @Html.DropDownListFor(modelItem => item.OfficeID, new SelectList(Model.Offices, "Value", "Text", item.OfficeID), new { @class = "form-control select-office" })
                 </td>
                 <td>
                     <a href='@Url.Action("Details", new {employeeId = item.EmployeeId})' class="btn btn-primary modal-link" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
@@ -87,6 +96,9 @@
         $('#filter-discipline-type').change(function () {
             window.location = 'EmployeeProjects?projectDisciplineId=' + $(this).val();
         });
+        $('#filter-office-type').change(function () {
+            window.location = 'EmployeeProjects?officeId=' + $(this).val();
+        });
 
 
 
@@ -125,8 +137,20 @@
             );
         });
 
+        //Office
+        $('body').on('change', '.select-office', function() {
+            var dropdown = $(this);
+            var employeeId = dropdown.closest('tr').data('user-id');
+
+            $.post('@Url.Action("UpdateOffice")',{ employeeId: employeeId, officeId: dropdown.val(), projectId: projectId }).done(
+                function(data) {
+                    dropdown.notify("Successfully Saved", { position: "right bottom", className: "success", autoHideDelay: 1500 });
+                }
+            );
+        });
+
     });
-        
+
     </script>
 
 }

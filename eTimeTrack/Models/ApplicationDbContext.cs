@@ -83,6 +83,7 @@ namespace eTimeTrack.Models
         public DbSet<ReconciliationTemplate> ReconciliationTemplates { get; set; }
         public DbSet<ReconciliationType> ReconciliationTypes { get; set; }
         public DbSet<ProjectDiscipline> ProjectDisciplines { get; set; }
+        public DbSet<ProjectOffice> ProjectOffices { get; set; }
         public DbSet<ReconciliationUpload> ReconciliationUploads { get; set; }
 
         internal int SaveChangesWithoutLogging()

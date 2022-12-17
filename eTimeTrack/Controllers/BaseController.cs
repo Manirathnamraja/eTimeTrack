@@ -169,13 +169,16 @@ namespace eTimeTrack.Controllers
             return employeeProjects.Where(x => projectCompanies.Select(y => y.ProjectId).Contains(x.ProjectId)).Select(x => x.Project).ToList();
         }
 
-        protected List<EmployeeProject> GetAllProjectEmployeesOrdered(int? projectId, int? projectUserTypeId = null, int? projectDisciplineId = null)
+        protected List<EmployeeProject> GetAllProjectEmployeesOrdered(int? projectId, int? projectUserTypeId = null, int? projectDisciplineId = null, int? officeId = null)
         {
             IQueryable<ProjectUserType> projectUserTypes = Db.ProjectUserTypes.Where(x => x.ProjectID == projectId);
 
             IQueryable<ProjectDiscipline> projectDisciplines = Db.ProjectDisciplines.Where(x => x.ProjectID == projectId);
+
+            IQueryable<ProjectOffice> offices = Db.ProjectOffices.Where(x => x.ProjectID == projectId);
             int? projectGenericUserTypeId = null;
             int? projectGenericDisciplineId = null;
+            int? officeGenericId = null;
 
             if (projectUserTypeId.HasValue)
             {
@@ -185,9 +188,14 @@ namespace eTimeTrack.Controllers
             {
                 projectGenericDisciplineId = projectDisciplines.SingleOrDefault(x=>x.Text.StartsWith("Default"))?.ProjectDisciplineId;
             }
+            if (officeId.HasValue)
+            {
+                officeGenericId = offices.SingleOrDefault(x => x.OfficeName.StartsWith("Default"))?.OfficeId;
+            }
 
             bool isGeneric = projectUserTypeId == null || projectUserTypeId == projectGenericUserTypeId;
             bool isGenericDiscipline = projectDisciplineId == null || projectDisciplineId == projectGenericDisciplineId;
+            bool isGenericOffice = officeId == null || officeId == officeGenericId;
             return Db.EmployeeProjects.Where(x =>
                 x.ProjectId == projectId
                 && (
@@ -195,6 +203,9 @@ namespace eTimeTrack.Controllers
                     )))
                 && (
                     projectDisciplineId == null || ((isGenericDiscipline ? (x.ProjectDisciplineID == null || x.ProjectDisciplineID == projectGenericDisciplineId) : x.ProjectDisciplineID == projectDisciplineId
+                    )))
+                    && (
+                    officeId == null || ((isGenericOffice ? (x.OfficeID == null || x.OfficeID == officeGenericId) : x.OfficeID == officeId
                     )))
                 ).OrderBy(x => x.Employee.Names).ThenBy(x => x.Employee.EmployeeNo).ToList();
         }

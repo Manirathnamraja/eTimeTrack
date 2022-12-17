@@ -14,6 +14,7 @@ namespace eTimeTrack.Models
         public int ProjectId { get; set; }
         public int? ProjectUserTypeID { get; set; }
         public int? ProjectDisciplineID { get; set; }
+        public int? OfficeID { get; set; }
         public string ProjectRole { get; set; }
 
         [JsonIgnore]

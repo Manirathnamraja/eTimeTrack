@@ -19,5 +19,7 @@ namespace eTimeTrack.ViewModels
 
         [DisplayName("Project Discipline")]
         public string ProjectDisciplineID { get; set; }
+        [DisplayName("Office")]
+        public string OfficeID { get; set; }
     }
 }
