@@ -135,6 +135,17 @@
             </dl>
         }
 
+        if (User.IsTimesheetEditorOrAbove())
+        {
+            <dl class="dl-horizontal">
+                <dt>Project User Classification:</dt>
+                <dd>
+                    @*@Html.ActionLink("Project Disciplines", "Index", "ProjectDisciplines")*@
+                    @Html.ActionLink("Project User Classifications", "Index", "ProjectUserClassifications")
+                </dd>
+            </dl>
+        }
+
 
         if (User.IsUserAdministratorOrAboveExcludeTimesheetEditor())
         {

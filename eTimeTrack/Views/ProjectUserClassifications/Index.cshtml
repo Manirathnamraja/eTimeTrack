@@ -1,0 +1,71 @@
+﻿@using eTimeTrack.Helpers
+@using eTimeTrack.Models
+@model eTimeTrack.ViewModels.ProjectUserClassificationsIndexViewModel
+
+@{
+    ViewBag.Title = "Project User Classifications";
+    ViewBag.BannerColour = AecomColour.Blue;
+}
+
+@Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
+
+<p>
+    <a href="@Url.Action("CreateProjectUserClassification")" class="btn btn-primary">Create Project User Classifications</a>
+</p>
+
+<table class="table data-table" width="100%">
+    <thead>
+        <tr>
+            <th data-priority="1">@Html.DisplayNameFor(model => Model.ProjectUserClassifications[0].ProjectClassificationText)</th>
+            <th data-priority="1">@Html.DisplayNameFor(model => Model.ProjectUserClassifications[0].Description)</th>
+            <th data-priority="1">@Html.DisplayNameFor(model => Model.ProjectUserClassifications[0].AECOMUserClassificationID)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (ProjectUserClassification item in Model.ProjectUserClassifications)
+        {
+            <tr data-user-id="@item.ProjectUserClassificationId">
+                <td>@Html.DisplayFor(modelItem => item.ProjectClassificationText)</td>
+                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                <td>
+                    <span style="display: none;">@item.AECOMUserClassificationID</span>
+                    @Html.DropDownListFor(modelItem => item.AECOMUserClassificationID, new SelectList(Model.AECOMUserClassifications, "Value", "Text", item.AECOMUserClassificationID), new { @class = "form-control select-aecom-userclassification" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>
+
+@section Scripts {
+
+    @Scripts.Render("~/bundles/notify")
+
+<script>
+
+        var projectId = @ViewBag.ProjectId;
+
+
+    $(document).ready(function() {
+
+        //AECOM User Classifications
+        $('body').on('change', '.select-aecom-userclassification', function() {
+            var dropdown = $(this);
+            var projectUserClassificationId = dropdown.closest('tr').data('user-id');
+
+            $.post('@Url.Action("UpdateAECOMUserClassification")', { aecomUserClassificationID: dropdown.val(), projectId: projectId, projectUserClassificationId: projectUserClassificationId  }).done(
+                function(data) {
+                    dropdown.notify("Successfully Saved", { position: "right bottom", className: "success", autoHideDelay: 1500 });
+                }
+            );
+        });
+
+
+
+    });
+
+</script>
+
+}

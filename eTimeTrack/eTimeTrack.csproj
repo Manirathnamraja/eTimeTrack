@@ -233,6 +233,7 @@
     <Compile Include="Controllers\OfficesController.cs" />
     <Compile Include="Controllers\ProjectComponentController.cs" />
     <Compile Include="Controllers\AECOMUserClassificationsController.cs" />
+    <Compile Include="Controllers\ProjectUserClassificationsController.cs" />
     <Compile Include="Controllers\ProjectOfficesController.cs" />
     <Compile Include="Controllers\ProjectGroupsController.cs" />
     <Compile Include="Controllers\ProjectPartsController.cs" />
@@ -405,6 +406,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BulkImportStatus.cs" />
     <Compile Include="Models\AECOMUserClassification.cs" />
+    <Compile Include="Models\ProjectUserClassification.cs" />
     <Compile Include="Models\ProjectOffice.cs" />
     <Compile Include="Models\ProjectTimeCodeConfig.cs" />
     <Compile Include="Migrations\202102260012546_EmployeeCommentOnReconEntry.cs" />
@@ -431,6 +433,8 @@
     <Compile Include="ViewModels\OfficeCreateViewModel.cs" />
     <Compile Include="ViewModels\AECOMUserClassificationsIndexViewModel.cs" />
     <Compile Include="ViewModels\OfficesIndexViewModel.cs" />
+    <Compile Include="ViewModels\ProjectUserClassificationCreateViewModel.cs" />
+    <Compile Include="ViewModels\ProjectUserClassificationsIndexViewModel.cs" />
     <Compile Include="ViewModels\ReconciliationEntryItemViewModel.cs" />
     <Compile Include="ViewModels\ReconciliationSummaryDetailsViewModel.cs" />
     <Compile Include="ViewModels\ReconciliationSummaryIndexViewModel.cs" />
@@ -895,6 +899,8 @@
     <Content Include="Views\ProjectOffices\Index.cshtml" />
     <Content Include="Views\AECOMUserClassifications\CreateAECOMUserClassification.cshtml" />
     <Content Include="Views\AECOMUserClassifications\Index.cshtml" />
+    <Content Include="Views\ProjectUserClassifications\CreateProjectUserClassification.cshtml" />
+    <Content Include="Views\ProjectUserClassifications\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\ProjectTimesheetPeriods\Assign.cshtml" />
