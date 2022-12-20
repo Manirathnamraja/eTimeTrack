@@ -45,7 +45,7 @@
 
 <script>
 
-        var projectId = @ViewBag.ProjectId;
+       // var projectId = @ViewBag.ProjectId;
 
 
     $(document).ready(function() {
@@ -55,7 +55,7 @@
             var dropdown = $(this);
             var projectUserClassificationId = dropdown.closest('tr').data('user-id');
 
-            $.post('@Url.Action("UpdateAECOMUserClassification")', { aecomUserClassificationID: dropdown.val(), projectId: projectId, projectUserClassificationId: projectUserClassificationId  }).done(
+            $.post('@Url.Action("UpdateAECOMUserClassification")', { aecomUserClassificationID: dropdown.val(), projectUserClassificationId: projectUserClassificationId  }).done(
                 function(data) {
                     dropdown.notify("Successfully Saved", { position: "right bottom", className: "success", autoHideDelay: 1500 });
                 }

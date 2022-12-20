@@ -35,7 +35,7 @@ namespace eTimeTrack.Controllers
             
             List<ProjectUserClassification> projectUserClassifications = Db.ProjectUserClassifications.Where(x => x.ProjectID == projectId).ToList();
 
-            List<SelectListItem> selectAECOMUserClassificationItems = GetAECOMUserClassificationSelectItems(projectId);
+            List<SelectListItem> selectAECOMUserClassificationItems = GetAECOMUserClassificationSelectItems();
 
             ViewBag.ProjectId = projectId;
             //ViewBag.ProjectId = ;
@@ -64,7 +64,7 @@ namespace eTimeTrack.Controllers
             };
 
             //Project Discipline
-            List<SelectListItem> selectAECOMUserClassificationItems = GetAECOMUserClassificationSelectItems(projectId);
+            List<SelectListItem> selectAECOMUserClassificationItems = GetAECOMUserClassificationSelectItems();
 
             SelectList availableAECOMUserClassifications = new SelectList(selectAECOMUserClassificationItems, "Value", "Text", model.AECOMUserClassificationID);
             ViewBag.AvailableAECOMUserClassifications = availableAECOMUserClassifications;
@@ -120,18 +120,19 @@ namespace eTimeTrack.Controllers
             return RedirectToAction("Index");
         }
 
-        private List<SelectListItem> GetAECOMUserClassificationSelectItems(int projectId)
+        private List<SelectListItem> GetAECOMUserClassificationSelectItems()
         {
 
-            List<SelectListItem> selectItems = Db.AECOMUserClassifications.Where(x => x.ProjectID == projectId || x.ProjectID == 0).Select(x => new SelectListItem { Value = x.AECOMUserClassificationId.ToString(), Text = x.Classification }).ToList();
+            //List<SelectListItem> selectItems = Db.AECOMUserClassifications.Where(x => x.ProjectID == projectId || x.ProjectID == 0).Select(x => new SelectListItem { Value = x.AECOMUserClassificationId.ToString(), Text = x.Classification }).ToList();
+            List<SelectListItem> selectItems = Db.AECOMUserClassifications.Select(x => new SelectListItem { Value = x.AECOMUserClassificationId.ToString(), Text = x.Classification }).ToList();
             return selectItems;
 
         }
 
         [HttpPost]
-        public JsonResult UpdateAECOMUserClassification(int? projectId, int? aecomUserClassificationID,int? projectUserClassificationId)
+        public JsonResult UpdateAECOMUserClassification(int? aecomUserClassificationID,int? projectUserClassificationId)
         {
-            ProjectUserClassification projectUserClassification = Db.ProjectUserClassifications.Single(x => x.ProjectID == projectId && x.ProjectUserClassificationId == projectUserClassificationId);
+            ProjectUserClassification projectUserClassification = Db.ProjectUserClassifications.Single(x => x.ProjectUserClassificationId == projectUserClassificationId);
 
             bool aECOMUserClassificationIsGeneric = !aecomUserClassificationID.HasValue || Db.AECOMUserClassifications.Any(x => x.AECOMUserClassificationId == aecomUserClassificationID);
 

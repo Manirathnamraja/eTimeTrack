@@ -30,7 +30,8 @@ namespace eTimeTrack.Controllers
             //    InsertDefaultaecomUserClassifications();
             //}
             
-            List<AECOMUserClassification> aecomUserClassifications = Db.AECOMUserClassifications.Where(x => x.ProjectID == projectId).ToList();
+            //List<AECOMUserClassification> aecomUserClassifications = Db.AECOMUserClassifications.Where(x => x.ProjectID == projectId).ToList();
+            List<AECOMUserClassification> aecomUserClassifications = Db.AECOMUserClassifications.ToList();
 
 
             AECOMUserClassificationsIndexViewModel vm = new AECOMUserClassificationsIndexViewModel
@@ -51,7 +52,7 @@ namespace eTimeTrack.Controllers
 
             AECOMUserClassificationCreateViewModel model = new AECOMUserClassificationCreateViewModel
             {
-                ProjectID = project.ProjectID,
+                //ProjectID = project.ProjectID,
                 Classification = null
             };
             return View(model);
@@ -65,7 +66,7 @@ namespace eTimeTrack.Controllers
                 return View(model);
             }
 
-            List<AECOMUserClassification> allExistingaecomUserClassifications = Db.AECOMUserClassifications.Where(x => x.ProjectID == model.ProjectID).ToList();
+            List<AECOMUserClassification> allExistingaecomUserClassifications = Db.AECOMUserClassifications.ToList();
 
             InfoMessage message;
 
@@ -82,7 +83,7 @@ namespace eTimeTrack.Controllers
             {
                 Classification = model.Classification,
               //  Description = model.Description,
-                ProjectID = model.ProjectID,
+                //ProjectID = model.ProjectID,
                 AECOMUserClassificationId = (int)model.AECOMUserClassificationId,
             };
 

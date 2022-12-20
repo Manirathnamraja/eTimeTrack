@@ -130,7 +130,7 @@
             var dropdown = $(this);
             var employeeId = dropdown.closest('tr').data('user-id');
 
-            $.post('@Url.Action("UpdateUserProjectDiscipline")',{ employeeId: employeeId, projectDisciplineId: dropdown.val(), projectId: projectId }).done(
+            $.post('@Url.Action("UpdateUserProjectDiscipline")',{ employeeId: employeeId, projectDisciplineId: dropdown.val() }).done(
                 function(data) {
                     dropdown.notify("Successfully Saved", { position: "right bottom", className: "success", autoHideDelay: 1500 });
                 }
@@ -142,7 +142,7 @@
             var dropdown = $(this);
             var employeeId = dropdown.closest('tr').data('user-id');
 
-            $.post('@Url.Action("UpdateOffice")',{ employeeId: employeeId, officeId: dropdown.val(), projectId: projectId }).done(
+            $.post('@Url.Action("UpdateOffice")',{ employeeId: employeeId, officeId: dropdown.val() }).done(
                 function(data) {
                     dropdown.notify("Successfully Saved", { position: "right bottom", className: "success", autoHideDelay: 1500 });
                 }

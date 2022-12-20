@@ -33,7 +33,8 @@ namespace eTimeTrack.Controllers
                 InsertDefaultProjectDisciplines();
             }
             
-            List<ProjectDiscipline> projectDisciplines = Db.ProjectDisciplines.Where(x => x.ProjectID == projectId || x.Text.StartsWith("Default")).ToList();
+            //List<ProjectDiscipline> projectDisciplines = Db.ProjectDisciplines.Where(x => x.ProjectID == projectId || x.Text.StartsWith("Default")).ToList();
+            List<ProjectDiscipline> projectDisciplines = Db.ProjectDisciplines.ToList();
 
 
             ProjectDisciplinesIndexViewModel vm = new ProjectDisciplinesIndexViewModel 
@@ -54,7 +55,7 @@ namespace eTimeTrack.Controllers
                     LastModifiedBy = UserHelpers.GetCurrentUserId(),
                     LastModifiedDate = DateTime.Now,
                     Description = GenericDisciplineTextDescription,
-                    ProjectID = 0
+                    //ProjectID = 0
                 };
 
                 Db.ProjectDisciplines.Add(ProjectDiscipline);
@@ -78,7 +79,7 @@ namespace eTimeTrack.Controllers
 
             ProjectDisciplineCreateViewModel model = new ProjectDisciplineCreateViewModel
             {
-                ProjectID = project.ProjectID,
+                //ProjectID = project.ProjectID,
                 Text = null
             };
             return View(model);
@@ -92,7 +93,7 @@ namespace eTimeTrack.Controllers
                 return View(model);
             }
 
-            List<ProjectDiscipline> allExistingProjectDisciplines = Db.ProjectDisciplines.Where(x => x.ProjectID == model.ProjectID).ToList();
+            List<ProjectDiscipline> allExistingProjectDisciplines = Db.ProjectDisciplines.ToList();
 
             InfoMessage message;
 
@@ -109,7 +110,7 @@ namespace eTimeTrack.Controllers
             {
                 Text = model.Text,
                 Description = model.Description,
-                ProjectID = model.ProjectID,
+                //ProjectID = model.ProjectID,
                 ProjectDisciplineId = (int)model.ProjectDisciplineId,
             };
 

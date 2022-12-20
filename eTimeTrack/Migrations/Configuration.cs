@@ -1,3 +1,4 @@
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
 using System.Data.Entity.Migrations;
 
 namespace eTimeTrack.Migrations
@@ -7,6 +8,7 @@ namespace eTimeTrack.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
+            AutomaticMigrationDataLossAllowed = true;
             ContextKey = "eTimeTrack.Models.ApplicationDbContext";
         }
 

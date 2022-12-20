@@ -10,7 +10,7 @@ namespace eTimeTrack.ViewModels
         [StringLength(511, ErrorMessage = "Maximum length is 511")]
         [Required]
         public string Description { get; set; }
-        public int ProjectID { get; set; }
+       // public int ProjectID { get; set; }
         public int OfficeId { get; set; }
     }
 }

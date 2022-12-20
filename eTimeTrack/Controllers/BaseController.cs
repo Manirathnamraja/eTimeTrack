@@ -173,9 +173,10 @@ namespace eTimeTrack.Controllers
         {
             IQueryable<ProjectUserType> projectUserTypes = Db.ProjectUserTypes.Where(x => x.ProjectID == projectId);
 
-            IQueryable<ProjectDiscipline> projectDisciplines = Db.ProjectDisciplines.Where(x => x.ProjectID == projectId);
+            //IQueryable<ProjectDiscipline> projectDisciplines = Db.ProjectDisciplines.Where(x => x.ProjectID == projectId);
+            IQueryable<ProjectDiscipline> projectDisciplines = Db.ProjectDisciplines;
 
-            IQueryable<ProjectOffice> offices = Db.ProjectOffices.Where(x => x.ProjectID == projectId);
+            IQueryable<ProjectOffice> offices = Db.ProjectOffices;
             int? projectGenericUserTypeId = null;
             int? projectGenericDisciplineId = null;
             int? officeGenericId = null;

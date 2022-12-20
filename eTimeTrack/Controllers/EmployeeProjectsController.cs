@@ -26,9 +26,9 @@ namespace eTimeTrack.Controllers
             
             List<SelectListItem> selectItems = GetProjectUserTypeSelectItems(projectId);
 
-            List<SelectListItem> selectProjectDisciplineItems = GetProjectDisciplineSelectItems(projectId);
+            List<SelectListItem> selectProjectDisciplineItems = GetProjectDisciplineSelectItems();
 
-            List<SelectListItem> selectOfficeItems = GetOfficeSelectItems(projectId);
+            List<SelectListItem> selectOfficeItems = GetOfficeSelectItems();
 
             ViewBag.ProjectId = projectId;
 
@@ -143,12 +143,12 @@ namespace eTimeTrack.Controllers
             ViewBag.AvailableProjectUserTypes = availableProjectUserTypes;
 
             //Project Discipline
-            List<SelectListItem> selectProjectDisciplineItems = GetProjectDisciplineSelectItems(projectId);
+            List<SelectListItem> selectProjectDisciplineItems = GetProjectDisciplineSelectItems();
 
             SelectList availableProjectDisciplines = new SelectList(selectProjectDisciplineItems, "Value", "Text", model.ProjectDisciplineID);
 
             //Office
-            List<SelectListItem> selectOfficeItems = GetProjectDisciplineSelectItems(projectId);
+            List<SelectListItem> selectOfficeItems = GetOfficeSelectItems();
 
             SelectList availableOffices = new SelectList(selectOfficeItems, "Value", "Text", model.OfficeID);
 
@@ -179,18 +179,18 @@ namespace eTimeTrack.Controllers
             return selectItems;
         }
 
-        private List<SelectListItem> GetProjectDisciplineSelectItems(int projectId)
+        private List<SelectListItem> GetProjectDisciplineSelectItems()
         {
          
-            List<SelectListItem> selectItems = Db.ProjectDisciplines.Where(x => x.ProjectID == projectId || x.ProjectID == 0).Select(x => new SelectListItem { Value = x.ProjectDisciplineId.ToString(), Text = x.Text }).ToList();
+            List<SelectListItem> selectItems = Db.ProjectDisciplines.Select(x => new SelectListItem { Value = x.ProjectDisciplineId.ToString(), Text = x.Text }).ToList();
             return selectItems;
 
         }
 
-        private List<SelectListItem> GetOfficeSelectItems(int projectId)
+        private List<SelectListItem> GetOfficeSelectItems()
         {
 
-            List<SelectListItem> selectItems = Db.ProjectOffices.Where(x => x.ProjectID == projectId || x.ProjectID == 0).Select(x => new SelectListItem { Value = x.OfficeId.ToString(), Text = x.OfficeName }).ToList();
+            List<SelectListItem> selectItems = Db.ProjectOffices.Select(x => new SelectListItem { Value = x.OfficeId.ToString(), Text = x.OfficeName }).ToList();
             return selectItems;
 
         }
@@ -268,9 +268,9 @@ namespace eTimeTrack.Controllers
         }
 
         [HttpPost]
-        public JsonResult UpdateUserProjectDiscipline(int? employeeId, int? projectId, int? projectDisciplineId)
+        public JsonResult UpdateUserProjectDiscipline(int? employeeId, int? projectDisciplineId)
         {
-            EmployeeProject employeeProject = Db.EmployeeProjects.Single(x => x.EmployeeId == employeeId && x.ProjectId == projectId);
+            EmployeeProject employeeProject = Db.EmployeeProjects.Single(x => x.EmployeeId == employeeId);
 
             bool projectDisciplineIsGeneric = !projectDisciplineId.HasValue || Db.ProjectDisciplines.Any(x => x.ProjectDisciplineId == projectDisciplineId);
 
@@ -281,9 +281,9 @@ namespace eTimeTrack.Controllers
         }
 
         [HttpPost]
-        public JsonResult UpdateOffice(int? employeeId, int? projectId, int? officeId)
+        public JsonResult UpdateOffice(int? employeeId, int? officeId)
         {
-            EmployeeProject employeeProject = Db.EmployeeProjects.Single(x => x.EmployeeId == employeeId && x.ProjectId == projectId);
+            EmployeeProject employeeProject = Db.EmployeeProjects.Single(x => x.EmployeeId == employeeId);
 
             bool officeIsGeneric = !officeId.HasValue || Db.ProjectOffices.Any(x => x.OfficeId == officeId);
 

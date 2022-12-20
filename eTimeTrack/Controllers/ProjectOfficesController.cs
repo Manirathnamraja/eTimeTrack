@@ -33,7 +33,8 @@ namespace eTimeTrack.Controllers
                 InsertDefaultOffices();
             }
             
-            List<ProjectOffice> offices = Db.ProjectOffices.Where(x => x.ProjectID == projectId || x.OfficeName.StartsWith("Default")).ToList();
+            //List<ProjectOffice> offices = Db.ProjectOffices.Where(x => x.ProjectID == projectId || x.OfficeName.StartsWith("Default")).ToList();
+            List<ProjectOffice> offices = Db.ProjectOffices.ToList();
 
 
             OfficesIndexViewModel vm = new OfficesIndexViewModel 
@@ -54,7 +55,7 @@ namespace eTimeTrack.Controllers
                     LastModifiedBy = UserHelpers.GetCurrentUserId(),
                     LastModifiedDate = DateTime.Now,
                     Description = GenericOfficeTextDescription,
-                    ProjectID = 0
+                   // ProjectID = 0
                 };
 
                 Db.ProjectOffices.Add(Office);
@@ -78,7 +79,7 @@ namespace eTimeTrack.Controllers
 
             OfficeCreateViewModel model = new OfficeCreateViewModel
             {
-                ProjectID = project.ProjectID,
+                //ProjectID = project.ProjectID,
                 OfficeName = null
             };
             return View(model);
@@ -92,7 +93,7 @@ namespace eTimeTrack.Controllers
                 return View(model);
             }
 
-            List<ProjectOffice> allExistingOffices = Db.ProjectOffices.Where(x => x.ProjectID == model.ProjectID).ToList();
+            List<ProjectOffice> allExistingOffices = Db.ProjectOffices.ToList();
 
             InfoMessage message;
 
@@ -109,7 +110,7 @@ namespace eTimeTrack.Controllers
             {
                 OfficeName = model.OfficeName,
                 Description = model.Description,
-                ProjectID = model.ProjectID,
+                //ProjectID = model.ProjectID,
                 OfficeId = (int)model.OfficeId,
             };
 
