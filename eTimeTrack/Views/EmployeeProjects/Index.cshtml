@@ -72,11 +72,6 @@
 
     @Scripts.Render("~/bundles/notify")
     <style>
-        /*.parent{
-            margin:1rem;
-            padding: 2rem 2rem;
-            text-align: center;
-        }*/
         .child {
             display: inline-block;
             padding: 1rem 1rem;
@@ -130,7 +125,7 @@
             var dropdown = $(this);
             var employeeId = dropdown.closest('tr').data('user-id');
 
-            $.post('@Url.Action("UpdateUserProjectDiscipline")',{ employeeId: employeeId, projectDisciplineId: dropdown.val() }).done(
+            $.post('@Url.Action("UpdateUserProjectDiscipline")', { employeeId: employeeId, projectDisciplineId: dropdown.val(), projectId: projectId }).done(
                 function(data) {
                     dropdown.notify("Successfully Saved", { position: "right bottom", className: "success", autoHideDelay: 1500 });
                 }
@@ -142,7 +137,7 @@
             var dropdown = $(this);
             var employeeId = dropdown.closest('tr').data('user-id');
 
-            $.post('@Url.Action("UpdateOffice")',{ employeeId: employeeId, officeId: dropdown.val() }).done(
+            $.post('@Url.Action("UpdateOffice")', { employeeId: employeeId, officeId: dropdown.val(), projectId: projectId }).done(
                 function(data) {
                     dropdown.notify("Successfully Saved", { position: "right bottom", className: "success", autoHideDelay: 1500 });
                 }

@@ -211,6 +211,12 @@ namespace eTimeTrack.Controllers
                 ).OrderBy(x => x.Employee.Names).ThenBy(x => x.Employee.EmployeeNo).ToList();
         }
 
+        protected List<UserRate> GetAllUserRatesOrdered(int? projectId)
+        {
+            return (Db.UserRates.Where(x =>
+                x.ProjectId == projectId).OrderBy(x => x.Employee.Names).ThenBy(x => x.Employee.EmployeeNo).ToList());
+        }
+
         protected List<Employee> GetAllEmployeesOrdered(int? projectId = null)
         {
             return Db.Users.Include(x => x.Company).Where(x => projectId == null || x.Projects.Any(y => y.ProjectId == projectId)).OrderBy(x => x.Email).ThenBy(x => x.EmployeeNo).AsNoTracking().ToList();

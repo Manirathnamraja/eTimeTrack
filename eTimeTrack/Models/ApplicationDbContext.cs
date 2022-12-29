@@ -87,6 +87,8 @@ namespace eTimeTrack.Models
         public DbSet<AECOMUserClassification> AECOMUserClassifications { get; set; }
         public DbSet<ProjectUserClassification> ProjectUserClassifications { get; set; }
         public DbSet<ReconciliationUpload> ReconciliationUploads { get; set; }
+        public DbSet<UserRate> UserRates { get; set; }
+
 
         internal int SaveChangesWithoutLogging()
         {

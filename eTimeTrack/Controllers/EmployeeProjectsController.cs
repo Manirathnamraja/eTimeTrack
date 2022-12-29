@@ -268,9 +268,9 @@ namespace eTimeTrack.Controllers
         }
 
         [HttpPost]
-        public JsonResult UpdateUserProjectDiscipline(int? employeeId, int? projectDisciplineId)
+        public JsonResult UpdateUserProjectDiscipline(int? employeeId,int? projectId, int? projectDisciplineId)
         {
-            EmployeeProject employeeProject = Db.EmployeeProjects.Single(x => x.EmployeeId == employeeId);
+            EmployeeProject employeeProject = Db.EmployeeProjects.Single(x => x.EmployeeId == employeeId && x.ProjectId == projectId);
 
             bool projectDisciplineIsGeneric = !projectDisciplineId.HasValue || Db.ProjectDisciplines.Any(x => x.ProjectDisciplineId == projectDisciplineId);
 
@@ -281,9 +281,9 @@ namespace eTimeTrack.Controllers
         }
 
         [HttpPost]
-        public JsonResult UpdateOffice(int? employeeId, int? officeId)
+        public JsonResult UpdateOffice(int? employeeId, int? projectId, int? officeId)
         {
-            EmployeeProject employeeProject = Db.EmployeeProjects.Single(x => x.EmployeeId == employeeId);
+            EmployeeProject employeeProject = Db.EmployeeProjects.SingleOrDefault(x => x.EmployeeId == employeeId && x.ProjectId == projectId);
 
             bool officeIsGeneric = !officeId.HasValue || Db.ProjectOffices.Any(x => x.OfficeId == officeId);
 
