@@ -1,0 +1,285 @@
+﻿@using eTimeTrack.Helpers
+@model IEnumerable<eTimeTrack.Models.UserRate>
+
+
+@{
+    ViewBag.Title = "Edit User Rates";
+}
+
+@Html.Partial("_Banner")
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <input type="hidden" id="employeeId" value="@ViewBag.EmployeeId" />
+        <input type="hidden" id="projectId" value="@ViewBag.ProjectId" />
+        <form>
+            <table id="tblSkills" cellpadding="0" cellspacing="0" class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th style="width:150px">Start Date</th>
+                        <th style="width:150px">End Date</th>
+                        <th style="width:150px">Project User Classification</th>
+                        <th style="width:150px">Rates Confirmed</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td><input type="text" id="txtStartDate" class="form-control datepicker" placeholder="Select Start date" /></td>
+                        <td><input type="text" id="txtEndDate" class="form-control datepicker" placeholder="Select Start date" /></td>
+                        <td>
+                            <select id="drpProjectClassification" class="form-control">
+                                <option>-- SELECT --</option>
+                                @foreach (var item in ViewBag.AvailableProjectUserClassifications)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                        </td>
+                        <td><input type="checkbox" id="chckRatesConfirmed" /></td>
+                        <td>
+                            <input type="button" id="btnAdd" class="btnbtn-success btn-sm" value="Add" />
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+            <br />
+            <input type="button" id="btnSave" value="Save All" class="bnt btn-block btn-success" />
+
+            <br />
+        </form>
+        <table class="table table-bordered table-responsive">
+            <thead>
+                <tr>
+                    <th style="width:200px">Start Date</th>
+                    <th>End Date</th>
+                    <th>Project User Classification</th>
+                    <th>Rates Confirmed</th>
+                    <th style="width:200px"></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @if (Model != null)
+                {
+
+
+                    foreach (eTimeTrack.Models.UserRate c in Model)
+                    {
+                        <tr>
+                            <td>@c.StartDate.Value.ToString("dd/MMM/yyyy")</td>
+                            <td>@c.EndDate.Value.ToString("dd/MMM/yyyy")</td>
+                            @*<td>
+            <span style="display: none;">@c.ProjectUserClassificationID</span>
+            @Html.DropDownListFor(modelItem => c.ProjectUserClassificationID, new SelectList(c.ProjectUserClassifications, "Value", "Text", c.ProjectUserClassificationID), new { @class = "form-control select-project-discipline" })
+        </td>*@
+                            <td>
+                                @*<select class="form-control" disabled>
+
+                @foreach (var item in ViewBag.AvailableProjectUserClassifications)
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            </select>*@
+                                <select class="form-control" disabled>
+                                    @foreach (var item in ViewBag.AvailableProjectUserClassifications)
+                                    {
+                                        var selected = "";
+
+                                        if (item.Value == c.ProjectUserClassificationID.ToString())
+                                        {
+                                            selected = "selected='selected'";
+                                        }
+
+                                        <option @selected value="@item.Value">@item.Text</option>
+                                    }
+                                </select>
+                            </td>
+                            <td>
+                                @c.IsRatesConfirmed
+                            </td>
+
+                            <td>
+                                <input type="button" value="Edit" class="btn btn-info btn-sm" onclick="Edit(this)" />
+                            </td>
+
+                            <td>
+                                <input type="button" value="Remove" class="btn btn-danger btn-sm" onclick="Remove(this)" />
+                            </td>
+                        </tr>
+                    }
+
+
+                }
+
+            </tbody>
+
+        </table>
+
+
+
+    </div>
+}
+
+<a href="@Url.Action("Index")" class="btn btn-primary">Back</a>
+@section Scripts {
+
+    @Scripts.Render("~/bundles/notify")
+
+    <style>
+        form {
+            margin: 20px;
+        }
+
+            form input, button {
+                padding: 5px;
+            }
+
+        table {
+            width: 90%;
+            margin: 20px;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #cdcdcd;
+        }
+
+            table th, table td {
+                padding: 10px;
+                text-align: left;
+            }
+
+        .delete-row, h2 {
+            margin: 20px;
+        }
+    </style>
+    <script>
+        //$(document).ready(function () {
+        //    getSelectData($('#drpProjectClassification'));
+        //});
+        $("body").on("click", "#btnAdd", function () {
+
+            var txtskills = $("#txtStartDate");
+            var txtvalues = $("#txtEndDate");
+            //var txtvalues1 = $("#drpProjectClassification");
+            var txtvalues1 = $("#drpProjectClassification option:selected").text();
+            var txtvalues2 = $("#chckRatesConfirmed").is(":checked");
+
+            var tBody = $("#tblSkills > TBODY")[0];
+
+            //Add Row.
+            var row = tBody.insertRow(-1);
+
+            //Add Name cell.
+            var cell = $(row.insertCell(-1));
+            cell.html(txtskills.val());
+
+            //Add Country cell.
+            cell = $(row.insertCell(-1));
+            cell.html(txtvalues.val());
+
+            cell = $(row.insertCell(-1));
+            cell.html(txtvalues1);
+
+            cell = $(row.insertCell(-1));
+            cell.html(txtvalues2);
+
+            //Add Edit Button cell.
+            cell = $(row.insertCell(-1));
+            var btnEdit = $("<input/>");
+            btnEdit.attr("type", "button");
+            btnEdit.attr("onclick", "Edit(this);");
+            btnEdit.attr("class", "btn btn-info btn-sm")
+            btnEdit.val("-");
+            cell.append(btnEdit);
+
+            //Add Button cell.
+            cell = $(row.insertCell(-1));
+            var btnRemove = $("<input/>");
+            btnRemove.attr("type", "button");
+            btnRemove.attr("onclick", "Remove(this);");
+            btnRemove.attr("class", "btn btn-danger btn-sm")
+            btnRemove.val("x");
+            cell.append(btnRemove);
+
+            //Clear the TextBoxes.
+            txtskills.val("");
+            txtvalues.val("");
+            // txtvalues1.val("");
+            //txtvalues2.val("");
+        });
+
+        function Remove(button) {
+            //Determine the reference of the Row using the Button.
+            var row = $(button).closest("TR");
+            var name = $("TD", row).eq(0).html();
+            if (confirm("Do you want to delete:" + name)) {
+                //Get the reference of the Table.
+                var table = $("#tblSkills")[0];
+
+                //Delete the Table row using it's Index.
+                table.deleteRow(row[0].rowIndex);
+            }
+        };
+
+        //$(document).on('click', 'span.editrow', function () {
+        //    currentRow = $(this).parents('tr'); $("#minAmt").val($(this).closest('tr').find('td.minAmt').text());
+        //    $("#txtStartDate").val($(this).closest('tr').find('td.maxAmt').text());
+        //    $("#type").val($(this).closest('tr').find('td.type').text());
+        //});
+
+        function Edit(button) {
+            debugger;
+            currentRow = $(this).parents('tr');
+            $("#txtStartDate").val($(this).closest('tr').find('td.txtStartDate').text());
+            $("#txtEndDate").val($(this).closest('tr').find('td.txtEndDate').text());
+            $("#drpProjectClassification").val($(this).closest('tr').find('td.drpProjectClassification').text());
+            $("#chckRatesConfirmed").val($(this).closest('tr').find('td.chckRatesConfirmed').text());
+            
+        };
+
+        var employeeId = $("#employeeId").val();
+        var projectId = $("#projectId").val();
+
+        $("body").on("click", "#btnSave", function () {
+            //Loop through the Table rows and build a JSON array.
+            var myData = new Array();
+            $("#tblSkills tbody tr").each(function () {
+                var row = $(this);
+                var userRateData = {};
+                //skill.skill_name = row.find("td").eq(0).html();
+                userRateData.startDate = row.find("td").eq(0).html();
+                userRateData.endDate = row.find("td").eq(1).html();
+                userRateData.projectUserClassificationID = row.find("td").eq(2).html();
+                userRateData.ratesConfirmed = row.find("td").eq(3).html();
+                 userRateData.employeeId = employeeId;
+                userRateData.projectId = projectId;
+                //userRateData.projClass = row.find("td").eq(3).find('select').val();
+                myData.push(userRateData);
+            });
+            console.log(myData);
+
+            //Send the JSONarray to Controller using AJAX.
+            $.ajax({
+                type: "POST",
+                url: "/UserRates/InsertSkills",
+                data: JSON.stringify(myData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    alert(r + " record(s) inserted.");
+                    location.reload();
+                }
+            });
+        });
+
+        
+
+    </script>
+}

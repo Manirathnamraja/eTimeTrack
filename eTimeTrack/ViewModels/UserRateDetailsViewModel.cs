@@ -27,6 +27,8 @@ namespace eTimeTrack.ViewModels
         
         [DisplayName("Project User Classifications")]
         public string ProjectUserClassificationID { get; set; }
+
+        public string ProjectUserClassificationSelectedValue { get; set; }
         public IEnumerable<SelectListItem> ProjectUserClassifications { get; set; }
         public int ProjectID { get; set; }
 

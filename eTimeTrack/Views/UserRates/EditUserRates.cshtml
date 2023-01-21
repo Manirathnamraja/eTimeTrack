@@ -1,0 +1,190 @@
+﻿@using eTimeTrack.Helpers
+@model eTimeTrack.ViewModels.UserRateDetailsViewModel
+
+@{
+    ViewBag.Title = "Edit User Rates";
+}
+
+@Html.Partial("_Banner")
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <div class="form-group">
+            <div class="col-md-4">
+                @Html.LabelFor(model => model.EmployeeNo, new { @class = "control-label" })
+            </div>
+            <div class="col-md-2 bottom-align-text">
+                @Html.DisplayFor(model => model.EmployeeNo)
+            </div>
+            <div class="col-md-2">
+                @Html.LabelFor(model => model.Names, new { @class = "control-label" })
+            </div>
+            <div class="col-md-4 bottom-align-text">
+                @Html.DisplayFor(model => model.Names)
+            </div>
+        </div>
+        <form id="form1">
+            <h3>
+
+                Add New
+
+            </h3>
+
+            <table class='table table-bordered' id='Add'>
+                <tr>
+
+                    <th>@Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label" })</th>
+                    <th>@Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label" })</th>
+                    <th>@Html.LabelFor(model => model.ProjectUserClassificationID, new { @class = "control-label" })</th>
+                    <th>@Html.LabelFor(model => model.IsRatesConfirmed, new { @class = "control-label" })</th>
+
+                </tr>
+
+                <tr>
+
+                    <td>
+
+                        @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control datepicker", @readonly = true, @placeholder = "Select Start date",@id = "txtId" } })
+
+                        @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+
+                    </td>
+
+                    <td>
+                        @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control datepicker", @readonly = true, @placeholder = "Select End date",@id = "txtname" } })
+                        @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+                    </td>
+
+                    <td>
+                        @Html.DropDownList("ProjectUserClassificationID", (SelectList)ViewBag.AvailableProjectUserClassifications, "-- Select --", new { @class = "form-control", @id = "ddlRole" })
+                    </td>
+                    <!--<td>-->
+                        @*@Html.EditorFor(model => model.IsRatesConfirmed)*@
+                        @*@Html.ValidationMessageFor(model => model.IsRatesConfirmed, "", new { @class = "text-danger" })*@
+                        <!--@Html.CheckBoxFor(model => model.IsRatesConfirmed, new { id = "chckRates" })
+                    </td>-->
+
+                </tr>
+
+            </table>
+
+            <input type="button" id="btnAdd" style="display: block" value="Add" />
+
+            <input type="button" id="btnUpdate" style="display: none" value="Update" />
+
+            <br />
+            <table class='table table-bordered' id='UserInfo'>
+
+                <tr>
+                    <th>@Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label" })</th>
+                    <th>@Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label" })</th>
+                    <th>@Html.LabelFor(model => model.ProjectUserClassificationID, new { @class = "control-label" })</th>
+                    @*<th>@Html.LabelFor(model => model.IsRatesConfirmed, new { @class = "control-label" })</th>*@
+                </tr>
+
+                <tbody id="table_td"></tbody>
+
+            </table>
+
+            <div id="output"></div>
+
+        </form>
+
+    </div>
+}
+
+<a href="@Url.Action("Index")" class="btn btn-primary">Back</a>
+@section Scripts {
+
+    @Scripts.Render("~/bundles/notify")
+    <script>
+
+        $(document).ready(function () {
+
+          //  let i = 1;
+
+            $("#btnAdd").click(function () {
+
+                let newHtml = GetHtml().replace("$[Id]", $("#txtId").val()).replace("$[Name]", $("#txtname").val()).replace("$[role]", $("#ddlRole option:selected").val()).replace("$[action]", "Edit").replace("$[Delete]", "Delete");
+
+                $("#table_td").append(newHtml);
+
+            });
+
+
+
+            $("#btnUpdate").click(function () {
+
+                let newHtml = GetHtml().replace("$[Id]", $("#txtId").val()).replace("$[Name]", $("#txtname").val()).replace("$[role]", $("#ddlRole option:selected").val()).replace("$[action]", "Edit").replace("$[Delete]", "Delete");
+
+                $("#table_td").append(newHtml);
+
+                $("#btnAdd").show();
+
+                $("#btnUpdate").hide();
+
+                $("#txtId").val('');
+
+                $("#txtname").val('');
+
+                $("#ddlRole option:selected").val('Select')
+
+
+
+            });
+
+
+
+            $(document).on("click", "#A_Edit", function () {
+
+                $("#btnAdd").hide();
+
+                $("#btnUpdate").show();
+
+                $("#txtId").show();
+
+                $("#txtId").val($(this).parent().parent().find('.Id').html());
+
+                $("#txtname").val($(this).parent().parent().find('.Name').html());
+
+                $("#ddlRole option:selected").val($(this).parent().parent().find('.role').html())
+
+                $(this).parents("tr").remove();
+
+                $("#btnUpdate").focus();
+
+
+
+            });
+
+
+
+            $(document).on("click", "#A_delete", function () {
+
+                $(this).parents("tr").remove();
+
+            });
+
+        });
+
+
+
+        function GetHtml() {
+
+            return "<tr><td class='Id'>$[Id]</td>"
+
+                + "<td class='Name'>$[Name]</td>"
+
+                + "<td class='role'>$[role]</td>"
+
+                + "<td class='action'><a href='#' id='A_Edit'> $[action] </a>  <a href='#' id='A_delete'>$[Delete]</a></td></tr>";
+
+        }
+
+
+
+    </script>
+}

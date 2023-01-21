@@ -1,0 +1,393 @@
+﻿
+@model eTimeTrack.Models.UserRate
+
+@using eTimeTrack.Helpers
+@{
+    ViewBag.Title = "Create User Rates";
+    ViewBag.BannerColour = AecomColour.Blue;
+}
+
+<div class="card">
+    <div class="card-title">
+        <h2>User Rates for - Employee No : @ViewBag.EmployeeNo, Employee Name : @ViewBag.EmployeeName</h2>
+    </div>
+    <div class="card-body">
+
+        @if (Model != null)
+        {
+            <div class="row">
+                <input type="hidden" id="employeeId" value="@ViewBag.EmployeeId" />
+                <input type="hidden" id="projectId" value="@ViewBag.ProjectId" />
+                <input type="hidden" id="userRateId" value="@Model.UserRateId" />
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input id="txtStartDate" value="@Model.StartDate.Value.ToString("dd/MMM/yyyy")" class="form-control datepicker" placeholder="Select Start date" />
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>End Date</label>
+                        <input id="txtEndDate" value="@Model.EndDate.Value.ToString("dd/MMM/yyyy")" class="form-control datepicker" placeholder="Select End date" />
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Project User Classification</label>
+                        @*<select class="form-control" id="drpProjectClassification">
+                                @foreach (var item in ViewBag.AvailableProjectUserClassifications)
+                                {
+                                    var selected = "";
+
+                                    if (item.Value == Model.ProjectUserClassificationID.ToString())
+                                    {
+                                        selected = "selected='selected'";
+                                    }
+
+                                    <option @selected value="@item.Value">@item.Text</option>
+                                }
+                            </select>*@
+                        @Html.DropDownList("ProjectUserClassificationID", (SelectList)ViewBag.AvailableProjectUserClassifications, new { @id = "drpProjectClassification", @class = "form-control" })
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Rates Confirmed</label>
+                        @*<input type="checkbox" id="chckRatesConfirmed" value="@Model.IsRatesConfirmed" class="form-control" />*@
+                        @Html.CheckBoxFor(modelItem => Model.IsRatesConfirmed, new { @class = "form-control closed pull-left", @id = "chckRatesConfirmed", style= "margin-left: -105px;" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <table class="table table-bordered">
+                    <colgroup>
+                        <col class="grey" />
+                        <col class="red" />
+                        <col class="blue" />
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th scope="col">Time Codes</th>
+                            <th scope="col">Fee Rates</th>
+                            <th scope="col">Cost Rates</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">NT</th>
+                            <td>@Html.TextBoxFor(x => x.NTFeeRate, new { id = "txtNTFeeRate", @class = "form-control", placeholder = "Enter NT Fee Rate", maxlength = 50 })</td>
+                            <td>@Html.TextBoxFor(x => x.NTCostRate, new { id = "txtNTCostRate", @class = "form-control", placeholder = "Enter NT Cost Rate", maxlength = 50 })</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">OT1</th>
+                            <td>@Html.TextBoxFor(x => x.OT1FeeRate, new { id = "txtOT1FeeRate", @class = "form-control", placeholder = "Enter OT1 Fee Rate", maxlength = 50 })</td>
+                            <td>@Html.TextBoxFor(x => x.OT1CostRate, new { id = "txtOT1CostRate", @class = "form-control", placeholder = "Enter OT1 Cost Rate", maxlength = 50 })</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">OT2</th>
+                            <td>@Html.TextBoxFor(x => x.OT2FeeRate, new { id = "txtOT2FeeRate", @class = "form-control", placeholder = "Enter OT2 Fee Rate", maxlength = 50 })</td>
+                            <td>@Html.TextBoxFor(x => x.OT2CostRate, new { id = "txtOT2CostRate", @class = "form-control", placeholder = "Enter OT2 Cost Rate", maxlength = 50 })</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">OT3</th>
+                            <td>@Html.TextBoxFor(x => x.OT3FeeRate, new { id = "txtOT3FeeRate", @class = "form-control", placeholder = "Enter OT3 Fee Rate", maxlength = 50 })</td>
+                            <td>@Html.TextBoxFor(x => x.OT3CostRate, new { id = "txtOT3CostRate", @class = "form-control", placeholder = "Enter OT3 Cost Rate", maxlength = 50 })</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">OT4</th>
+                            <td>@Html.TextBoxFor(x => x.OT4FeeRate, new { id = "txtOT4FeeRate", @class = "form-control", placeholder = "Enter OT4 Fee Rate", maxlength = 50 })</td>
+                            <td>@Html.TextBoxFor(x => x.OT4CostRate, new { id = "txtOT4CostRate", @class = "form-control", placeholder = "Enter OT4 Cost Rate", maxlength = 50 })</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">OT5</th>
+                            <td>@Html.TextBoxFor(x => x.OT5FeeRate, new { id = "txtOT5FeeRate", @class = "form-control", placeholder = "Enter OT5 Fee Rate", maxlength = 50 })</td>
+                            <td>@Html.TextBoxFor(x => x.OT5CostRate, new { id = "txtOT5CostRate", @class = "form-control", placeholder = "Enter OT5 Cost Rate", maxlength = 50 })</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">OT6</th>
+                            <td>@Html.TextBoxFor(x => x.OT6FeeRate, new { id = "txtOT6FeeRate", @class = "form-control", placeholder = "Enter OT6 Fee Rate", maxlength = 50 })</td>
+                            <td>@Html.TextBoxFor(x => x.OT6CostRate, new { id = "txtOT6CostRate", @class = "form-control", placeholder = "Enter OT6 Fee Rate", maxlength = 50 })</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">OT7</th>
+                            <td>@Html.TextBoxFor(x => x.OT7FeeRate, new { id = "txtOT7FeeRate", @class = "form-control", placeholder = "Enter OT7 Fee Rate", maxlength = 50 })</td>
+                            <td>@Html.TextBoxFor(x => x.OT7CostRate, new { id = "txtOT7CostRate", @class = "form-control", placeholder = "Enter OT7 Cost Rate", maxlength = 50 })</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group" style="margin-top:10px">
+                        <a onclick="handlesave()" class="btn btn-success">Update</a>
+                        <a onclick="backtolist()" class="btn btn-danger">Cancel</a>
+                    </div>
+                </div>
+            </div>
+
+        }
+        else
+        {
+            <div class="row">
+                <input type="hidden" id="employeeId" value="@ViewBag.EmployeeId" />
+                <input type="hidden" id="projectId" value="@ViewBag.ProjectId" />
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input id="txtStartDate" class="form-control datepicker" placeholder="Select Start date" />
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>End Date</label>
+                        <input id="txtEndDate" class="form-control datepicker" placeholder="Select End date" />
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Project User Classification</label>
+                        @*<select class="form-control" id="drpProjectClassification">
+                                <option>-- SELECT --</option>
+                                @foreach (var item in ViewBag.AvailableProjectUserClassifications)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>*@
+                        @Html.DropDownList("ProjectUserClassificationID", (SelectList)ViewBag.AvailableProjectUserClassifications, new { @id = "drpProjectClassification", @class = "form-control" })
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label>Rates Confirmed</label>
+                        @*<input type="checkbox" id="chckRatesConfirmed" class="form-control" />*@
+                        @Html.CheckBoxFor(modelItem => Model.IsRatesConfirmed, new { @class = "form-control closed pull-left", @id = "chckRatesConfirmed", style = "margin-left: -105px;" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <table class="table table-bordered">
+                    <colgroup>
+                        <col class="grey" />
+                        <col class="red" />
+                        <col class="blue" />
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th scope="col">Time Codes</th>
+                            <th scope="col">Fee Rates</th>
+                            <th scope="col">Cost Rates</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">NT</th>
+                            <td>@Html.TextBoxFor(x => x.NTFeeRate, new { id = "txtNTFeeRate", @class = "form-control", placeholder = "Enter NT Fee Rate", maxlength = 50 })</td>
+                            <td>@Html.TextBoxFor(x => x.NTCostRate, new { id = "txtNTCostRate", @class = "form-control", placeholder = "Enter NT Cost Rate", maxlength = 50 })</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">OT1</th>
+                            <td>@Html.TextBoxFor(x => x.OT1FeeRate, new { id = "txtOT1FeeRate", @class = "form-control", placeholder = "Enter OT1 Fee Rate", maxlength = 50 })</td>
+                            <td>@Html.TextBoxFor(x => x.OT1CostRate, new { id = "txtOT1CostRate", @class = "form-control", placeholder = "Enter OT1 Cost Rate", maxlength = 50 })</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">OT2</th>
+                            <td>@Html.TextBoxFor(x => x.OT2FeeRate, new { id = "txtOT2FeeRate", @class = "form-control", placeholder = "Enter OT2 Fee Rate", maxlength = 50 })</td>
+                            <td>@Html.TextBoxFor(x => x.OT2CostRate, new { id = "txtOT2CostRate", @class = "form-control", placeholder = "Enter OT2 Cost Rate", maxlength = 50 })</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">OT3</th>
+                            <td>@Html.TextBoxFor(x => x.OT3FeeRate, new { id = "txtOT3FeeRate", @class = "form-control", placeholder = "Enter OT3 Fee Rate", maxlength = 50 })</td>
+                            <td>@Html.TextBoxFor(x => x.OT3CostRate, new { id = "txtOT3CostRate", @class = "form-control", placeholder = "Enter OT3 Cost Rate", maxlength = 50 })</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">OT4</th>
+                            <td>@Html.TextBoxFor(x => x.OT4FeeRate, new { id = "txtOT4FeeRate", @class = "form-control", placeholder = "Enter OT4 Fee Rate", maxlength = 50 })</td>
+                            <td>@Html.TextBoxFor(x => x.OT4CostRate, new { id = "txtOT4CostRate", @class = "form-control", placeholder = "Enter OT4 Cost Rate", maxlength = 50 })</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">OT5</th>
+                            <td>@Html.TextBoxFor(x => x.OT5FeeRate, new { id = "txtOT5FeeRate", @class = "form-control", placeholder = "Enter OT5 Fee Rate", maxlength = 50 })</td>
+                            <td>@Html.TextBoxFor(x => x.OT5CostRate, new { id = "txtOT5CostRate", @class = "form-control", placeholder = "Enter OT5 Cost Rate", maxlength = 50 })</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">OT6</th>
+                            <td>@Html.TextBoxFor(x => x.OT6FeeRate, new { id = "txtOT6FeeRate", @class = "form-control", placeholder = "Enter OT6 Fee Rate", maxlength = 50 })</td>
+                            <td>@Html.TextBoxFor(x => x.OT6CostRate, new { id = "txtOT6CostRate", @class = "form-control", placeholder = "Enter OT6 Fee Rate", maxlength = 50 })</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">OT7</th>
+                            <td>@Html.TextBoxFor(x => x.OT7FeeRate, new { id = "txtOT7FeeRate", @class = "form-control", placeholder = "Enter OT7 Fee Rate", maxlength = 50 })</td>
+                            <td>@Html.TextBoxFor(x => x.OT7CostRate, new { id = "txtOT7CostRate", @class = "form-control", placeholder = "Enter OT7 Cost Rate", maxlength = 50 })</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group" style="margin-top:10px">
+                        <a onclick="handlesave()" class="btn btn-success savebtn">Save</a>
+                        <a onclick="backtolist()" class="btn btn-danger">Cancel</a>
+                    </div>
+                </div>
+            </div>
+
+
+        }
+
+
+
+    </div>
+
+</div>
+
+@*<script src="~/lib/jquery/dist/jquery.min.js"></script>*@
+<script type="text/javascript">
+    //$(document).ready(function () {
+    //    var id = $('#hdnrole').val();
+    //    $('#drpProjectClassification').val(id);
+    //})
+    function backtolist() {
+        var employeeId = $("#employeeId").val();
+
+        debugger;
+
+
+        window.location.href = "/UserRates/EditUserRates3?employeeId=" + employeeId;
+
+
+
+    }
+    function handlesave() {
+        debugger;
+        var startDate = $('#txtStartDate').val();
+        var endDate = $('#txtEndDate').val();
+        //var isRatesConfirmed = $('#chckRatesConfirmed').val();
+        var isRatesConfirmed = $("#chckRatesConfirmed").is(":checked");
+        var drpProjectUserClassification = $('#drpProjectClassification').val();
+        var isproceed = true;
+        var employeeId = $("#employeeId").val();
+        var projectId = $("#projectId").val();
+        var userRateId = $("#userRateId").val();
+        //Fee Rate and Cost Rate
+        var ntFeeRate = $('#txtNTFeeRate').val();
+        var ntCostRate = $('#txtNTCostRate').val();
+        var ot1FeeRate = $('#txtOT1FeeRate').val();
+        var ot1CostRate = $('#txtOT1CostRate').val();
+        var ot2FeeRate = $('#txtOT2FeeRate').val();
+        var ot2CostRate = $('#txtOT2CostRate').val();
+        var ot3FeeRate = $('#txtOT3FeeRate').val();
+        var ot3CostRate = $('#txtOT3CostRate').val();
+        var ot4FeeRate = $('#txtOT4FeeRate').val();
+        var ot4CostRate = $('#txtOT4CostRate').val();
+        var ot5FeeRate = $('#txtOT5FeeRate').val();
+        var ot5CostRate = $('#txtOT5CostRate').val();
+        var ot6FeeRate = $('#txtOT6FeeRate').val();
+        var ot6CostRate = $('#txtOT6CostRate').val();
+        var ot7FeeRate = $('#txtOT7FeeRate').val();
+        var ot7CostRate = $('#txtOT7CostRate').val();
+
+        // validation
+        //if (name != '' && name != null) {
+        //    $('#txtname').css('border-color', '#ccc');
+        //} else {
+        //    $('#txtname').css('border-color', 'red');
+        //    isproceed = false;
+        //}
+        //if (email != '' && email != null) {
+        //    $('#txtemail').css('border-color', '#ccc');
+        //} else {
+        //    $('#txtemail').css('border-color', 'red');
+        //    isproceed = false;
+        //}
+        //if (role != '' && role != null) {
+        //    $('#ddlrole').css('border-color', '#ccc');
+        //} else {
+        //    $('#ddlrole').css('border-color', 'red');
+        //    isproceed = false;
+        //}
+        if (isproceed) {
+            var _userRate = {};
+            var myData = new Array();
+            _userRate.StartDate = startDate;
+            _userRate.EndDate = endDate;
+            _userRate.IsRatesConfirmed = isRatesConfirmed;
+            _userRate.ProjectUserClassificationID = drpProjectUserClassification;
+            _userRate.employeeId = employeeId;
+            _userRate.projectId = projectId;
+            _userRate.userRateId = userRateId;
+            //Fee Rate and Cost Rate
+            _userRate.NTFeeRate = ntFeeRate;
+            _userRate.NTCostRate = ntCostRate;
+            _userRate.OT1FeeRate = ot1FeeRate;
+            _userRate.OT1CostRate = ot1CostRate;
+            _userRate.OT2FeeRate = ot2FeeRate;
+            _userRate.OT2CostRate = ot2CostRate;
+            _userRate.OT3FeeRate = ot3FeeRate;
+            _userRate.OT3CostRate = ot3CostRate;
+            _userRate.OT4FeeRate = ot4FeeRate;
+            _userRate.OT4CostRate = ot4CostRate;
+            _userRate.OT5FeeRate = ot5FeeRate;
+            _userRate.OT5CostRate = ot5CostRate;
+            _userRate.OT6FeeRate = ot6FeeRate;
+            _userRate.OT6CostRate = ot6CostRate;
+            _userRate.OT7FeeRate = ot7FeeRate;
+            _userRate.OT7CostRate = ot7CostRate;
+
+            //var _subobj = new Object();
+            //_subobj.Name = name;
+            //_detail.push({
+            //    Name: name
+            //});
+            //_userRate.empdata = _detail;
+            //_userRate.emphead = _subobj;
+            //  var testdata = 'testing';
+            myData.push(_userRate);
+            console.log(_userRate);
+
+
+
+            $.ajax({
+                type: "POST",
+                url: "/UserRates/Save",
+                //data: _userRate,
+                data: JSON.stringify(_userRate),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                //async: false,
+                success: function (data) {
+                    //  alert('Saved successfully.');
+                    //$(".savebtn").notify("Successfully Saved",
+                    //    { position: "right bottom", className: "success", autoHideDelay: 1500 });
+                    backtolist();
+                    //  } else {
+                    // alert("Failure due to :" + data)
+                    //  }
+                },
+                failure: function (err) {
+                }
+            });
+        }
+    }
+</script>
+
+<style type="text/css">
+    .red {
+        background-color: rgba(255,0,0,.25);
+    }
+
+    .blue {
+        background-color: rgba(0,0,255,.25);
+    }
+</style>
+
