@@ -9,7 +9,10 @@
 <div class="modal fade" id="projectUserRatesModal" tabindex="-1" role="dialog"></div>
 <div class="modal fade" id="projectUserRatesEntryModal" tabindex="-1" role="dialog"></div>
 
+
 @Html.Partial("_Banner")
+
+@*<a href='@Url.Action("ImportRatesTemplates")' class="btn btn-primary" role="button">Import Rates Template</a>*@
 
 <table class="table data-table" width="100%">
     <thead>
@@ -31,8 +34,6 @@
                     @*<a href='@Url.Action("EditUserRates", new {employeeId = item.EmployeeId})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>*@
                     @*<a href='@Url.Action("EditUserRates2", new {employeeId = item.EmployeeId})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>*@
                     <a href='@Url.Action("EditUserRates3", new {employeeId = item.EmployeeId})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
-
-                    @*<a href='@Url.Action("RatesDetails", new {employeeId = item.EmployeeId})' class="btn btn-primary modal-link" role="button"><span class="glyphicon glyphicon-registration-mark" aria-hidden="true"></span></a>*@
                 </td>
                 
             </tr>

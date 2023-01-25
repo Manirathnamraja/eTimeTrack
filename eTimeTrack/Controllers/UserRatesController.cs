@@ -43,6 +43,13 @@ namespace eTimeTrack.Controllers
             return View(vm);
         }
 
+
+        public ActionResult ImportRatesTemplates()
+        {
+
+            return View();
+        }
+
         [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
         public ActionResult Details(int? employeeId)
         {
@@ -384,6 +391,7 @@ namespace eTimeTrack.Controllers
             ViewBag.ProjectId = projectId;
             ViewBag.EmployeeNo = employee.EmployeeNo;
             ViewBag.EmployeeName = employee.Names;
+           // ViewBag.UserRateId = userRateId;
             return View(userRates);
         }
 
@@ -411,6 +419,7 @@ namespace eTimeTrack.Controllers
             ViewBag.ProjectId = projectId;
             ViewBag.EmployeeNo = employee.EmployeeNo;
             ViewBag.EmployeeName = employee.Names;
+            ViewBag.userRateId = userRate?.UserRateId;
             return View(userRate);
         }
 
@@ -439,6 +448,7 @@ namespace eTimeTrack.Controllers
             ViewBag.EmployeeNo = employee.EmployeeNo;
             ViewBag.EmployeeName = employee.Names;
             ViewBag.ProjectId = projectId;
+            ViewBag.UserRateId = userRateId;
 
             //return View("Create", userRate);
             return View("Create", userRate);
@@ -472,6 +482,7 @@ namespace eTimeTrack.Controllers
             {
                 userRate.LastModifiedBy = UserHelpers.GetCurrentUserId();
                 userRate.LastModifiedDate = DateTime.Now;
+                userRate.IsDeleted = false;
                 Db.UserRates.Add(userRate);
             }
 

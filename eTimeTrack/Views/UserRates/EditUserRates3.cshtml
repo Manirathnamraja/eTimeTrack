@@ -5,18 +5,19 @@
     ViewBag.BannerColour = AecomColour.Blue;
 }
 
+@Html.Partial("_Banner")
+
 <div class="modal fade" id="projectUserRatesModal" tabindex="-1" role="dialog"></div>
 <div class="card">
 
     <div class="card-body">
-        @*<a class="btn btn-success" asp-controller="UserRates" asp-action="Create" asp-route-id="@ViewBag.ProjectId">Add New</a>*@
         <a href='@Url.Action("Create", new {projectId = ViewBag.ProjectId, employeeId = ViewBag.EmployeeId })' class="btn btn-primary" role="button">Add New</a>
         <div class="card-title">
             <h2>Employee No : @ViewBag.EmployeeNo, Employee Name : @ViewBag.EmployeeName</h2>
         </div>
         <input type="hidden" id="employeeId" value="@ViewBag.EmployeeId" />
-        <table class="table table-bordered table-striped" id='tbllist'>
-            <thead class="bg-dark text-white">
+        <table class="table table-hover" id='tbllist'>
+            <thead class="table-light bg-dark text-white" style="font-weight:bold">
                 <tr>
                     <td>Start Date</td>
                     <td>End Date</td>

@@ -1079,6 +1079,7 @@
     <Content Include="Views\UserRates\EditUserRates2.cshtml" />
     <Content Include="Views\UserRates\EditUserRates3.cshtml" />
     <Content Include="Views\UserRates\Create.cshtml" />
+    <Content Include="Views\UserRates\ImportRatesTemplates.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\ProjectTimesheetPeriods\Assign.cshtml" />

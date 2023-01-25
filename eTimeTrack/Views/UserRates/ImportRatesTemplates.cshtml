@@ -1,0 +1,22 @@
+﻿@*@model eTimeTrack.Models.UserRate*@
+
+@using eTimeTrack.Helpers
+@{
+    ViewBag.Title = "Import Rates Templates";
+    ViewBag.BannerColour = AecomColour.Blue;
+}
+
+@Html.Partial("_Banner")
+
+<div class="form-group">
+    <label class="control-label">
+        Select XLSX file
+    </label>
+    <input type="file" name="File" accept=".xlsx" required>
+</div>
+
+<a href='@Url.Action("Index", "Manage")' class="btn btn-primary" role="button">Back</a>
+<input type="submit" id="submit" class="btn btn-primary pull-right" value="Import" />
+
+
+

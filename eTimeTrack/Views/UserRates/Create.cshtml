@@ -12,13 +12,16 @@
         <h2>User Rates for - Employee No : @ViewBag.EmployeeNo, Employee Name : @ViewBag.EmployeeName</h2>
     </div>
     <div class="card-body">
-
+        <input type="hidden" id="employeeId" value="@ViewBag.EmployeeId" />
+        <input type="hidden" id="projectId" value="@ViewBag.ProjectId" />
         @if (Model != null)
         {
             <div class="row">
-                <input type="hidden" id="employeeId" value="@ViewBag.EmployeeId" />
-                <input type="hidden" id="projectId" value="@ViewBag.ProjectId" />
+                @*<input type="hidden" id="employeeId" value="@ViewBag.EmployeeId" />
+        <input type="hidden" id="projectId" value="@ViewBag.ProjectId" />*@
+                @*<input type="hidden" id="userRateId" value="@ViewBag.UserRateId" />*@
                 <input type="hidden" id="userRateId" value="@Model.UserRateId" />
+
                 <div class="col-lg-3">
                     <div class="form-group">
                         <label>Start Date</label>
@@ -37,18 +40,18 @@
                     <div class="form-group">
                         <label>Project User Classification</label>
                         @*<select class="form-control" id="drpProjectClassification">
-                                @foreach (var item in ViewBag.AvailableProjectUserClassifications)
-                                {
-                                    var selected = "";
+                    @foreach (var item in ViewBag.AvailableProjectUserClassifications)
+                    {
+                        var selected = "";
 
-                                    if (item.Value == Model.ProjectUserClassificationID.ToString())
-                                    {
-                                        selected = "selected='selected'";
-                                    }
+                        if (item.Value == Model.ProjectUserClassificationID.ToString())
+                        {
+                            selected = "selected='selected'";
+                        }
 
-                                    <option @selected value="@item.Value">@item.Text</option>
-                                }
-                            </select>*@
+                        <option @selected value="@item.Value">@item.Text</option>
+                    }
+                </select>*@
                         @Html.DropDownList("ProjectUserClassificationID", (SelectList)ViewBag.AvailableProjectUserClassifications, new { @id = "drpProjectClassification", @class = "form-control" })
                     </div>
                 </div>
@@ -56,7 +59,7 @@
                     <div class="form-group">
                         <label>Rates Confirmed</label>
                         @*<input type="checkbox" id="chckRatesConfirmed" value="@Model.IsRatesConfirmed" class="form-control" />*@
-                        @Html.CheckBoxFor(modelItem => Model.IsRatesConfirmed, new { @class = "form-control closed pull-left", @id = "chckRatesConfirmed", style= "margin-left: -105px;" })
+                        @Html.CheckBoxFor(modelItem => Model.IsRatesConfirmed, new { @class = "form-control closed pull-left", @id = "chckRatesConfirmed", style = "margin-left: -105px;" })
                     </div>
                 </div>
             </div>
@@ -134,8 +137,8 @@
         else
         {
             <div class="row">
-                <input type="hidden" id="employeeId" value="@ViewBag.EmployeeId" />
-                <input type="hidden" id="projectId" value="@ViewBag.ProjectId" />
+                @*<input type="hidden" id="employeeId" value="@ViewBag.EmployeeId" />
+                <input type="hidden" id="projectId" value="@ViewBag.ProjectId" />*@
                 <div class="col-lg-3">
                     <div class="form-group">
                         <label>Start Date</label>
@@ -154,12 +157,12 @@
                     <div class="form-group">
                         <label>Project User Classification</label>
                         @*<select class="form-control" id="drpProjectClassification">
-                                <option>-- SELECT --</option>
-                                @foreach (var item in ViewBag.AvailableProjectUserClassifications)
-                                {
-                                    <option value="@item.Value">@item.Text</option>
-                                }
-                            </select>*@
+                            <option>-- SELECT --</option>
+                            @foreach (var item in ViewBag.AvailableProjectUserClassifications)
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        </select>*@
                         @Html.DropDownList("ProjectUserClassificationID", (SelectList)ViewBag.AvailableProjectUserClassifications, new { @id = "drpProjectClassification", @class = "form-control" })
                     </div>
                 </div>
@@ -257,28 +260,35 @@
     //    var id = $('#hdnrole').val();
     //    $('#drpProjectClassification').val(id);
     //})
+     //   var modelData = @ViewBag.UserRateId;
+
+
     function backtolist() {
         var employeeId = $("#employeeId").val();
-
-        debugger;
-
-
         window.location.href = "/UserRates/EditUserRates3?employeeId=" + employeeId;
-
-
-
     }
+
+
     function handlesave() {
-        debugger;
+        //debugger;
+
+
         var startDate = $('#txtStartDate').val();
         var endDate = $('#txtEndDate').val();
-        //var isRatesConfirmed = $('#chckRatesConfirmed').val();
         var isRatesConfirmed = $("#chckRatesConfirmed").is(":checked");
         var drpProjectUserClassification = $('#drpProjectClassification').val();
         var isproceed = true;
         var employeeId = $("#employeeId").val();
         var projectId = $("#projectId").val();
+
+        //if ($("#userRateId").val() !== "undefined") {
+        //    var userRateId = $("#userRateId").val();
+        //}
+
         var userRateId = $("#userRateId").val();
+
+
+      //  var userRateId = null ?? $("#userRateId").val();
         //Fee Rate and Cost Rate
         var ntFeeRate = $('#txtNTFeeRate').val();
         var ntCostRate = $('#txtNTCostRate').val();
@@ -325,7 +335,9 @@
             _userRate.ProjectUserClassificationID = drpProjectUserClassification;
             _userRate.employeeId = employeeId;
             _userRate.projectId = projectId;
-            _userRate.userRateId = userRateId;
+            if (userRateId !== "undefined") {
+                _userRate.userRateId = userRateId;
+            }
             //Fee Rate and Cost Rate
             _userRate.NTFeeRate = ntFeeRate;
             _userRate.NTCostRate = ntCostRate;
