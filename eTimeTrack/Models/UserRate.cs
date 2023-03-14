@@ -17,7 +17,8 @@ namespace eTimeTrack.Models
         public int EmployeeId { get; set; }
         [Index("IX_EmployeeProjectRestraint", 2, IsUnique = true)]
         public int ProjectId { get; set; }
-        public int? ProjectUserClassificationID { get; set; }
+        public int? ProjectUserClassificationID { get; set; }       
+
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:d/MMM/yyyy}", ApplyFormatInEditMode = false)]
         public DateTime? StartDate { get; set; }
@@ -25,7 +26,6 @@ namespace eTimeTrack.Models
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:d/MMM/yyyy}", ApplyFormatInEditMode = false)]
         public DateTime? EndDate { get; set; }
-
 
         //public string FormattedFrom => StartDate.ToString("dd/MM/yyyy");
         //public string FormattedTo => EndDate?.ToString("dd/MM/yyyy") ?? "Present";
@@ -47,6 +47,9 @@ namespace eTimeTrack.Models
         [JsonIgnore]
         public IEnumerable<SelectListItem> ProjectUserClassifications { get; set; }
 
+        [JsonIgnore]
+        public IEnumerable<int> ImportRowNumbers { get; set; }
+
         #region Rates
 
         public string NTFeeRate { get; set; }
@@ -67,10 +70,8 @@ namespace eTimeTrack.Models
         public string OT7CostRate { get; set; }
         #endregion
 
-        public int? LastModifiedBy { get; set; }
+        public string LastModifiedBy { get; set; }
         public DateTime? LastModifiedDate { get; set; }
-
-
 
         public string GetId()
         {

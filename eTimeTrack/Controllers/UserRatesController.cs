@@ -1,24 +1,27 @@
 ﻿using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 using eTimeTrack.Helpers;
 using eTimeTrack.Models;
 using eTimeTrack.ViewModels;
-using Spire.Pdf.General.Render.Font.OpenTypeFile;
-using Microsoft.EntityFrameworkCore;
 using System;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Web.UI.WebControls;
-using System.Threading.Tasks;
-using System.Web.Script.Services;
 using EntityState = System.Data.Entity.EntityState;
+using System.Web;
+using System.IO;
+using System.Data;
+using System.Data.SqlClient;
+using System.Data.OleDb;
+using System.Xml;
+using OfficeOpenXml;
+using System.Globalization;
 
 namespace eTimeTrack.Controllers
 {
     [Authorize(Roles = UserHelpers.AuthTextUserAdministratorOrAboveExcludeTimesheetEditor)]
-    public class UserRatesController : BaseEmployeesController
+    public class UserRatesController : BaseController
     {
+
         [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
         public ActionResult Index()
         {
@@ -46,9 +49,406 @@ namespace eTimeTrack.Controllers
 
         public ActionResult ImportRatesTemplates()
         {
+            UserRatesUploadCreateViewModel viewModel = new UserRatesUploadCreateViewModel { ProjectList = GenerateDropdownUserProjects() };
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
+        public JsonResult UserRatesUpload2(UserRatesUploadCreateViewModel importExcel)
+        {
+            if (ModelState.IsValid)
+            {
+                var connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+                string path = Server.MapPath("~/Content/Upload/" + importExcel.file.FileName);
+                importExcel.file.SaveAs(path);
+
+                string excelConnectionString = @"Provider='Microsoft.ACE.OLEDB.12.0';Data Source='" + path + "';Extended Properties='Excel 12.0 Xml;IMEX=1'";
+                OleDbConnection excelConnection = new OleDbConnection(excelConnectionString);
+
+                //Sheet Name
+                excelConnection.Open();
+                string tableName = excelConnection.GetSchema("Tables").Rows[0]["TABLE_NAME"].ToString();
+                excelConnection.Close();
+                //End
+
+                OleDbCommand cmd = new OleDbCommand("Select * from [" + tableName + "]", excelConnection);
+
+                excelConnection.Open();
+
+                OleDbDataReader dReader;
+
+
+                dReader = cmd.ExecuteReader();
+                SqlBulkCopy sqlBulk = new SqlBulkCopy(connectionString);
+
+                //Give your Destination table name
+                sqlBulk.DestinationTableName = "UserRates";
+
+                //Mappings
+                sqlBulk.ColumnMappings.Add("StartDate", "StartDate");
+                sqlBulk.ColumnMappings.Add("EndDate", "EndDate");
+                //sqlBulk.ColumnMappings.Add("Person", "Person");
+                //sqlBulk.ColumnMappings.Add("Item", "Item");
+                //sqlBulk.ColumnMappings.Add("Units", "Units");
+                //sqlBulk.ColumnMappings.Add("Unit Cost", "UnitCost");
+                //sqlBulk.ColumnMappings.Add("Total", "Total");
+
+                sqlBulk.WriteToServer(dReader);
+                excelConnection.Close();
+
+                ViewBag.Result = "Successfully Imported";
+            }
+            return Json(true);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
+        public JsonResult UserRatesUpload(UserRatesUploadCreateViewModel importExcel)
+        {
+            if (ModelState.IsValid)
+            {
+                var connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+                string path = Server.MapPath("~/Content/Upload/" + importExcel.file.FileName);
+                importExcel.file.SaveAs(path);
+
+                string excelConnectionString = @"Provider='Microsoft.ACE.OLEDB.12.0';Data Source='" + path + "';Extended Properties='Excel 12.0 Xml;IMEX=1'";
+                OleDbConnection excelConnection = new OleDbConnection(excelConnectionString);
+
+                //Sheet Name
+                excelConnection.Open();
+                string tableName = excelConnection.GetSchema("Tables").Rows[0]["TABLE_NAME"].ToString();
+                excelConnection.Close();
+                //End
+
+                OleDbCommand cmd = new OleDbCommand("Select * from [" + tableName + "]", excelConnection);
+
+                excelConnection.Open();
+
+                DataSet ds = new DataSet();
+                OleDbDataAdapter oda = new OleDbDataAdapter("Select * from [" + tableName + "]", excelConnection);
+                excelConnection.Close();
+                oda.Fill(ds);
+
+                DataTable Exceldt = ds.Tables[0];
+                Exceldt.Clear();
+
+                if (!Exceldt.Columns.Contains("StartDate"))
+                    Exceldt.Columns.Add("StartDate", typeof(DateTime));
+                if (!Exceldt.Columns.Contains("EndDate"))
+                    Exceldt.Columns.Add("EndDate", typeof(DateTime));
+                //   Exceldt.Columns.Add("EndDate", typeof(DateTime));
+                if (!Exceldt.Columns.Contains("ProjectUserClassificationID"))
+                    Exceldt.Columns.Add("ProjectUserClassificationID", typeof(int));
+
+                // Exceldt = cmd.ExecuteReader();
+                //  connection();
+                excelConnection.Open();
+                //creating object of SqlBulkCopy
+                SqlBulkCopy objbulk = new SqlBulkCopy(connectionString);
+                //assigning Destination table name
+                objbulk.DestinationTableName = "UserRates";
+                //Mapping Table column
+                objbulk.ColumnMappings.Add("StartDate", "StartDate");
+                objbulk.ColumnMappings.Add("EndDate", "EndDate");
+                objbulk.ColumnMappings.Add("ProjectUserClassificationID", "ProjectUserClassificationID");
+                //inserting Datatable Records to DataBase
+                //   con.Open();
+                objbulk.WriteToServer(Exceldt);
+                excelConnection.Close();
+
+            }
+
+            ViewBag.Result = "Successfully Imported";
+
+            return Json(true);
+        }
+
+        [HttpPost]
+        public ActionResult ImportRatesTemplates(UserRatesUploadCreateViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return InvokeHttp404(HttpContext);
+            }
+            int projectId = (int?)Session["SelectedProject"] ?? 0;
+            Project project = Db.Projects.Find(projectId) ?? Db.Projects.OrderBy(x => x.ProjectNo).First();
+
+            if (project == null)
+            {
+                return InvokeHttp404(HttpContext);
+            }
+            ValidateExcelFileImportBasic(model.file);
+
+            string path = Server.MapPath("~/Content/Upload/" + model.file.FileName);
+            model.file.SaveAs(path);
+
+            //   UserRatesUpload userRateUpload = Db.UserRatesUploads.SingleOrDefault(x => x.ProjectId == project.ProjectID);
+
+            InfoMessage message;
+            UserRatesUpload userRatesUpload = new UserRatesUpload()
+            {
+                ProjectId = model.ProjectID,
+                ProjectUserClassificationIDColumn = model.ProjectUserClassification,
+                UserIDColumn = model.UserID,
+                StartDateColumn = model.StartDate,
+                EndDateColumn = model.EndDate,
+                IsRatesConfirmedColumn = model.IsRatesConfirmed,
+                //Fee Rates and Cost Rates
+                NTFeeRateColumn = model.NTFeeRate,
+                NTCostRateColumn = model.NTCostRate,
+                OT1FeeRateColumn = model.OT1FeeRate,
+                OT1CostRateColumn = model.OT1CostRate,
+                OT2FeeRateColumn = model.OT2FeeRate,
+                OT2CostRateColumn = model.OT2CostRate,
+                OT3FeeRateColumn = model.OT3FeeRate,
+                OT3CostRateColumn = model.OT3CostRate,
+                OT4FeeRateColumn = model.OT4FeeRate,
+                OT4CostRateColumn = model.OT4CostRate,
+                OT5FeeRateColumn = model.OT5FeeRate,
+                OT5CostRateColumn = model.OT5CostRate,
+                OT6FeeRateColumn = model.OT6FeeRate,
+                OT6CostRateColumn = model.OT6CostRate,
+                OT7FeeRateColumn = model.OT7FeeRate,
+                OT7CostRateColumn = model.OT7CostRate,
+                FilePath = model.file.FileName,
+                AddedBy = UserHelpers.GetCurrentUserId(),
+                AddedDate = DateTime.Now,
+            };
+            Db.UserRatesUploads.Add(userRatesUpload);
+
+            Db.SaveChanges();
+            Employee user = UserHelpers.GetCurrentUser();
+            ProcessXLSFile(model, user.Email, project);
+
+            message = new InfoMessage
+            {
+                MessageType = InfoMessageType.Success,
+                MessageContent = "Successfully updated User Rates Uploads."
+            };
+            TempData["message"] = message;
+
 
             return View();
         }
+
+        private bool ProcessXLSFile(UserRatesUploadCreateViewModel model, string email, Project project)
+        {
+            int invalidRowsEmpty = 0;
+
+            
+            int insertedRows = 0;
+            int rowsCount = 0;
+            List<List<int>> invalidRowsNoLinkRowNumbers = new List<List<int>>();
+            // string textEmail = string.Empty;
+
+            try
+            {
+                #region Column Number methods
+                int userIDColumn = ColumnNumber(model.UserID);
+                int startDateColumn = ColumnNumber(model.StartDate);
+                int endDateColumn = ColumnNumber(model.EndDate);
+                int projectUserClassificationColumn = ColumnNumber(model.ProjectUserClassification);
+                int ratesConfirmedColumn = ColumnNumber(model.IsRatesConfirmed);
+                int ntFeeRateColumn = ColumnNumber(model.NTFeeRate);
+                int ot1FeeRateColumn = ColumnNumber(model.OT1FeeRate);
+                int ot2FeeRateColumn = ColumnNumber(model.OT2FeeRate);
+                int ot3FeeRateColumn = ColumnNumber(model.OT3FeeRate);
+                int ot4FeeRateColumn = ColumnNumber(model.OT4FeeRate);
+                int ot5FeeRateColumn = ColumnNumber(model.OT5FeeRate);
+                int ot6FeeRateColumn = ColumnNumber(model.OT6FeeRate);
+                int ot7FeeRateColumn = ColumnNumber(model.OT7FeeRate);
+                int ntCostRateColumn = ColumnNumber(model.NTCostRate);
+                int ot1CostRateColumn = ColumnNumber(model.OT1CostRate);
+                int ot2CostRateColumn = ColumnNumber(model.OT2CostRate);
+                int ot3CostRateColumn = ColumnNumber(model.OT3CostRate);
+                int ot4CostRateColumn = ColumnNumber(model.OT4CostRate);
+                int ot5CostRateColumn = ColumnNumber(model.OT5CostRate);
+                int ot6CostRateColumn = ColumnNumber(model.OT6CostRate);
+                int ot7CostRateColumn = ColumnNumber(model.OT7CostRate);
+                #endregion
+
+                byte[] fileData;
+                using (MemoryStream target = new MemoryStream())
+                {
+                    model.file.InputStream.CopyTo(target);
+                    fileData = target.ToArray();
+                }
+
+
+                List<UserRate> userRates = new List<UserRate>();
+                List<UserRate> duplicateuserRates = new List<UserRate>();
+
+                //get data from excel
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    stream.Write(fileData, 0, fileData.Length);
+                    using (ExcelPackage package = new ExcelPackage(stream))
+                    {
+                        ExcelWorksheet ws = package.Workbook.Worksheets[1];
+                        rowsCount = ws.Dimension.Rows - 1;
+                        int colsCount = ws.Dimension.Columns;
+
+
+                        for (int i = 2; i < int.MaxValue; i++) // skip header row
+                        {
+                            if (string.IsNullOrWhiteSpace(ws.Cells[i, 1].Text))
+                            {
+                                if (!string.IsNullOrWhiteSpace(ws.Cells[i + 1, 1].Text) || !string.IsNullOrWhiteSpace(ws.Cells[i + 2, 1].Text))
+                                {
+                                    continue;
+                                }
+                                break;
+                            }
+                            CultureInfo provider = CultureInfo.InvariantCulture;
+                            //getting project user classificationId from Text.
+                            var projectUserClassificationText = ws.Cells[i, projectUserClassificationColumn].Text?.Trim();
+                            var projectUserClassificationID = Db.ProjectUserClassifications.Where(r => r.ProjectClassificationText == projectUserClassificationText).Select(t => t.ProjectUserClassificationId).FirstOrDefault();
+                            //getting employeeId from employee No.
+                            var userIdText = ws.Cells[i, userIDColumn].Text?.Trim();
+                            var employeeId = Db.Users.Where(r => r.EmployeeNo == userIdText).Select(t => t.Id).FirstOrDefault();
+                            //getting startDate and EndDate
+                            string sDate = ws.Cells[i, startDateColumn].Value?.ToString()?.Trim();
+                            double date = string.IsNullOrEmpty(sDate) ? 0 : double.Parse(sDate);
+                            DateTime? startdate = (date == 0) ? (DateTime?)null : Convert.ToDateTime(DateTime.FromOADate(date).ToString("MMMM dd, yyyy"));
+
+                            string eDate = ws.Cells[i, endDateColumn].Value?.ToString()?.Trim();
+                            double date2 = string.IsNullOrEmpty(eDate) ? 0 : double.Parse(eDate);
+                            DateTime? endDate = (date2 == 0) ? (DateTime?)null : Convert.ToDateTime(DateTime.FromOADate(date2).ToString("MMMM dd, yyyy"));
+
+                            var IsRatesConfirmedBool = ParseBool(ws.Cells[i, ratesConfirmedColumn].Text?.Trim());
+
+                            UserRate userRate = new UserRate
+                            {
+                                EmployeeId = employeeId,
+                                StartDate = startdate,
+                                EndDate = endDate,
+                                ProjectUserClassificationID = projectUserClassificationID,
+                                IsRatesConfirmed = IsRatesConfirmedBool == "true" ? true : false,
+
+                                NTFeeRate = ntFeeRateColumn != 0 ? ws.Cells[i, ntFeeRateColumn].Value?.ToString()?.Trim() : null,
+                                OT1FeeRate = ot1FeeRateColumn != 0 ? ws.Cells[i, ot1FeeRateColumn].Value?.ToString()?.Trim() : null,
+                                OT2FeeRate = ot2FeeRateColumn != 0 ? ws.Cells[i, ot2FeeRateColumn].Value?.ToString()?.Trim() : null,
+                                OT3FeeRate = ot3FeeRateColumn != 0 ? ws.Cells[i, ot3FeeRateColumn].Value?.ToString()?.Trim() : null,
+                                OT4FeeRate = ot4FeeRateColumn != 0 ? ws.Cells[i, ot4FeeRateColumn].Value?.ToString()?.Trim() : null,
+                                OT5FeeRate = ot5FeeRateColumn != 0 ? ws.Cells[i, ot5FeeRateColumn].Value?.ToString()?.Trim() : null,
+                                OT6FeeRate = ot6FeeRateColumn != 0 ? ws.Cells[i, ot6FeeRateColumn].Value?.ToString()?.Trim() : null,
+                                OT7FeeRate = ot7FeeRateColumn != 0 ? ws.Cells[i, ot7FeeRateColumn].Value?.ToString()?.Trim() : null,
+                                NTCostRate = ntCostRateColumn != 0 ? ws.Cells[i, ntCostRateColumn].Value?.ToString()?.Trim() : null,
+                                OT1CostRate = ot1CostRateColumn != 0 ? ws.Cells[i, ot1CostRateColumn].Value?.ToString()?.Trim() : null,
+                                OT2CostRate = ot2CostRateColumn != 0 ? ws.Cells[i, ot2CostRateColumn].Value?.ToString()?.Trim() : null,
+                                OT3CostRate = ot3CostRateColumn != 0 ? ws.Cells[i, ot3CostRateColumn].Value?.ToString()?.Trim() : null,
+                                OT4CostRate = ot4CostRateColumn != 0 ? ws.Cells[i, ot4CostRateColumn].Value?.ToString()?.Trim() : null,
+                                OT5CostRate = ot5CostRateColumn != 0 ? ws.Cells[i, ot5CostRateColumn].Value?.ToString()?.Trim() : null,
+                                OT6CostRate = ot6CostRateColumn != 0 ? ws.Cells[i, ot6CostRateColumn].Value?.ToString()?.Trim() : null,
+                                OT7CostRate = ot7CostRateColumn != 0 ? ws.Cells[i, ot7CostRateColumn].Value?.ToString()?.Trim() : null,
+
+                                ProjectId = model.ProjectID,
+                                LastModifiedBy = UserHelpers.GetCurrentUserId() + "-IMP",
+                                LastModifiedDate = DateTime.Now,
+                                IsDeleted = false,
+
+                                // ImportRowNumbers = new List<int> { i }
+                            };
+                            userRates.Add(userRate);
+
+                            //validations
+                            if (string.IsNullOrEmpty(userRate.EmployeeId.ToString()) ||
+                                userRate.EmployeeId == 0 ||
+                                string.IsNullOrWhiteSpace(userRate.EndDate.ToString()) ||
+                                string.IsNullOrWhiteSpace(userRate.StartDate.ToString()) ||
+                                userRate.ProjectUserClassificationID == 0 ||
+                                string.IsNullOrEmpty(IsRatesConfirmedBool)
+                                )
+                            {
+                                invalidRowsEmpty++;
+                              
+                            }
+
+
+                            else
+                            {
+                                var rate = userRates.Where(x => x.EmployeeId == employeeId);
+                                foreach (var data in rate)
+                                {
+                                    if (!duplicateuserRates.Exists(x => x.EmployeeId == data.EmployeeId && x.EndDate >= data.StartDate))
+                                    {
+                                        duplicateuserRates.Add(data);
+
+                                        Db.UserRates.Add(data);
+                                        Db.SaveChanges();
+                                        insertedRows++;
+                                    }
+                                }
+
+                            }
+
+                        }
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {
+                EmailHelper.SendEmail(email, $"eTimeTrack User Rates uploads failed for {project.Name}", "Error: could not upload user rates data: " + e.Message + ". Please contact an administrator for assistance.");
+                TempData["InfoMessage"] = new InfoMessage
+                {
+                    MessageContent = "Error: could not import user rates data: " + e.Message,
+                    MessageType = InfoMessageType.Failure
+                };
+
+
+                return false;
+            }
+
+            string emailText = $"<p> User Rates upload completed for project: {project.Name}. </p><ul><li>Total Rows in file: {rowsCount}</li><li>Invalid Rows (no data): {invalidRowsEmpty}</li><li>Inserted Rows: {insertedRows}</li></ul>";
+
+            EmailHelper.SendEmail(email, $"eTimeTrack User Rates uploads succeeded for {project.Name}", emailText);
+
+            return true;
+
+        }
+
+        public string ParseBool(string input)
+        {
+            if (!string.IsNullOrEmpty(input))
+            {
+                switch (input.ToLower())
+                {
+                    case "y":
+                    case "yes":
+                        return "true";
+                    case "n":
+                    case "no":
+                        return "false";
+
+                }
+            }
+
+            return string.Empty;
+        }
+
+        public static int ColumnNumber(string colAddress)
+        {
+            if (colAddress == null)
+            {
+                return 0;
+            }
+            string colAddressUpper = colAddress.ToUpper();
+            int[] digits = new int[colAddressUpper.Length];
+            for (int i = 0; i < colAddressUpper.Length; ++i)
+            {
+                digits[i] = Convert.ToInt32(colAddressUpper[i]) - 64;
+            }
+            int mul = 1; int res = 0;
+            for (int pos = digits.Length - 1; pos >= 0; --pos)
+            {
+                res += digits[pos] * mul;
+                mul *= 26;
+            }
+            return res;
+        }               
+
 
         [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
         public ActionResult Details(int? employeeId)
@@ -391,11 +791,11 @@ namespace eTimeTrack.Controllers
             ViewBag.ProjectId = projectId;
             ViewBag.EmployeeNo = employee.EmployeeNo;
             ViewBag.EmployeeName = employee.Names;
-           // ViewBag.UserRateId = userRateId;
+            // ViewBag.UserRateId = userRateId;
             return View(userRates);
         }
 
-        public ActionResult Create(int? projectId,int? employeeId)
+        public ActionResult Create(int? projectId, int? employeeId)
         {
             Employee employee = Db.Users.Find(employeeId);
             if (employee == null)
@@ -423,7 +823,7 @@ namespace eTimeTrack.Controllers
             return View(userRate);
         }
 
-        public ActionResult Edit(int userRateId,int? employeeId)
+        public ActionResult Edit(int userRateId, int? employeeId)
         {
             UserRate userRate = Db.UserRates.Find(userRateId);
 
@@ -473,52 +873,22 @@ namespace eTimeTrack.Controllers
                 Db.Entry(existing).CurrentValues.SetValues(userRate);
                 Db.Entry(existing).State = EntityState.Modified;
 
-               // Db.Entry(existing).Property(u => u.EmployeeId).IsModified = false;
+                // Db.Entry(existing).Property(u => u.EmployeeId).IsModified = false;
 
-                userRate.LastModifiedBy = UserHelpers.GetCurrentUserId();
+                userRate.LastModifiedBy = UserHelpers.GetCurrentUserId().ToString();
                 userRate.LastModifiedDate = DateTime.Now;
             }
             else
             {
-                userRate.LastModifiedBy = UserHelpers.GetCurrentUserId();
+                userRate.LastModifiedBy = UserHelpers.GetCurrentUserId().ToString();
                 userRate.LastModifiedDate = DateTime.Now;
                 userRate.IsDeleted = false;
                 Db.UserRates.Add(userRate);
             }
 
-            //UserRate userRate2 = new UserRate
-            //{
-            //    EmployeeId = userRate.EmployeeId,
-            //    ProjectId = projectId,
-            //    ProjectUserClassificationID = Convert.ToInt32(userRate.ProjectUserClassificationID),
-            //    StartDate = userRate.StartDate,
-            //    EndDate = userRate.EndDate,
-            //    IsRatesConfirmed = userRate.IsRatesConfirmed,
-            //    LastModifiedBy = UserHelpers.GetCurrentUserId(),
-            //    LastModifiedDate = DateTime.Now,
-            //    //Fee & Cost Rates
-            //    NTFeeRate = userRate?.NTFeeRate,
-            //    NTCostRate = userRate?.NTCostRate,
-            //    OT1FeeRate = userRate?.OT1FeeRate,
-            //    OT1CostRate = userRate?.OT1CostRate,
-            //    OT2FeeRate = userRate?.OT2FeeRate,
-            //    OT2CostRate = userRate?.OT2CostRate,
-            //    OT3FeeRate = userRate?.OT3FeeRate,
-            //    OT3CostRate = userRate?.OT3CostRate,
-            //    OT4FeeRate = userRate?.OT4FeeRate,
-            //    OT4CostRate = userRate?.OT4CostRate,
-            //    OT5FeeRate = userRate?.OT5FeeRate,
-            //    OT5CostRate = userRate?.OT5CostRate,
-            //    OT6FeeRate = userRate?.OT6FeeRate,
-            //    OT6CostRate = userRate?.OT6CostRate,
-            //    OT7FeeRate = userRate?.OT7FeeRate,
-            //    OT7CostRate = userRate?.OT7CostRate,
-            //};
+            Db.SaveChanges();
 
-           // Db.UserRates.Add(userRate2);
-             Db.SaveChanges();
-
-          //    int insertedRecords = Db.SaveChanges();
+            //    int insertedRecords = Db.SaveChanges();
             int insertedRecords = 0;
             return Json(insertedRecords);
         }
@@ -530,42 +900,8 @@ namespace eTimeTrack.Controllers
             //Db.UserRates.Remove(userRate);
             userRate.IsDeleted = true;
             Db.SaveChanges();
-
-
-
             //return Json(userRate);
             return Json(new { Success = true });
-        }
-
-
-        [HttpPost]
-        [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
-        public JsonResult InsertSkills(List<UserRate> userRates)
-        {
-
-            if (userRates == null)
-            {
-                userRates = new List<UserRate>();
-            }
-            int projectId = (int?)Session["SelectedProject"] ?? 0;
-            Project project = Db.Projects.Find(projectId) ?? Db.Projects.OrderBy(x => x.ProjectNo).First();
-
-            if (project == null)
-            {
-                return Json(false);
-            }
-
-            foreach (UserRate s in userRates)
-            {
-                s.ProjectId = projectId;
-                s.LastModifiedBy = UserHelpers.GetCurrentUserId();
-                s.LastModifiedDate = DateTime.Now;
-                Db.UserRates.Add(s);
-            }
-            int insertedRecords = Db.SaveChanges();
-            //    int insertedRecords = 0;
-            return Json(insertedRecords);
-
         }
 
         [HttpPost]
@@ -612,7 +948,7 @@ namespace eTimeTrack.Controllers
                 userRate.OT6CostRate = model.OT6CostRate;
                 userRate.OT7FeeRate = model.OT7FeeRate;
                 userRate.OT7CostRate = model.OT7CostRate;
-                userRate.LastModifiedBy = UserHelpers.GetCurrentUserId();
+                userRate.LastModifiedBy = UserHelpers.GetCurrentUserId().ToString();
                 userRate.LastModifiedDate = DateTime.Now;
 
 
@@ -650,7 +986,7 @@ namespace eTimeTrack.Controllers
                     OT6CostRate = model.OT6CostRate,
                     OT7FeeRate = model.OT7FeeRate,
                     OT7CostRate = model.OT7CostRate,
-                    LastModifiedBy = UserHelpers.GetCurrentUserId(),
+                    LastModifiedBy = UserHelpers.GetCurrentUserId().ToString(),
                     LastModifiedDate = DateTime.Now,
                 };
 
@@ -669,7 +1005,7 @@ namespace eTimeTrack.Controllers
         }
 
         [HttpPost]
-        public JsonResult UpdateProjectUserClassification(int? employeeId, int? projectId, int? projectUserClassificationId,int? userRateId)
+        public JsonResult UpdateProjectUserClassification(int? employeeId, int? projectId, int? projectUserClassificationId, int? userRateId)
         {
             UserRate userRate = Db.UserRates.Single(x => x.EmployeeId == employeeId && x.ProjectId == projectId && x.UserRateId == userRateId);
 

@@ -57,6 +57,12 @@
       <HintPath>..\packages\EPPlus.4.1.0\lib\net40\EPPlus.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ExcelDataReader, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.3.6.0\lib\net45\ExcelDataReader.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelDataReader.DataSet, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.DataSet.3.6.0\lib\net35\ExcelDataReader.DataSet.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
       <Private>True</Private>
@@ -391,6 +397,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CompaniesController.cs" />
     <Compile Include="Controllers\BaseEmployeesController.cs" />
+    <Compile Include="Controllers\UserRatesUploadsController.cs" />
     <Compile Include="Controllers\UserRatesController.cs" />
     <Compile Include="Controllers\EmployeeProjectsController.cs" />
     <Compile Include="Controllers\EmployeesController.cs" />
@@ -426,6 +433,8 @@
     <Compile Include="Exceptions\StatusException.cs" />
     <Compile Include="Extensions\EnumExtenstions.cs" />
     <Compile Include="Extensions\PrincipalExtensions.cs" />
+    <Compile Include="Extensions\FileExtension.cs" />
+    <Compile Include="Extensions\UserRatesExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\TimesheetPeriodExtensions.cs" />
     <Compile Include="Global.asax.cs">
@@ -575,6 +584,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BulkImportStatus.cs" />
     <Compile Include="Models\AECOMUserClassification.cs" />
+    <Compile Include="Models\UserRatesUpload.cs" />
     <Compile Include="Models\UserRate.cs" />
     <Compile Include="Models\ProjectUserClassification.cs" />
     <Compile Include="Models\ProjectOffice.cs" />
@@ -600,6 +610,7 @@
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\IMergeable.cs" />
     <Compile Include="ViewModels\AECOMUserClassificationCreateViewModel.cs" />
+    <Compile Include="ViewModels\UserRatesUploadCreateViewModel.cs" />
     <Compile Include="ViewModels\UserRateDetailsViewModel.cs" />
     <Compile Include="ViewModels\OfficeCreateViewModel.cs" />
     <Compile Include="ViewModels\AECOMUserClassificationsIndexViewModel.cs" />
@@ -1103,6 +1114,7 @@
     <Content Include="Views\Shared\EditorTemplates\EmployeeTimesheetItemMobile.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Content\Upload\" />
     <Folder Include="Views\Base\" />
     <Folder Include="Views\EmployeeTimesheets\EditorTemplates\" />
   </ItemGroup>

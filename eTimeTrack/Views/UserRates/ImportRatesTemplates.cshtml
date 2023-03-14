@@ -1,22 +1,222 @@
-﻿@*@model eTimeTrack.Models.UserRate*@
-
-@using eTimeTrack.Helpers
+﻿@using eTimeTrack.Helpers
+@model eTimeTrack.ViewModels.UserRatesUploadCreateViewModel
 @{
-    ViewBag.Title = "Import Rates Templates";
+    ViewBag.Title = "Upload User Rates Template";
     ViewBag.BannerColour = AecomColour.Blue;
 }
 
 @Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
 
-<div class="form-group">
-    <label class="control-label">
-        Select XLSX file
-    </label>
-    <input type="file" name="File" accept=".xlsx" required>
-</div>
+@using (Html.BeginForm("ImportRatesTemplates", "UserRates", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
 
-<a href='@Url.Action("Index", "Manage")' class="btn btn-primary" role="button">Back</a>
-<input type="submit" id="submit" class="btn btn-primary pull-right" value="Import" />
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+            <div class="form-group">
+                <label for="ProjectID">Project</label>
+                @Html.DropDownListFor(model => model.ProjectID, Model.ProjectList, "Select", new { id = "ProjectSelector", @class = "form-control", required = true })
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">
+                    Select XLSX file
+                </label>
+                <input type="file" name="File" accept=".xlsx" required>
+            </div>
+
+            <div id="userRate-details-container" style="display: none; margin-bottom: 5rem;">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.UserID, new { @class = "control-label col-md-2 required" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.UserID, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.UserID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.StartDate, new { @class = "control-label col-md-2 required" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.StartDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.EndDate, new { @class = "control-label col-md-2 required" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.EndDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ProjectUserClassification, new { @class = "control-label col-md-2 required" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.ProjectUserClassification, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.ProjectUserClassification, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.IsRatesConfirmed, new { @class = "control-label col-md-2 required" })
+                    <div class="col-md-10" style="margin-top: 15px">
+                        @Html.EditorFor(model => model.IsRatesConfirmed, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.IsRatesConfirmed, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.NTFeeRate, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10" style="margin-top: 15px">
+                        @Html.EditorFor(model => model.NTFeeRate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.NTFeeRate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.OT1FeeRate, new { @class = "control-label col-md-2 required" })
+                    <div class="col-md-10" style="margin-top: 15px">
+                        @Html.EditorFor(model => model.OT1FeeRate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.OT1FeeRate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.OT2FeeRate, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10" style="margin-top: 15px">
+                        @Html.EditorFor(model => model.OT2FeeRate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.OT2FeeRate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.OT3FeeRate, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10" style="margin-top: 15px">
+                        @Html.EditorFor(model => model.OT3FeeRate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.OT3FeeRate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.OT4FeeRate, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10" style="margin-top: 15px">
+                        @Html.EditorFor(model => model.OT4FeeRate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.OT4FeeRate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.OT5FeeRate, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10" style="margin-top: 15px">
+                        @Html.EditorFor(model => model.OT5FeeRate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.OT5FeeRate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.OT6FeeRate, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10" style="margin-top: 15px">
+                        @Html.EditorFor(model => model.OT6FeeRate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.OT6FeeRate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.OT7FeeRate, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10" style="margin-top: 15px">
+                        @Html.EditorFor(model => model.OT7FeeRate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.OT7FeeRate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.NTCostRate, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10" style="margin-top: 15px">
+                        @Html.EditorFor(model => model.NTCostRate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.NTCostRate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.OT1CostRate, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10" style="margin-top: 15px">
+                        @Html.EditorFor(model => model.OT1CostRate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.OT1CostRate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.OT2CostRate, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10" style="margin-top: 15px">
+                        @Html.EditorFor(model => model.OT2CostRate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.OT2CostRate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.OT3CostRate, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10" style="margin-top: 15px">
+                        @Html.EditorFor(model => model.OT3CostRate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.OT3CostRate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.OT4CostRate, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10" style="margin-top: 15px">
+                        @Html.EditorFor(model => model.OT4CostRate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.OT4CostRate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.OT5CostRate, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10" style="margin-top: 15px">
+                        @Html.EditorFor(model => model.OT5CostRate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.OT5CostRate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.OT6CostRate, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10" style="margin-top: 15px">
+                        @Html.EditorFor(model => model.OT6CostRate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.OT6CostRate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.OT7CostRate, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10" style="margin-top: 15px">
+                        @Html.EditorFor(model => model.OT7CostRate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.OT7CostRate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="pull-right">
+            <input type="submit" value="Import" id="submit" class="btn btn-primary" />
+        </div>
+        <a href="@Url.Action("Index")" class="btn btn-primary">Back</a>
+    </div>
+}
+
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+
+<script>
+    $(document).ready(function () {
+
+        //$('form').submit(function() {
+        //    $('#submit').prop('disabled', true);
+        //});
+
+        $('input[type=file]').change(function () {
+            $('#userRate-details-container').show();
+
+        });
+
+    });
+
+
+</script>
+
+
+}
 
 
 

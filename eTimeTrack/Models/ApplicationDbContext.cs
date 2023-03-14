@@ -88,6 +88,7 @@ namespace eTimeTrack.Models
         public DbSet<ProjectUserClassification> ProjectUserClassifications { get; set; }
         public DbSet<ReconciliationUpload> ReconciliationUploads { get; set; }
         public DbSet<UserRate> UserRates { get; set; }
+        public DbSet<UserRatesUpload> UserRatesUploads { get; set; }
 
 
         internal int SaveChangesWithoutLogging()
