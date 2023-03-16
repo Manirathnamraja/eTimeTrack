@@ -434,7 +434,6 @@
     <Compile Include="Extensions\EnumExtenstions.cs" />
     <Compile Include="Extensions\PrincipalExtensions.cs" />
     <Compile Include="Extensions\FileExtension.cs" />
-    <Compile Include="Extensions\UserRatesExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\TimesheetPeriodExtensions.cs" />
     <Compile Include="Global.asax.cs">

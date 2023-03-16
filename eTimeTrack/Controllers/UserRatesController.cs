@@ -181,6 +181,7 @@ namespace eTimeTrack.Controllers
             ValidateExcelFileImportBasic(model.file);
 
             string path = Server.MapPath("~/Content/Upload/" + model.file.FileName);
+            Directory.CreateDirectory(path);
             model.file.SaveAs(path);
 
             //   UserRatesUpload userRateUpload = Db.UserRatesUploads.SingleOrDefault(x => x.ProjectId == project.ProjectID);
