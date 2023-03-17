@@ -167,70 +167,85 @@ namespace eTimeTrack.Controllers
         [HttpPost]
         public ActionResult ImportRatesTemplates(UserRatesUploadCreateViewModel model)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return InvokeHttp404(HttpContext);
+                if (!ModelState.IsValid)
+                {
+                    return InvokeHttp404(HttpContext);
+                }
+                int projectId = (int?)Session["SelectedProject"] ?? 0;
+                Project project = Db.Projects.Find(projectId) ?? Db.Projects.OrderBy(x => x.ProjectNo).First();
+
+                model.ProjectList = GenerateDropdownUserProjects();
+
+                if (project == null)
+                {
+                    return InvokeHttp404(HttpContext);
+                }
+                ValidateExcelFileImportBasic(model.file);
+
+              //  string targetFolder = Server.MapPath("~/Content/Upload");
+              //  string targetPath = Path.Combine(targetFolder, model.file.FileName);
+             //   model.file.SaveAs(targetPath);
+
+
+                //string path = Server.MapPath("~/Content/Upload/" + model.file.FileName);
+                //  string path = Server.MapPath(Path.Combine("~/Content/Upload", model.file.FileName));
+                //   Directory.CreateDirectory(path);
+                //    model.file.SaveAs(path);
+
+                //   UserRatesUpload userRateUpload = Db.UserRatesUploads.SingleOrDefault(x => x.ProjectId == project.ProjectID);
+
+                InfoMessage message;
+                UserRatesUpload userRatesUpload = new UserRatesUpload()
+                {
+                    ProjectId = model.ProjectID,
+                    ProjectUserClassificationIDColumn = model.ProjectUserClassification,
+                    UserIDColumn = model.UserID,
+                    StartDateColumn = model.StartDate,
+                    EndDateColumn = model.EndDate,
+                    IsRatesConfirmedColumn = model.IsRatesConfirmed,
+                    //Fee Rates and Cost Rates
+                    NTFeeRateColumn = model.NTFeeRate,
+                    NTCostRateColumn = model.NTCostRate,
+                    OT1FeeRateColumn = model.OT1FeeRate,
+                    OT1CostRateColumn = model.OT1CostRate,
+                    OT2FeeRateColumn = model.OT2FeeRate,
+                    OT2CostRateColumn = model.OT2CostRate,
+                    OT3FeeRateColumn = model.OT3FeeRate,
+                    OT3CostRateColumn = model.OT3CostRate,
+                    OT4FeeRateColumn = model.OT4FeeRate,
+                    OT4CostRateColumn = model.OT4CostRate,
+                    OT5FeeRateColumn = model.OT5FeeRate,
+                    OT5CostRateColumn = model.OT5CostRate,
+                    OT6FeeRateColumn = model.OT6FeeRate,
+                    OT6CostRateColumn = model.OT6CostRate,
+                    OT7FeeRateColumn = model.OT7FeeRate,
+                    OT7CostRateColumn = model.OT7CostRate,
+                    FilePath = model.file.FileName,
+                    AddedBy = UserHelpers.GetCurrentUserId(),
+                    AddedDate = DateTime.Now,
+                };
+                Db.UserRatesUploads.Add(userRatesUpload);
+
+                Db.SaveChanges();
+                Employee user = UserHelpers.GetCurrentUser();
+                ProcessXLSFile(model, user.Email, project);
+
+                message = new InfoMessage
+                {
+                    MessageType = InfoMessageType.Success,
+                    MessageContent = "Successfully updated User Rates Uploads."
+                };
+                TempData["message"] = message;
+
+
+                return View(model);
             }
-            int projectId = (int?)Session["SelectedProject"] ?? 0;
-            Project project = Db.Projects.Find(projectId) ?? Db.Projects.OrderBy(x => x.ProjectNo).First();
-
-            if (project == null)
+            catch (Exception ex)
             {
-                return InvokeHttp404(HttpContext);
+                throw ex;
             }
-            ValidateExcelFileImportBasic(model.file);
-
-            string path = Server.MapPath("~/Content/Upload/" + model.file.FileName);
-            Directory.CreateDirectory(path);
-            model.file.SaveAs(path);
-
-            //   UserRatesUpload userRateUpload = Db.UserRatesUploads.SingleOrDefault(x => x.ProjectId == project.ProjectID);
-
-            InfoMessage message;
-            UserRatesUpload userRatesUpload = new UserRatesUpload()
-            {
-                ProjectId = model.ProjectID,
-                ProjectUserClassificationIDColumn = model.ProjectUserClassification,
-                UserIDColumn = model.UserID,
-                StartDateColumn = model.StartDate,
-                EndDateColumn = model.EndDate,
-                IsRatesConfirmedColumn = model.IsRatesConfirmed,
-                //Fee Rates and Cost Rates
-                NTFeeRateColumn = model.NTFeeRate,
-                NTCostRateColumn = model.NTCostRate,
-                OT1FeeRateColumn = model.OT1FeeRate,
-                OT1CostRateColumn = model.OT1CostRate,
-                OT2FeeRateColumn = model.OT2FeeRate,
-                OT2CostRateColumn = model.OT2CostRate,
-                OT3FeeRateColumn = model.OT3FeeRate,
-                OT3CostRateColumn = model.OT3CostRate,
-                OT4FeeRateColumn = model.OT4FeeRate,
-                OT4CostRateColumn = model.OT4CostRate,
-                OT5FeeRateColumn = model.OT5FeeRate,
-                OT5CostRateColumn = model.OT5CostRate,
-                OT6FeeRateColumn = model.OT6FeeRate,
-                OT6CostRateColumn = model.OT6CostRate,
-                OT7FeeRateColumn = model.OT7FeeRate,
-                OT7CostRateColumn = model.OT7CostRate,
-                FilePath = model.file.FileName,
-                AddedBy = UserHelpers.GetCurrentUserId(),
-                AddedDate = DateTime.Now,
-            };
-            Db.UserRatesUploads.Add(userRatesUpload);
-
-            Db.SaveChanges();
-            Employee user = UserHelpers.GetCurrentUser();
-            ProcessXLSFile(model, user.Email, project);
-
-            message = new InfoMessage
-            {
-                MessageType = InfoMessageType.Success,
-                MessageContent = "Successfully updated User Rates Uploads."
-            };
-            TempData["message"] = message;
-
-
-            return View();
         }
 
         private bool ProcessXLSFile(UserRatesUploadCreateViewModel model, string email, Project project)

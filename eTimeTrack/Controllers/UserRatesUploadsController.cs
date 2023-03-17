@@ -164,11 +164,11 @@ namespace eTimeTrack.Controllers
             {
                 return InvokeHttp404(HttpContext);
             }
-            string path = Server.MapPath("~/Content/Upload/" + model.file.FileName);
-            model.file.SaveAs(path);
+            // string path = Server.MapPath("~/Content/Upload/" + model.file.FileName);
+            // model.file.SaveAs(path);
 
             //   UserRatesUpload userRateUpload = Db.UserRatesUploads.SingleOrDefault(x => x.ProjectId == project.ProjectID);
-
+            model.ProjectList = GenerateDropdownUserProjects();
             InfoMessage message;
             UserRatesUpload userRatesUpload = new UserRatesUpload()
             {
