@@ -51,118 +51,7 @@ namespace eTimeTrack.Controllers
         {
             UserRatesUploadCreateViewModel viewModel = new UserRatesUploadCreateViewModel { ProjectList = GenerateDropdownUserProjects() };
             return View(viewModel);
-        }
-
-        [HttpPost]
-        [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
-        public JsonResult UserRatesUpload2(UserRatesUploadCreateViewModel importExcel)
-        {
-            if (ModelState.IsValid)
-            {
-                var connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-                string path = Server.MapPath("~/Content/Upload/" + importExcel.file.FileName);
-                importExcel.file.SaveAs(path);
-
-                string excelConnectionString = @"Provider='Microsoft.ACE.OLEDB.12.0';Data Source='" + path + "';Extended Properties='Excel 12.0 Xml;IMEX=1'";
-                OleDbConnection excelConnection = new OleDbConnection(excelConnectionString);
-
-                //Sheet Name
-                excelConnection.Open();
-                string tableName = excelConnection.GetSchema("Tables").Rows[0]["TABLE_NAME"].ToString();
-                excelConnection.Close();
-                //End
-
-                OleDbCommand cmd = new OleDbCommand("Select * from [" + tableName + "]", excelConnection);
-
-                excelConnection.Open();
-
-                OleDbDataReader dReader;
-
-
-                dReader = cmd.ExecuteReader();
-                SqlBulkCopy sqlBulk = new SqlBulkCopy(connectionString);
-
-                //Give your Destination table name
-                sqlBulk.DestinationTableName = "UserRates";
-
-                //Mappings
-                sqlBulk.ColumnMappings.Add("StartDate", "StartDate");
-                sqlBulk.ColumnMappings.Add("EndDate", "EndDate");
-                //sqlBulk.ColumnMappings.Add("Person", "Person");
-                //sqlBulk.ColumnMappings.Add("Item", "Item");
-                //sqlBulk.ColumnMappings.Add("Units", "Units");
-                //sqlBulk.ColumnMappings.Add("Unit Cost", "UnitCost");
-                //sqlBulk.ColumnMappings.Add("Total", "Total");
-
-                sqlBulk.WriteToServer(dReader);
-                excelConnection.Close();
-
-                ViewBag.Result = "Successfully Imported";
-            }
-            return Json(true);
-        }
-
-        [HttpPost]
-        [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
-        public JsonResult UserRatesUpload(UserRatesUploadCreateViewModel importExcel)
-        {
-            if (ModelState.IsValid)
-            {
-                var connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-                string path = Server.MapPath("~/Content/Upload/" + importExcel.file.FileName);
-                importExcel.file.SaveAs(path);
-
-                string excelConnectionString = @"Provider='Microsoft.ACE.OLEDB.12.0';Data Source='" + path + "';Extended Properties='Excel 12.0 Xml;IMEX=1'";
-                OleDbConnection excelConnection = new OleDbConnection(excelConnectionString);
-
-                //Sheet Name
-                excelConnection.Open();
-                string tableName = excelConnection.GetSchema("Tables").Rows[0]["TABLE_NAME"].ToString();
-                excelConnection.Close();
-                //End
-
-                OleDbCommand cmd = new OleDbCommand("Select * from [" + tableName + "]", excelConnection);
-
-                excelConnection.Open();
-
-                DataSet ds = new DataSet();
-                OleDbDataAdapter oda = new OleDbDataAdapter("Select * from [" + tableName + "]", excelConnection);
-                excelConnection.Close();
-                oda.Fill(ds);
-
-                DataTable Exceldt = ds.Tables[0];
-                Exceldt.Clear();
-
-                if (!Exceldt.Columns.Contains("StartDate"))
-                    Exceldt.Columns.Add("StartDate", typeof(DateTime));
-                if (!Exceldt.Columns.Contains("EndDate"))
-                    Exceldt.Columns.Add("EndDate", typeof(DateTime));
-                //   Exceldt.Columns.Add("EndDate", typeof(DateTime));
-                if (!Exceldt.Columns.Contains("ProjectUserClassificationID"))
-                    Exceldt.Columns.Add("ProjectUserClassificationID", typeof(int));
-
-                // Exceldt = cmd.ExecuteReader();
-                //  connection();
-                excelConnection.Open();
-                //creating object of SqlBulkCopy
-                SqlBulkCopy objbulk = new SqlBulkCopy(connectionString);
-                //assigning Destination table name
-                objbulk.DestinationTableName = "UserRates";
-                //Mapping Table column
-                objbulk.ColumnMappings.Add("StartDate", "StartDate");
-                objbulk.ColumnMappings.Add("EndDate", "EndDate");
-                objbulk.ColumnMappings.Add("ProjectUserClassificationID", "ProjectUserClassificationID");
-                //inserting Datatable Records to DataBase
-                //   con.Open();
-                objbulk.WriteToServer(Exceldt);
-                excelConnection.Close();
-
-            }
-
-            ViewBag.Result = "Successfully Imported";
-
-            return Json(true);
-        }
+        }        
 
         [HttpPost]
         public ActionResult ImportRatesTemplates(UserRatesUploadCreateViewModel model)
@@ -232,20 +121,26 @@ namespace eTimeTrack.Controllers
                 Employee user = UserHelpers.GetCurrentUser();
                 ProcessXLSFile(model, user.Email, project);
 
-                message = new InfoMessage
+                TempData["Infomessage"] = new InfoMessage
                 {
                     MessageType = InfoMessageType.Success,
-                    MessageContent = "Successfully updated User Rates Uploads."
+                    MessageContent = "Successfully uploaded User Rates."
                 };
-                TempData["message"] = message;
+                ViewBag.InfoMessage = TempData["Infomessage"];
 
 
-                return View(model);
             }
             catch (Exception ex)
             {
-                throw ex;
+                // throw ex;
+                TempData["InfoMessage"] = new InfoMessage
+                {
+                    MessageContent = "Error: could not import user rates data: " + ex.Message,
+                    MessageType = InfoMessageType.Failure
+                };
+                ViewBag.InfoMessage = TempData["InfoMessage"];
             }
+            return View(model);
         }
 
         private bool ProcessXLSFile(UserRatesUploadCreateViewModel model, string email, Project project)

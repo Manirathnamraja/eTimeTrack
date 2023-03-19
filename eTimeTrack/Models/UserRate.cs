@@ -13,9 +13,9 @@ namespace eTimeTrack.Models
     {
         [Key]
         public int UserRateId { get; set; }
-        [Index("IX_EmployeeProjectRestraint", 1, IsUnique = true)]
+       // [Index("IX_EmployeeProjectRestraint", 1, IsUnique = true)]
         public int EmployeeId { get; set; }
-        [Index("IX_EmployeeProjectRestraint", 2, IsUnique = true)]
+      //  [Index("IX_EmployeeProjectRestraint", 2, IsUnique = true)]
         public int ProjectId { get; set; }
         public int? ProjectUserClassificationID { get; set; }       
 
