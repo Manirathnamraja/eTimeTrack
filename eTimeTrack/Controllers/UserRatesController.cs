@@ -184,10 +184,9 @@ namespace eTimeTrack.Controllers
                 }
                 ValidateExcelFileImportBasic(model.file);
 
-              //  string targetFolder = Server.MapPath("~/Content/Upload");
-              //  string targetPath = Path.Combine(targetFolder, model.file.FileName);
-             //   model.file.SaveAs(targetPath);
-
+                string targetFolder = Server.MapPath("~/Content/Upload");
+                string targetPath = Path.Combine(targetFolder, model.file.FileName);
+                model.file.SaveAs(targetPath);
 
                 //string path = Server.MapPath("~/Content/Upload/" + model.file.FileName);
                 //  string path = Server.MapPath(Path.Combine("~/Content/Upload", model.file.FileName));
@@ -226,9 +225,10 @@ namespace eTimeTrack.Controllers
                     AddedBy = UserHelpers.GetCurrentUserId(),
                     AddedDate = DateTime.Now,
                 };
-                Db.UserRatesUploads.Add(userRatesUpload);
 
+                Db.UserRatesUploads.Add(userRatesUpload);
                 Db.SaveChanges();
+
                 Employee user = UserHelpers.GetCurrentUser();
                 ProcessXLSFile(model, user.Email, project);
 
@@ -250,9 +250,7 @@ namespace eTimeTrack.Controllers
 
         private bool ProcessXLSFile(UserRatesUploadCreateViewModel model, string email, Project project)
         {
-            int invalidRowsEmpty = 0;
-
-            
+            int invalidRowsEmpty = 0;            
             int insertedRows = 0;
             int rowsCount = 0;
             List<List<int>> invalidRowsNoLinkRowNumbers = new List<List<int>>();
@@ -291,7 +289,6 @@ namespace eTimeTrack.Controllers
                     fileData = target.ToArray();
                 }
 
-
                 List<UserRate> userRates = new List<UserRate>();
                 List<UserRate> duplicateuserRates = new List<UserRate>();
 
@@ -304,7 +301,6 @@ namespace eTimeTrack.Controllers
                         ExcelWorksheet ws = package.Workbook.Worksheets[1];
                         rowsCount = ws.Dimension.Rows - 1;
                         int colsCount = ws.Dimension.Columns;
-
 
                         for (int i = 2; i < int.MaxValue; i++) // skip header row
                         {
@@ -363,8 +359,6 @@ namespace eTimeTrack.Controllers
                                 LastModifiedBy = UserHelpers.GetCurrentUserId() + "-IMP",
                                 LastModifiedDate = DateTime.Now,
                                 IsDeleted = false,
-
-                                // ImportRowNumbers = new List<int> { i }
                             };
                             userRates.Add(userRate);
 
@@ -377,8 +371,7 @@ namespace eTimeTrack.Controllers
                                 string.IsNullOrEmpty(IsRatesConfirmedBool)
                                 )
                             {
-                                invalidRowsEmpty++;
-                              
+                                invalidRowsEmpty++;                              
                             }
 
 
@@ -396,9 +389,7 @@ namespace eTimeTrack.Controllers
                                         insertedRows++;
                                     }
                                 }
-
                             }
-
                         }
                     }
                 }
@@ -412,7 +403,6 @@ namespace eTimeTrack.Controllers
                     MessageContent = "Error: could not import user rates data: " + e.Message,
                     MessageType = InfoMessageType.Failure
                 };
-
 
                 return false;
             }
@@ -440,7 +430,6 @@ namespace eTimeTrack.Controllers
 
                 }
             }
-
             return string.Empty;
         }
 
