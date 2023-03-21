@@ -15,6 +15,8 @@ using System.Data.OleDb;
 using System.Xml;
 using OfficeOpenXml;
 using System.Globalization;
+using System.Web.Hosting;
+using System.Threading.Tasks;
 
 namespace eTimeTrack.Controllers
 {
@@ -84,7 +86,7 @@ namespace eTimeTrack.Controllers
 
                 //   UserRatesUpload userRateUpload = Db.UserRatesUploads.SingleOrDefault(x => x.ProjectId == project.ProjectID);
 
-                InfoMessage message;
+              //  InfoMessage message;
                 UserRatesUpload userRatesUpload = new UserRatesUpload()
                 {
                     ProjectId = model.ProjectID,
@@ -119,13 +121,16 @@ namespace eTimeTrack.Controllers
                 Db.SaveChanges();
 
                 Employee user = UserHelpers.GetCurrentUser();
-                ProcessXLSFile(model, user.Email, project);
+              //  ProcessXLSFile(model, user.Email, project);
+                HostingEnvironment.QueueBackgroundWorkItem(ct => ProcessXLSFile(model,user.Id, user.Email, project));
 
-                TempData["Infomessage"] = new InfoMessage
-                {
-                    MessageType = InfoMessageType.Success,
-                    MessageContent = "Successfully uploaded User Rates."
-                };
+                TempData["InfoMessage"] = new InfoMessage { MessageContent = "The upload process will run in the background. You will receive an email notification when complete.", MessageType = InfoMessageType.Success };
+
+                //TempData["Infomessage"] = new InfoMessage
+                //{
+                //    MessageType = InfoMessageType.Success,
+                //    MessageContent = "Successfully uploaded User Rates."
+                //};
                 ViewBag.InfoMessage = TempData["Infomessage"];
 
 
@@ -143,13 +148,14 @@ namespace eTimeTrack.Controllers
             return View(model);
         }
 
-        private bool ProcessXLSFile(UserRatesUploadCreateViewModel model, string email, Project project)
+        private async Task ProcessXLSFile(UserRatesUploadCreateViewModel model,int userId, string email, Project project)
         {
             int invalidRowsEmpty = 0;            
             int insertedRows = 0;
             int rowsCount = 0;
+            int duplicateRows = 0;
             List<List<int>> invalidRowsNoLinkRowNumbers = new List<List<int>>();
-            // string textEmail = string.Empty;
+            ApplicationDbContext context = new ApplicationDbContext();
 
             try
             {
@@ -210,10 +216,10 @@ namespace eTimeTrack.Controllers
                             CultureInfo provider = CultureInfo.InvariantCulture;
                             //getting project user classificationId from Text.
                             var projectUserClassificationText = ws.Cells[i, projectUserClassificationColumn].Text?.Trim();
-                            var projectUserClassificationID = Db.ProjectUserClassifications.Where(r => r.ProjectClassificationText == projectUserClassificationText).Select(t => t.ProjectUserClassificationId).FirstOrDefault();
+                            var projectUserClassificationID = context.ProjectUserClassifications.Where(r => r.ProjectClassificationText == projectUserClassificationText).Select(t => t.ProjectUserClassificationId).FirstOrDefault();
                             //getting employeeId from employee No.
                             var userIdText = ws.Cells[i, userIDColumn].Text?.Trim();
-                            var employeeId = Db.Users.Where(r => r.EmployeeNo == userIdText).Select(t => t.Id).FirstOrDefault();
+                            var employeeId = context.Users.Where(r => r.EmployeeNo == userIdText).Select(t => t.Id).FirstOrDefault();
                             //getting startDate and EndDate
                             string sDate = ws.Cells[i, startDateColumn].Value?.ToString()?.Trim();
                             double date = string.IsNullOrEmpty(sDate) ? 0 : double.Parse(sDate);
@@ -225,66 +231,76 @@ namespace eTimeTrack.Controllers
 
                             var IsRatesConfirmedBool = ParseBool(ws.Cells[i, ratesConfirmedColumn].Text?.Trim());
 
-                            UserRate userRate = new UserRate
+                            bool existUserRates = context.UserRates.Any(x => x.EmployeeId == employeeId && x.StartDate == startdate);
+                            if (!existUserRates)
                             {
-                                EmployeeId = employeeId,
-                                StartDate = startdate,
-                                EndDate = endDate,
-                                ProjectUserClassificationID = projectUserClassificationID,
-                                IsRatesConfirmed = IsRatesConfirmedBool == "true" ? true : false,
-
-                                NTFeeRate = ntFeeRateColumn != 0 ? ws.Cells[i, ntFeeRateColumn].Value?.ToString()?.Trim() : null,
-                                OT1FeeRate = ot1FeeRateColumn != 0 ? ws.Cells[i, ot1FeeRateColumn].Value?.ToString()?.Trim() : null,
-                                OT2FeeRate = ot2FeeRateColumn != 0 ? ws.Cells[i, ot2FeeRateColumn].Value?.ToString()?.Trim() : null,
-                                OT3FeeRate = ot3FeeRateColumn != 0 ? ws.Cells[i, ot3FeeRateColumn].Value?.ToString()?.Trim() : null,
-                                OT4FeeRate = ot4FeeRateColumn != 0 ? ws.Cells[i, ot4FeeRateColumn].Value?.ToString()?.Trim() : null,
-                                OT5FeeRate = ot5FeeRateColumn != 0 ? ws.Cells[i, ot5FeeRateColumn].Value?.ToString()?.Trim() : null,
-                                OT6FeeRate = ot6FeeRateColumn != 0 ? ws.Cells[i, ot6FeeRateColumn].Value?.ToString()?.Trim() : null,
-                                OT7FeeRate = ot7FeeRateColumn != 0 ? ws.Cells[i, ot7FeeRateColumn].Value?.ToString()?.Trim() : null,
-                                NTCostRate = ntCostRateColumn != 0 ? ws.Cells[i, ntCostRateColumn].Value?.ToString()?.Trim() : null,
-                                OT1CostRate = ot1CostRateColumn != 0 ? ws.Cells[i, ot1CostRateColumn].Value?.ToString()?.Trim() : null,
-                                OT2CostRate = ot2CostRateColumn != 0 ? ws.Cells[i, ot2CostRateColumn].Value?.ToString()?.Trim() : null,
-                                OT3CostRate = ot3CostRateColumn != 0 ? ws.Cells[i, ot3CostRateColumn].Value?.ToString()?.Trim() : null,
-                                OT4CostRate = ot4CostRateColumn != 0 ? ws.Cells[i, ot4CostRateColumn].Value?.ToString()?.Trim() : null,
-                                OT5CostRate = ot5CostRateColumn != 0 ? ws.Cells[i, ot5CostRateColumn].Value?.ToString()?.Trim() : null,
-                                OT6CostRate = ot6CostRateColumn != 0 ? ws.Cells[i, ot6CostRateColumn].Value?.ToString()?.Trim() : null,
-                                OT7CostRate = ot7CostRateColumn != 0 ? ws.Cells[i, ot7CostRateColumn].Value?.ToString()?.Trim() : null,
-
-                                ProjectId = model.ProjectID,
-                                LastModifiedBy = UserHelpers.GetCurrentUserId() + "-IMP",
-                                LastModifiedDate = DateTime.Now,
-                                IsDeleted = false,
-                            };
-                            userRates.Add(userRate);
-
-                            //validations
-                            if (string.IsNullOrEmpty(userRate.EmployeeId.ToString()) ||
-                                userRate.EmployeeId == 0 ||
-                                string.IsNullOrWhiteSpace(userRate.EndDate.ToString()) ||
-                                string.IsNullOrWhiteSpace(userRate.StartDate.ToString()) ||
-                                userRate.ProjectUserClassificationID == 0 ||
-                                string.IsNullOrEmpty(IsRatesConfirmedBool)
-                                )
-                            {
-                                invalidRowsEmpty++;                              
-                            }
-
-
-                            else
-                            {
-                                var rate = userRates.Where(x => x.EmployeeId == employeeId);
-                                foreach (var data in rate)
+                                UserRate userRate = new UserRate
                                 {
-                                    if (!duplicateuserRates.Exists(x => x.EmployeeId == data.EmployeeId && x.EndDate >= data.StartDate))
-                                    {
-                                        duplicateuserRates.Add(data);
+                                    EmployeeId = employeeId,
+                                    StartDate = startdate,
+                                    EndDate = endDate,
+                                    ProjectUserClassificationID = projectUserClassificationID,
+                                    IsRatesConfirmed = IsRatesConfirmedBool == "true" ? true : false,
 
-                                        Db.UserRates.Add(data);
-                                        Db.SaveChanges();
-                                        insertedRows++;
+                                    NTFeeRate = ntFeeRateColumn != 0 ? ws.Cells[i, ntFeeRateColumn].Value?.ToString()?.Trim() : null,
+                                    OT1FeeRate = ot1FeeRateColumn != 0 ? ws.Cells[i, ot1FeeRateColumn].Value?.ToString()?.Trim() : null,
+                                    OT2FeeRate = ot2FeeRateColumn != 0 ? ws.Cells[i, ot2FeeRateColumn].Value?.ToString()?.Trim() : null,
+                                    OT3FeeRate = ot3FeeRateColumn != 0 ? ws.Cells[i, ot3FeeRateColumn].Value?.ToString()?.Trim() : null,
+                                    OT4FeeRate = ot4FeeRateColumn != 0 ? ws.Cells[i, ot4FeeRateColumn].Value?.ToString()?.Trim() : null,
+                                    OT5FeeRate = ot5FeeRateColumn != 0 ? ws.Cells[i, ot5FeeRateColumn].Value?.ToString()?.Trim() : null,
+                                    OT6FeeRate = ot6FeeRateColumn != 0 ? ws.Cells[i, ot6FeeRateColumn].Value?.ToString()?.Trim() : null,
+                                    OT7FeeRate = ot7FeeRateColumn != 0 ? ws.Cells[i, ot7FeeRateColumn].Value?.ToString()?.Trim() : null,
+                                    NTCostRate = ntCostRateColumn != 0 ? ws.Cells[i, ntCostRateColumn].Value?.ToString()?.Trim() : null,
+                                    OT1CostRate = ot1CostRateColumn != 0 ? ws.Cells[i, ot1CostRateColumn].Value?.ToString()?.Trim() : null,
+                                    OT2CostRate = ot2CostRateColumn != 0 ? ws.Cells[i, ot2CostRateColumn].Value?.ToString()?.Trim() : null,
+                                    OT3CostRate = ot3CostRateColumn != 0 ? ws.Cells[i, ot3CostRateColumn].Value?.ToString()?.Trim() : null,
+                                    OT4CostRate = ot4CostRateColumn != 0 ? ws.Cells[i, ot4CostRateColumn].Value?.ToString()?.Trim() : null,
+                                    OT5CostRate = ot5CostRateColumn != 0 ? ws.Cells[i, ot5CostRateColumn].Value?.ToString()?.Trim() : null,
+                                    OT6CostRate = ot6CostRateColumn != 0 ? ws.Cells[i, ot6CostRateColumn].Value?.ToString()?.Trim() : null,
+                                    OT7CostRate = ot7CostRateColumn != 0 ? ws.Cells[i, ot7CostRateColumn].Value?.ToString()?.Trim() : null,
+
+                                    ProjectId = model.ProjectID,
+                                    LastModifiedBy = UserHelpers.GetCurrentUserId() + "-IMP",
+                                    LastModifiedDate = DateTime.Now,
+                                    IsDeleted = false,
+                                };
+                                userRates.Add(userRate);
+
+                                //validations
+                                if (string.IsNullOrEmpty(userRate.EmployeeId.ToString()) ||
+                                    userRate.EmployeeId == 0 ||
+                                    string.IsNullOrWhiteSpace(userRate.EndDate.ToString()) ||
+                                    string.IsNullOrWhiteSpace(userRate.StartDate.ToString()) ||
+                                    userRate.ProjectUserClassificationID == 0 ||
+                                    string.IsNullOrEmpty(IsRatesConfirmedBool)
+                                    )
+                                {
+                                    invalidRowsEmpty++;
+                                }
+
+
+                                else
+                                {
+                                    var rate = userRates.Where(x => x.EmployeeId == employeeId);
+                                    foreach (var data in rate)
+                                    {
+                                        if (!duplicateuserRates.Exists(x => x.EmployeeId == data.EmployeeId && x.EndDate >= data.StartDate))
+                                        {
+                                            duplicateuserRates.Add(data);
+
+                                            context.UserRates.Add(data);
+                                            //context.SaveChangesWithChangelog(userId);
+                                            await context.SaveChangesAsync();
+                                            insertedRows++;
+                                        }
                                     }
                                 }
                             }
+                            else
+                            {
+                                duplicateRows++;
+                            }
+                            
                         }
                     }
                 }
@@ -299,14 +315,14 @@ namespace eTimeTrack.Controllers
                     MessageType = InfoMessageType.Failure
                 };
 
-                return false;
+              //  return false;
             }
 
-            string emailText = $"<p> User Rates upload completed for project: {project.Name}. </p><ul><li>Total Rows in file: {rowsCount}</li><li>Invalid Rows (no data): {invalidRowsEmpty}</li><li>Inserted Rows: {insertedRows}</li></ul>";
+            string emailText = $"<p> User Rates upload completed for project: <em style=\"color:darkblue\"> {project.Name} </em>. </p><ul><li>Total Rows in file: {rowsCount}</li><li style=\"color:darkred\">Invalid Rows: {invalidRowsEmpty}</li><li style=\"color:darkgreen\">Inserted Rows: {insertedRows}</li><li style=\"color:orangered\">Duplicate Rows: {duplicateRows}</li></ul>";
 
-            EmailHelper.SendEmail(email, $"eTimeTrack User Rates uploads succeeded for {project.Name}", emailText);
+             EmailHelper.SendEmail(email, $"eTimeTrack User Rates uploads succeeded for {project.Name}", emailText);
 
-            return true;
+          //  return true;
 
         }
 
