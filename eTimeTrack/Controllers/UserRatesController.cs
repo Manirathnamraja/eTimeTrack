@@ -64,15 +64,17 @@ namespace eTimeTrack.Controllers
                 {
                     return InvokeHttp404(HttpContext);
                 }
-                int projectId = (int?)Session["SelectedProject"] ?? 0;
-                Project project = Db.Projects.Find(projectId) ?? Db.Projects.OrderBy(x => x.ProjectNo).First();
-
                 model.ProjectList = GenerateDropdownUserProjects();
+                var projectName = Db.Projects.Find(model.ProjectID).Name;
 
-                if (project == null)
-                {
-                    return InvokeHttp404(HttpContext);
-                }
+                //int projectId = (int?)Session["SelectedProject"] ?? 0;
+                //Project project = Db.Projects.Find(projectId) ?? Db.Projects.OrderBy(x => x.ProjectNo).First();
+
+
+                //if (project == null)
+                //{
+                //    return InvokeHttp404(HttpContext);
+                //}
                 ValidateExcelFileImportBasic(model.file);
 
                 string targetFolder = Server.MapPath("~/Content/Upload");
@@ -122,7 +124,7 @@ namespace eTimeTrack.Controllers
 
                 Employee user = UserHelpers.GetCurrentUser();
               //  ProcessXLSFile(model, user.Email, project);
-                HostingEnvironment.QueueBackgroundWorkItem(ct => ProcessXLSFile(model,user.Id, user.Email, project));
+                HostingEnvironment.QueueBackgroundWorkItem(ct => ProcessXLSFile(model,user.Id, user.Email, projectName));
 
                 TempData["InfoMessage"] = new InfoMessage { MessageContent = "The upload process will run in the background. You will receive an email notification when complete.", MessageType = InfoMessageType.Success };
 
@@ -148,7 +150,7 @@ namespace eTimeTrack.Controllers
             return View(model);
         }
 
-        private async Task ProcessXLSFile(UserRatesUploadCreateViewModel model,int userId, string email, Project project)
+        private async Task ProcessXLSFile(UserRatesUploadCreateViewModel model,int userId, string email, string projectName)
         {
             int invalidRowsEmpty = 0;            
             int insertedRows = 0;
@@ -156,6 +158,7 @@ namespace eTimeTrack.Controllers
             int duplicateRows = 0;
             List<List<int>> invalidRowsNoLinkRowNumbers = new List<List<int>>();
             ApplicationDbContext context = new ApplicationDbContext();
+
 
             try
             {
@@ -308,7 +311,7 @@ namespace eTimeTrack.Controllers
             }
             catch (Exception e)
             {
-                EmailHelper.SendEmail(email, $"eTimeTrack User Rates uploads failed for {project.Name}", "Error: could not upload user rates data: " + e.Message + ". Please contact an administrator for assistance.");
+                EmailHelper.SendEmail(email, $"eTimeTrack User Rates uploads failed for {projectName}", "Error: could not upload user rates data: " + e.Message + ". Please contact an administrator for assistance.");
                 TempData["InfoMessage"] = new InfoMessage
                 {
                     MessageContent = "Error: could not import user rates data: " + e.Message,
@@ -318,9 +321,9 @@ namespace eTimeTrack.Controllers
               //  return false;
             }
 
-            string emailText = $"<p> User Rates upload completed for project: <em style=\"color:darkblue\"> {project.Name} </em>. </p><ul><li>Total Rows in file: {rowsCount}</li><li style=\"color:darkred\">Invalid Rows: {invalidRowsEmpty}</li><li style=\"color:darkgreen\">Inserted Rows: {insertedRows}</li><li style=\"color:orangered\">Duplicate Rows: {duplicateRows}</li></ul>";
+            string emailText = $"<p> User Rates upload completed for project: <em style=\"color:darkblue\"> {projectName} </em>. </p><ul><li>Total Rows in file: {rowsCount}</li><li style=\"color:darkred\">Invalid Rows: {invalidRowsEmpty}</li><li style=\"color:darkgreen\">Inserted Rows: {insertedRows}</li><li style=\"color:orangered\">Duplicate Rows: {duplicateRows}</li></ul>";
 
-             EmailHelper.SendEmail(email, $"eTimeTrack User Rates uploads succeeded for {project.Name}", emailText);
+             EmailHelper.SendEmail(email, $"eTimeTrack User Rates uploads succeeded for {projectName}", emailText);
 
           //  return true;
 
