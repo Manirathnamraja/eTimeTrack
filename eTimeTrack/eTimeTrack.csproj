@@ -426,6 +426,7 @@
     <Compile Include="Controllers\TaskTransferController.cs" />
     <Compile Include="Controllers\ProjectUserTypesController.cs" />
     <Compile Include="Controllers\ReconciliationTypesController.cs" />
+    <Compile Include="Controllers\ExportTimesheetsController.cs" />
     <Compile Include="Controllers\UserTypesController.cs" />
     <Compile Include="Controllers\TimesheetPeriodsController.cs" />
     <Compile Include="Enums\TimeCode.cs" />
@@ -603,6 +604,7 @@
     <Compile Include="Models\ProjectTimesheetPeriod.cs" />
     <Compile Include="Models\ProjectUserType.cs" />
     <Compile Include="Models\UserType.cs" />
+    <Compile Include="ViewModels\ExportTimesheetsIndexViewModel.cs" />
     <Compile Include="ViewModels\ApplicationUserViewModel.cs" />
     <Compile Include="Models\Changelog.cs" />
     <Compile Include="Models\Company.cs" />
@@ -1090,6 +1092,7 @@
     <Content Include="Views\UserRates\EditUserRates3.cshtml" />
     <Content Include="Views\UserRates\Create.cshtml" />
     <Content Include="Views\UserRates\ImportRatesTemplates.cshtml" />
+    <Content Include="Views\ExportTimesheets\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\ProjectTimesheetPeriods\Assign.cshtml" />

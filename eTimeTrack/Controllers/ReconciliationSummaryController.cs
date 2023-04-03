@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
@@ -47,7 +48,7 @@ namespace eTimeTrack.Controllers
             if (companyId.HasValue)
                 entriesQuery = entriesQuery.Where(x => x.OriginalReconciliationUpload.ReconciliationTemplate.CompanyId == companyId);
 
-            List<ReconciliationEntry> entriesAll = entriesQuery.ToList();
+            List<ReconciliationEntry> entriesAll = entriesQuery.AsNoTracking().ToList();
             
             List<EmployeeTimesheetItem> timesheetItemsAll = entriesAll.Where(x => x.EmployeeTimesheet != null).SelectMany(x => x.EmployeeTimesheet.TimesheetItems.Where(y => y.ProjectTask.ProjectID == projectId)).ToList();
 

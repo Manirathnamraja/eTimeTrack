@@ -56,23 +56,23 @@
 
         if (User.IsUserAdministratorOrAboveExcludeTimesheetEditor())
         {
-<dl class="dl-horizontal">
-    <dt>Users:</dt>
-    <dd>
-        @Html.ActionLink("Assign Users to Project", "Assign", "Projects")
-    </dd>
-    @if (User.IsUserPlusOrAbove())
-    {
-        <dd>
-            @Html.ActionLink("User Details", "Index", "EmployeeProjects")
-        </dd>
+            <dl class="dl-horizontal">
+                <dt>Users:</dt>
+                <dd>
+                    @Html.ActionLink("Assign Users to Project", "Assign", "Projects")
+                </dd>
+                @if (User.IsUserPlusOrAbove())
+                {
+                    <dd>
+                        @Html.ActionLink("User Details", "Index", "EmployeeProjects")
+                    </dd>
 
-        <dd>
-            @Html.ActionLink("User Rates", "Index", "UserRates")
-        </dd>
-    }
+                    <dd>
+                        @Html.ActionLink("User Rates", "Index", "UserRates")
+                    </dd>
+                }
 
-</dl>
+            </dl>
         }
 
         if (User.IsUserPlusOrAbove())
@@ -142,6 +142,17 @@
                 }
             </dl>
         }
+
+        @*if (User.IsUserPlusOrAbove())
+        {
+            <dl class="dl-horizontal">
+                <dt>Reporting Menu:</dt>
+                <dd>
+                    @Html.ActionLink("Export Timesheets", "Index", "ExportTimesheets")
+                </dd>
+            </dl>
+
+        }*@
 
         @*if (User.IsTimesheetEditorOrAbove())
             {

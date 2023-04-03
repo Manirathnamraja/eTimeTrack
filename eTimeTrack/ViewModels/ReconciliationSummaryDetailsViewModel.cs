@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using eTimeTrack.Models;
 
 namespace eTimeTrack.ViewModels
@@ -12,7 +13,7 @@ namespace eTimeTrack.ViewModels
         public string ProjectName { get; set; }
         public string CompanyName { get; set; }
         public int? CompanyId { get; set; }
-        public List<ReconciliationTypeHourSummary> ReconciliationHours { get; set; }
+        public List<ReconciliationTypeHourSummary> ReconciliationHours { get; set; }       
     }
 
     public class ReconciliationTypeHourSummary
