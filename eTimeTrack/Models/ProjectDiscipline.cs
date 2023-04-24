@@ -12,6 +12,7 @@ namespace eTimeTrack.Models
         public int ProjectDisciplineId { get; set; }
         //public int ProjectID { get; set; }
         [StringLength(511, ErrorMessage = "Maximum length is 511")]
+        [Display(Name = "Discipline")]
         public string Text { get; set; }
 
         [StringLength(511, ErrorMessage = "Maximum length is 511")]

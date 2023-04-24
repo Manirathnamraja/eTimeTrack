@@ -98,9 +98,12 @@
                 <dd>
                     @Html.ActionLink("Project User Types", "Index", "ProjectUserTypes")
                 </dd>
-                <dd>
-                    @Html.ActionLink("Project User Classifications", "Index", "ProjectUserClassifications")
-                </dd>
+                @if (User.IsUserAdministratorOrAboveExcludeTimesheetEditor())
+                {
+                    <dd>
+                        @Html.ActionLink("Project User Classifications", "Index", "ProjectUserClassifications")
+                    </dd>
+                }
             </dl>
 
             @*<dl class="dl-horizontal">
@@ -144,15 +147,15 @@
         }
 
         @*if (User.IsUserPlusOrAbove())
-        {
-            <dl class="dl-horizontal">
-                <dt>Reporting Menu:</dt>
-                <dd>
-                    @Html.ActionLink("Export Timesheets", "Index", "ExportTimesheets")
-                </dd>
-            </dl>
+            {
+                <dl class="dl-horizontal">
+                    <dt>Reporting Menu:</dt>
+                    <dd>
+                        @Html.ActionLink("Export Timesheets", "Index", "ExportTimesheets")
+                    </dd>
+                </dl>
 
-        }*@
+            }*@
 
         @*if (User.IsTimesheetEditorOrAbove())
             {

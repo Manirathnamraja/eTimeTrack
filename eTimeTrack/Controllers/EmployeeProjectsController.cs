@@ -180,9 +180,8 @@ namespace eTimeTrack.Controllers
         }
 
         private List<SelectListItem> GetProjectDisciplineSelectItems()
-        {
-         
-            List<SelectListItem> selectItems = Db.ProjectDisciplines.Select(x => new SelectListItem { Value = x.ProjectDisciplineId.ToString(), Text = x.Text }).ToList();
+        {         
+            List<SelectListItem> selectItems = Db.ProjectDisciplines.Select(x => new SelectListItem { Value = x.ProjectDisciplineId.ToString(), Text = x.Text }).OrderBy(x=>x.Text).ToList();
             return selectItems;
 
         }

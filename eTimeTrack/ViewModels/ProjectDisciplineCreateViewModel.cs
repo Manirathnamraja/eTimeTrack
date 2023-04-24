@@ -5,6 +5,7 @@ namespace eTimeTrack.ViewModels
     public class ProjectDisciplineCreateViewModel
     {
         [StringLength(511, ErrorMessage = "Maximum length is 511")]
+        [Display(Name = "Discipline")]
         [Required]
         public string Text { get; set; }
 
