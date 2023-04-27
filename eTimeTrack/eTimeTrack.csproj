@@ -397,6 +397,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CompaniesController.cs" />
     <Compile Include="Controllers\BaseEmployeesController.cs" />
+    <Compile Include="Controllers\ExportRatesController.cs" />
     <Compile Include="Controllers\UserRatesUploadsController.cs" />
     <Compile Include="Controllers\UserRatesController.cs" />
     <Compile Include="Controllers\EmployeeProjectsController.cs" />
@@ -611,6 +612,7 @@
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\IMergeable.cs" />
     <Compile Include="ViewModels\AECOMUserClassificationCreateViewModel.cs" />
+    <Compile Include="ViewModels\ExportRatesIndexUserVm.cs" />
     <Compile Include="ViewModels\UserRatesUploadCreateViewModel.cs" />
     <Compile Include="ViewModels\UserRateDetailsViewModel.cs" />
     <Compile Include="ViewModels\OfficeCreateViewModel.cs" />
@@ -1093,6 +1095,7 @@
     <Content Include="Views\UserRates\Create.cshtml" />
     <Content Include="Views\UserRates\ImportRatesTemplates.cshtml" />
     <Content Include="Views\ExportTimesheets\Index.cshtml" />
+    <Content Include="Views\ExportRates\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\ProjectTimesheetPeriods\Assign.cshtml" />
