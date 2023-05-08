@@ -21,6 +21,8 @@ namespace eTimeTrack.Models
 
         public ApplicationDbContext() : base("DefaultConnection")
         {
+            // this.Database.CommandTimeout = 180;
+           // this.Configuration.LazyLoadingEnabled = true;
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

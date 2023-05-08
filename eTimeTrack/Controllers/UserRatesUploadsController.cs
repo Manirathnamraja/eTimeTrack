@@ -1,32 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
+﻿using System.Linq;
 using System.Web.Mvc;
 using eTimeTrack.Helpers;
 using eTimeTrack.Models;
 using eTimeTrack.ViewModels;
-using Spire.Pdf.General.Render.Font.OpenTypeFile;
-using Microsoft.EntityFrameworkCore;
 using System;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Web.UI.WebControls;
-using System.Threading.Tasks;
-using System.Web.Script.Services;
-using EntityState = System.Data.Entity.EntityState;
 using System.Web;
-using System.IO;
-using ExcelDataReader;
 using System.Data;
 using System.Data.SqlClient;
-using System.Web.Configuration;
-using System.Reflection;
-using eTimeTrack.Extensions;
-using System.Configuration;
 using System.Data.OleDb;
-using System.Drawing;
 using System.Xml;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
-using System.Linq.Expressions;
 
 namespace eTimeTrack.Controllers
 {
