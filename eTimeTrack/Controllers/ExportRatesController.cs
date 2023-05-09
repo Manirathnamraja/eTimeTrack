@@ -61,6 +61,7 @@ namespace eTimeTrack.Controllers
                 int row = 1;
                 int col = 1;
 
+                ws.Cells[row, col++].Value = "Project";
                 ws.Cells[row, col++].Value = "Employee Number";
                 ws.Cells[row, col++].Value = "Employee Name";
                 ws.Cells[row, col++].Value = "Email";
@@ -96,21 +97,23 @@ namespace eTimeTrack.Controllers
                 foreach (UserRate reconEntry in allData)
                 {
 
-                    var ss = GetUserDetails(reconEntry.EmployeeId, reconEntry.ProjectId);
+                    var userDetail = GetUserDetails(reconEntry.EmployeeId, reconEntry.ProjectId);
 
-                    var officeName = Db.ProjectOffices.Where(x => x.OfficeId == ss.OfficeID).Select(y => y.OfficeName);
-                    var disciplineText = Db.ProjectDisciplines.Where(x => x.ProjectDisciplineId == ss.ProjectDisciplineID).Select(y => y.Text);
+                    var officeName = Db.ProjectOffices.Where(x => x.OfficeId == userDetail.OfficeID).Select(y => y.OfficeName);
+                    var disciplineText = Db.ProjectDisciplines.Where(x => x.ProjectDisciplineId == userDetail.ProjectDisciplineID).Select(y => y.Text);
                     var projectUserClassificationText = Db.ProjectUserClassifications.Where(x => x.ProjectUserClassificationId == reconEntry.ProjectUserClassificationID).Select(c => c.ProjectClassificationText);
                     DateTime sDate = (DateTime)reconEntry.StartDate;
                     DateTime eDate = (DateTime)reconEntry.EndDate;
                     projectName = reconEntry.Project.Name;
+                    var companyName = Db.Companies.Where(x => x.Company_Id == reconEntry.Employee.CompanyID).Select(y => y.Company_Name);
 
                     col = 1;
+                    ws.Cells[row, col++].Value = reconEntry.Project.Name;
                     ws.Cells[row, col++].Value = reconEntry.Employee.EmployeeNo;
                     ws.Cells[row, col++].Value = reconEntry.Employee.Names;
                     ws.Cells[row, col++].Value = reconEntry.Employee.Email;
-                    ws.Cells[row, col++].Value = ss.ProjectRole;
-                    ws.Cells[row, col++].Value = reconEntry.Project.Name;
+                    ws.Cells[row, col++].Value = userDetail.ProjectRole;
+                    ws.Cells[row, col++].Value = companyName;                   
                     ws.Cells[row, col++].Value = officeName;
                     ws.Cells[row, col++].Value = disciplineText;                    
                     ws.Cells[row, col++].Value = projectUserClassificationText;
