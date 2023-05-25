@@ -1,7 +1,7 @@
 ﻿@using eTimeTrack.Helpers
 @model eTimeTrack.ViewModels.WeeklyCostReportsIndexUserVm
 @{
-    ViewBag.Title = "Export Rates";
+    ViewBag.Title = "Daily Cost Rates";
     ViewBag.BannerColour = AecomColour.Blue;
 }
 
@@ -14,11 +14,27 @@
 
     <div class="form-horizontal">
         <div class="form-group">
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })          
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
             <div class="form-group">
                 <label for="ProjectID">Project</label>
                 @Html.DropDownListFor(model => model.ProjectID, Model.ProjectList, "Select", new { id = "ProjectSelector", @class = "form-control", required = true })
+            </div>
+            <div class="row">               
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label for="FromDate">From Date</label>
+                        @Html.TextBoxFor(model => model.FromDate, new { @class = "form-control datepicker" })
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="form-group">
+                        <label for="ToDate">To Date</label>
+                        @Html.TextBoxFor(model => model.ToDate, new { @class = "form-control datepicker" })
+                    </div>
+                </div>
             </div>
 
 
@@ -26,7 +42,9 @@
         </div>
         <div class="pull-right">
             @Html.Hidden("projectId", Model.ProjectID)
-            <input type="submit" value="Export Weekly Cost Rates" id="submit" class="btn btn-primary" />
+            @Html.Hidden("fromDate", Model.FromDate)
+            @Html.Hidden("toDate", Model.ToDate)
+            <input type="submit" value="Daily Cost Rates" id="submit" class="btn btn-primary" />
         </div>
         <a href="@Url.Action("Index")" class="btn btn-primary">Back</a>
     </div>

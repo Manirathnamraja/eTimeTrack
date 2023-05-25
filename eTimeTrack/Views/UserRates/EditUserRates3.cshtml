@@ -12,6 +12,10 @@
 
     <div class="card-body">
         <a href='@Url.Action("Create", new {projectId = ViewBag.ProjectId, employeeId = ViewBag.EmployeeId })' class="btn btn-primary" role="button">Add New</a>
+        <div class="pull-right">
+            <a href="@Url.Action("Index", "UserRates")" class="btn btn-primary">Back</a>
+        </div>
+
         <div class="card-title">
             <h2>Employee No : @ViewBag.EmployeeNo, Employee Name : @ViewBag.EmployeeName</h2>
         </div>

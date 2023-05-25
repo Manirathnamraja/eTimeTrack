@@ -19,6 +19,8 @@ using System.Web.Hosting;
 using System.Threading.Tasks;
 using eTimeTrack.Extensions;
 using OfficeOpenXml.Style;
+using System.Data.Entity.Core.Metadata.Edm;
+using System.Data.Entity;
 
 namespace eTimeTrack.Controllers
 {
@@ -47,109 +49,117 @@ namespace eTimeTrack.Controllers
         public FileResult PrintFriendlyExcelData(int projectId)
         {
 
-            IQueryable<UserRate> query = Db.UserRates.Where(x => x.ProjectId == projectId);
-            List<UserRate> allData = query.OrderByDescending(x=>x.LastModifiedDate).ToList();
-            var projectName = "";
-
-            FileInfo filePath = GetGuidFilePath("xlsx");
-
-            using (ExcelPackage package = new ExcelPackage())
+            //var query = Db.UserRates.Where(x => x.ProjectId == projectId).ToList();
+            using (ApplicationDbContext context = new ApplicationDbContext())
             {
-                ExcelWorkbook workbook = package.Workbook;
-                ExcelWorksheet ws = workbook.Worksheets.Add("ProjectUserRates");
 
-                int row = 1;
-                int col = 1;
+                var allData = context.UserRates.Where(x => x.ProjectId == projectId).OrderByDescending(y => y.LastModifiedDate).ToHashSet();
 
-                ws.Cells[row, col++].Value = "Project";
-                ws.Cells[row, col++].Value = "Employee Number";
-                ws.Cells[row, col++].Value = "Employee Name";
-                ws.Cells[row, col++].Value = "Email";
-                ws.Cells[row, col++].Value = "Project Role/Position";
-                ws.Cells[row, col++].Value = "Company";
-                ws.Cells[row, col++].Value = "Office";
-                ws.Cells[row, col++].Value = "Discipline";
-                ws.Cells[row, col++].Value = "Classification";
-                ws.Cells[row, col++].Value = "Rate Start Date";
-                ws.Cells[row, col++].Value = "Rate End Date";
-                ws.Cells[row, col++].Value = "NT Fee Rate";
-                ws.Cells[row, col++].Value = "OT1 Fee Rate";
-                ws.Cells[row, col++].Value = "OT2 Fee Rate";
-                ws.Cells[row, col++].Value = "OT3 Fee Rate";
-                ws.Cells[row, col++].Value = "OT4 Fee Rate";
-                ws.Cells[row, col++].Value = "OT5 Fee Rate";
-                ws.Cells[row, col++].Value = "OT6 Fee Rate";
-                ws.Cells[row, col++].Value = "OT7 Fee Rate";
-                ws.Cells[row, col++].Value = "NT Cost Rate";
-                ws.Cells[row, col++].Value = "OT1 Cost Rate";
-                ws.Cells[row, col++].Value = "OT2 Cost Rate";
-                ws.Cells[row, col++].Value = "OT3 Cost Rate";
-                ws.Cells[row, col++].Value = "OT4 Cost Rate";
-                ws.Cells[row, col++].Value = "OT5 Cost Rate";
-                ws.Cells[row, col++].Value = "OT6 Cost Rate";
-                ws.Cells[row, col++].Value = "OT7 Cost Rate";
-                ws.Cells[row, col++].Value = "Rates Confirmed";
-                ws.Cells[row, 1, row, col].Style.Font.Bold = true;
-                ws.Cells[row, 1, row, col].Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
+                var projectName = "";
 
-                row++;
+                FileInfo filePath = GetGuidFilePath("xlsx");
 
-                foreach (UserRate reconEntry in allData)
+                using (ExcelPackage package = new ExcelPackage())
                 {
+                    ExcelWorkbook workbook = package.Workbook;
+                    ExcelWorksheet ws = workbook.Worksheets.Add("ProjectUserRates");
 
-                    var userDetail = GetUserDetails(reconEntry.EmployeeId, reconEntry.ProjectId);
+                    int row = 1;
+                    int col = 1;
 
-                    var officeName = Db.ProjectOffices.Where(x => x.OfficeId == userDetail.OfficeID).Select(y => y.OfficeName);
-                    var disciplineText = Db.ProjectDisciplines.Where(x => x.ProjectDisciplineId == userDetail.ProjectDisciplineID).Select(y => y.Text);
-                    var projectUserClassificationText = Db.ProjectUserClassifications.Where(x => x.ProjectUserClassificationId == reconEntry.ProjectUserClassificationID).Select(c => c.ProjectClassificationText);
-                    DateTime sDate = (DateTime)reconEntry.StartDate;
-                    DateTime eDate = (DateTime)reconEntry.EndDate;
-                    projectName = reconEntry.Project.Name;
-                    var companyName = Db.Companies.Where(x => x.Company_Id == reconEntry.Employee.CompanyID).Select(y => y.Company_Name);
+                    ws.Cells[row, col++].Value = "Project";
+                    ws.Cells[row, col++].Value = "Employee Number";
+                    ws.Cells[row, col++].Value = "Employee Name";
+                    ws.Cells[row, col++].Value = "Email";
+                    ws.Cells[row, col++].Value = "Project Role/Position";
+                    ws.Cells[row, col++].Value = "Company";
+                    ws.Cells[row, col++].Value = "Office";
+                    ws.Cells[row, col++].Value = "Discipline";
+                    ws.Cells[row, col++].Value = "Classification";
+                    ws.Cells[row, col++].Value = "Rate Start Date";
+                    ws.Cells[row, col++].Value = "Rate End Date";
+                    ws.Cells[row, col++].Value = "NT Fee Rate";
+                    ws.Cells[row, col++].Value = "OT1 Fee Rate";
+                    ws.Cells[row, col++].Value = "OT2 Fee Rate";
+                    ws.Cells[row, col++].Value = "OT3 Fee Rate";
+                    ws.Cells[row, col++].Value = "OT4 Fee Rate";
+                    ws.Cells[row, col++].Value = "OT5 Fee Rate";
+                    ws.Cells[row, col++].Value = "OT6 Fee Rate";
+                    ws.Cells[row, col++].Value = "OT7 Fee Rate";
+                    ws.Cells[row, col++].Value = "NT Cost Rate";
+                    ws.Cells[row, col++].Value = "OT1 Cost Rate";
+                    ws.Cells[row, col++].Value = "OT2 Cost Rate";
+                    ws.Cells[row, col++].Value = "OT3 Cost Rate";
+                    ws.Cells[row, col++].Value = "OT4 Cost Rate";
+                    ws.Cells[row, col++].Value = "OT5 Cost Rate";
+                    ws.Cells[row, col++].Value = "OT6 Cost Rate";
+                    ws.Cells[row, col++].Value = "OT7 Cost Rate";
+                    ws.Cells[row, col++].Value = "Rates Confirmed";
+                    ws.Cells[row, 1, row, col].Style.Font.Bold = true;
+                    ws.Cells[row, 1, row, col].Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
 
-                    col = 1;
-                    ws.Cells[row, col++].Value = reconEntry.Project.Name;
-                    ws.Cells[row, col++].Value = reconEntry.Employee.EmployeeNo;
-                    ws.Cells[row, col++].Value = reconEntry.Employee.Names;
-                    ws.Cells[row, col++].Value = reconEntry.Employee.Email;
-                    ws.Cells[row, col++].Value = userDetail.ProjectRole;
-                    ws.Cells[row, col++].Value = companyName;                   
-                    ws.Cells[row, col++].Value = officeName;
-                    ws.Cells[row, col++].Value = disciplineText;                    
-                    ws.Cells[row, col++].Value = projectUserClassificationText;
-                    ws.Cells[row, col++].Value = sDate.ToDateStringGeneral();
-                    ws.Cells[row, col++].Value = eDate.ToDateStringGeneral();
-                    ws.Cells[row, col++].Value = reconEntry.NTFeeRate;
-                    ws.Cells[row, col++].Value = reconEntry.OT1FeeRate;
-                    ws.Cells[row, col++].Value = reconEntry.OT2FeeRate;
-                    ws.Cells[row, col++].Value = reconEntry.OT3FeeRate;
-                    ws.Cells[row, col++].Value = reconEntry.OT4FeeRate;
-                    ws.Cells[row, col++].Value = reconEntry.OT5FeeRate;
-                    ws.Cells[row, col++].Value = reconEntry.OT6FeeRate;
-                    ws.Cells[row, col++].Value = reconEntry.OT7FeeRate;
-                    ws.Cells[row, col++].Value = reconEntry.NTCostRate;
-                    ws.Cells[row, col++].Value = reconEntry.OT1CostRate;
-                    ws.Cells[row, col++].Value = reconEntry.OT2CostRate;
-                    ws.Cells[row, col++].Value = reconEntry.OT3CostRate;
-                    ws.Cells[row, col++].Value = reconEntry.OT4CostRate;
-                    ws.Cells[row, col++].Value = reconEntry.OT5CostRate;
-                    ws.Cells[row, col++].Value = reconEntry.OT6CostRate;
-                    ws.Cells[row, col++].Value = reconEntry.OT7CostRate;
-                    ws.Cells[row, col++].Value = reconEntry.IsRatesConfirmed ? "Y" : "N";
                     row++;
+
+                    foreach (UserRate reconEntry in allData)
+                    {
+
+                        var userDetail = GetUserDetails(reconEntry.EmployeeId, reconEntry.ProjectId);
+
+                        var officeName = context.ProjectOffices.Where(x => x.OfficeId == userDetail.OfficeID).Select(y => y.OfficeName).FirstOrDefault();
+                        var disciplineText = context.ProjectDisciplines.Where(x => x.ProjectDisciplineId == userDetail.ProjectDisciplineID).Select(y => y.Text).FirstOrDefault();
+                        var projectUserClassificationText = context.ProjectUserClassifications.Where(x => x.ProjectUserClassificationId == reconEntry.ProjectUserClassificationID).Select(c => c.ProjectClassificationText).FirstOrDefault();
+                        DateTime sDate = (DateTime)reconEntry.StartDate;
+                        DateTime eDate = (DateTime)reconEntry.EndDate;
+                        projectName = reconEntry.Project.Name;
+                        var companyName = context.Companies.Where(x => x.Company_Id == reconEntry.Employee.CompanyID).Select(y => y.Company_Name).FirstOrDefault();
+
+                        col = 1;
+                        ws.Cells[row, col++].Value = reconEntry.Project.Name;
+                        ws.Cells[row, col++].Value = reconEntry.Employee.EmployeeNo;
+                        ws.Cells[row, col++].Value = reconEntry.Employee.Names;
+                        ws.Cells[row, col++].Value = reconEntry.Employee.Email;
+                        ws.Cells[row, col++].Value = userDetail.ProjectRole;
+                        ws.Cells[row, col++].Value = companyName;
+                        ws.Cells[row, col++].Value = officeName;
+                        ws.Cells[row, col++].Value = disciplineText;
+                        ws.Cells[row, col++].Value = projectUserClassificationText;
+                        ws.Cells[row, col++].Value = sDate.ToDateStringGeneral();
+                        ws.Cells[row, col++].Value = eDate.ToDateStringGeneral();
+                        ws.Cells[row, col++].Value = reconEntry.NTFeeRate;
+                        ws.Cells[row, col++].Value = reconEntry.OT1FeeRate;
+                        ws.Cells[row, col++].Value = reconEntry.OT2FeeRate;
+                        ws.Cells[row, col++].Value = reconEntry.OT3FeeRate;
+                        ws.Cells[row, col++].Value = reconEntry.OT4FeeRate;
+                        ws.Cells[row, col++].Value = reconEntry.OT5FeeRate;
+                        ws.Cells[row, col++].Value = reconEntry.OT6FeeRate;
+                        ws.Cells[row, col++].Value = reconEntry.OT7FeeRate;
+                        ws.Cells[row, col++].Value = reconEntry.NTCostRate;
+                        ws.Cells[row, col++].Value = reconEntry.OT1CostRate;
+                        ws.Cells[row, col++].Value = reconEntry.OT2CostRate;
+                        ws.Cells[row, col++].Value = reconEntry.OT3CostRate;
+                        ws.Cells[row, col++].Value = reconEntry.OT4CostRate;
+                        ws.Cells[row, col++].Value = reconEntry.OT5CostRate;
+                        ws.Cells[row, col++].Value = reconEntry.OT6CostRate;
+                        ws.Cells[row, col++].Value = reconEntry.OT7CostRate;
+                        ws.Cells[row, col++].Value = reconEntry.IsRatesConfirmed ? "Y" : "N";
+                        row++;
+                    }
+
+                    for (int i = 1; i < 25; i++)
+                        ws.Column(i).AutoFit();
+
+                    package.SaveAs(filePath);
                 }
 
-                for (int i = 1; i < 25; i++)
-                    ws.Column(i).AutoFit();
 
-                package.SaveAs(filePath);
+
+                byte[] bytes = System.IO.File.ReadAllBytes(filePath.FullName);
+
+                var date = DateTime.Now.ToString("yyyyMMddHHmmss");
+                string filename = $"UserRates_{projectName}_{date}.xlsx";
+
+                return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", filename);
             }
-
-            byte[] bytes = System.IO.File.ReadAllBytes(filePath.FullName);
-
-            var date = DateTime.Now.ToString("yyyyMMddHHmmss");
-            string filename = $"UserRates_{projectName}_{date}.xlsx";
-            return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", filename);
         }
 
         private UserDetails GetUserDetails(int employeeId, int projectId)
@@ -159,13 +169,13 @@ namespace eTimeTrack.Controllers
 
             if (userDetails != null)
             {
-                 user = new UserDetails
+                user = new UserDetails
                 {
                     ProjectDisciplineID = userDetails.ProjectDisciplineID,
                     ProjectRole = userDetails.ProjectRole,
                     OfficeID = userDetails.OfficeID,
                 };
-                
+
             }
             return user;
         }

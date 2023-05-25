@@ -154,23 +154,14 @@
                 <dd>
                     @Html.ActionLink("Project User Rates", "Index", "ExportRates")
                 </dd>
-                @*<dd>
-                    @Html.ActionLink("Weekly Cost Report - User Task Level", "Index", "WeeklyCostReports")
-                </dd>*@
+                <dd>
+                    @Html.ActionLink("Daily Cost Report", "Index", "WeeklyCostReports")
+                </dd>
             </dl>
 
         }
 
-        @*if (User.IsUserPlusOrAbove())
-            {
-                <dl class="dl-horizontal">
-                    <dt>Reporting Menu:</dt>
-                    <dd>
-                        @Html.ActionLink("Export Timesheets", "Index", "ExportTimesheets")
-                    </dd>
-                </dl>
-
-            }*@
+        
 
         @*if (User.IsTimesheetEditorOrAbove())
             {

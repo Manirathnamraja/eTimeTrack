@@ -698,7 +698,7 @@ namespace eTimeTrack.Controllers
                 return InvokeHttp404(HttpContext);
             }
 
-            List<UserRate> userRates = Db.UserRates.Where(x => x.EmployeeId == employeeId && x.ProjectId == project.ProjectID && x.IsDeleted == false).ToList();
+            List<UserRate> userRates = Db.UserRates.Where(x => x.EmployeeId == employeeId && x.ProjectId == project.ProjectID && x.IsDeleted == false).OrderByDescending(d=>d.StartDate).ToList();
 
 
             List<SelectListItem> selectItems = GetProjectUserClassificationSelectItems(projectId);
@@ -726,7 +726,8 @@ namespace eTimeTrack.Controllers
             {
                 return InvokeHttp404(HttpContext);
             }
-            UserRate userRate = Db.UserRates.Find(projectId);
+            //UserRate userRate = Db.UserRates.Find(projectId);
+            UserRate userRate = Db.UserRates.Where(x=>x.ProjectId == projectId && x.EmployeeId == employeeId && x.UserRateId == 0).FirstOrDefault();
 
             List<SelectListItem> selectItems = GetProjectUserClassificationSelectItems(projectId);
 

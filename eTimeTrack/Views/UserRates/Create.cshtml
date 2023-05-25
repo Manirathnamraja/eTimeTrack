@@ -16,10 +16,7 @@
         <input type="hidden" id="projectId" value="@ViewBag.ProjectId" />
         @if (Model != null)
         {
-            <div class="row">
-                @*<input type="hidden" id="employeeId" value="@ViewBag.EmployeeId" />
-        <input type="hidden" id="projectId" value="@ViewBag.ProjectId" />*@
-                @*<input type="hidden" id="userRateId" value="@ViewBag.UserRateId" />*@
+            <div class="row">               
                 <input type="hidden" id="userRateId" value="@Model.UserRateId" />
 
                 <div class="col-lg-3">
@@ -63,7 +60,11 @@
                     </div>
                 </div>
             </div>
+            @*<div class="row pull-right">
+                <a href="@Url.Action("Details", new {id = ViewBag.PreviousTimesheet?.TimesheetID})" class="btn btn-default" @(ViewBag.PreviousTimesheet == null ? "disabled" : string.Empty)><span class="glyphicon glyphicon-chevron-left"></span> Previous</a>
 
+                <a href="@Url.Action("Details", new {id = ViewBag.NextTimesheet?.TimesheetID})" class="btn btn-default" @(ViewBag.NextTimesheet == null ? "disabled" : string.Empty)>Next <span class="glyphicon glyphicon-chevron-right"></span></a>
+            </div><br><br><br>*@
             <div class="row">
                 <table class="table table-bordered">
                     <colgroup>
