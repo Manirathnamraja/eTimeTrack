@@ -16,7 +16,7 @@
         <input type="hidden" id="projectId" value="@ViewBag.ProjectId" />
         @if (Model != null)
         {
-            <div class="row">               
+            <div class="row">
                 <input type="hidden" id="userRateId" value="@Model.UserRateId" />
 
                 <div class="col-lg-3">
@@ -37,18 +37,18 @@
                     <div class="form-group">
                         <label>Project User Classification</label>
                         @*<select class="form-control" id="drpProjectClassification">
-                    @foreach (var item in ViewBag.AvailableProjectUserClassifications)
-                    {
-                        var selected = "";
+                            @foreach (var item in ViewBag.AvailableProjectUserClassifications)
+                            {
+                                var selected = "";
 
-                        if (item.Value == Model.ProjectUserClassificationID.ToString())
-                        {
-                            selected = "selected='selected'";
-                        }
+                                if (item.Value == Model.ProjectUserClassificationID.ToString())
+                                {
+                                    selected = "selected='selected'";
+                                }
 
-                        <option @selected value="@item.Value">@item.Text</option>
-                    }
-                </select>*@
+                                <option @selected value="@item.Value">@item.Text</option>
+                            }
+                        </select>*@
                         @Html.DropDownList("ProjectUserClassificationID", (SelectList)ViewBag.AvailableProjectUserClassifications, new { @id = "drpProjectClassification", @class = "form-control" })
                     </div>
                 </div>
@@ -60,11 +60,16 @@
                     </div>
                 </div>
             </div>
-            @*<div class="row pull-right">
-                <a href="@Url.Action("Details", new {id = ViewBag.PreviousTimesheet?.TimesheetID})" class="btn btn-default" @(ViewBag.PreviousTimesheet == null ? "disabled" : string.Empty)><span class="glyphicon glyphicon-chevron-left"></span> Previous</a>
+            <div class="row">
+                
+                @*<a href='@Url.Action("EditUserRates", new {employeeId = Model.EmployeeId})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>*@
+                <div class="pull-right">
+                    <a href="@Url.Action("Prev", new {employeeId = Model.EmployeeId, projectId = Model.ProjectId, userRateId = Model.UserRateId })" class="btn btn-default" @(ViewBag.PreviousUserRates == 0 ? "disabled" : string.Empty)><span class="glyphicon glyphicon-chevron-left"></span> Previous</a>
 
-                <a href="@Url.Action("Details", new {id = ViewBag.NextTimesheet?.TimesheetID})" class="btn btn-default" @(ViewBag.NextTimesheet == null ? "disabled" : string.Empty)>Next <span class="glyphicon glyphicon-chevron-right"></span></a>
-            </div><br><br><br>*@
+                    <a href="@Url.Action("Next", new {employeeId = Model.EmployeeId, projectId = Model.ProjectId, userRateId = Model.UserRateId })" class="btn btn-default" @(ViewBag.NextUserRates == 0 ? "disabled" : string.Empty)>Next <span class="glyphicon glyphicon-chevron-right"></span></a>
+                    <a href='@Url.Action("EditUserRates", new {employeeId = Model.EmployeeId})' class="btn btn-primary">Back</a>
+                </div>
+            </div><br><br><br>
             <div class="row">
                 <table class="table table-bordered">
                     <colgroup>
@@ -266,7 +271,7 @@
 
     function backtolist() {
         var employeeId = $("#employeeId").val();
-        window.location.href = "/UserRates/EditUserRates3?employeeId=" + employeeId;
+        window.location.href = "/UserRates/EditUserRates?employeeId=" + employeeId;
     }
 
 

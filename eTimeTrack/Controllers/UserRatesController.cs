@@ -65,30 +65,12 @@ namespace eTimeTrack.Controllers
                     return InvokeHttp404(HttpContext);
                 }
                 model.ProjectList = GenerateDropdownUserProjects();
-                var projectName = Db.Projects.Find(model.ProjectID).Name;
-
-                //int projectId = (int?)Session["SelectedProject"] ?? 0;
-                //Project project = Db.Projects.Find(projectId) ?? Db.Projects.OrderBy(x => x.ProjectNo).First();
-
-
-                //if (project == null)
-                //{
-                //    return InvokeHttp404(HttpContext);
-                //}
+                var projectName = Db.Projects.Find(model.ProjectID).Name;                
                 ValidateExcelFileImportBasic(model.file);
 
                 string targetFolder = Server.MapPath("~/Content/Upload");
                 string targetPath = Path.Combine(targetFolder, model.file.FileName);
-                model.file.SaveAs(targetPath);
-
-                //string path = Server.MapPath("~/Content/Upload/" + model.file.FileName);
-                //  string path = Server.MapPath(Path.Combine("~/Content/Upload", model.file.FileName));
-                //   Directory.CreateDirectory(path);
-                //    model.file.SaveAs(path);
-
-                //   UserRatesUpload userRateUpload = Db.UserRatesUploads.SingleOrDefault(x => x.ProjectId == project.ProjectID);
-
-              //  InfoMessage message;
+                model.file.SaveAs(targetPath);              
                 UserRatesUpload userRatesUpload = new UserRatesUpload()
                 {
                     ProjectId = model.ProjectID,
@@ -465,219 +447,9 @@ namespace eTimeTrack.Controllers
             return PartialView(model);
         }
 
+
         [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
         public ActionResult EditUserRates(int? employeeId)
-        {
-            if (employeeId == null)
-            {
-                return InvokeHttp400(HttpContext);
-            }
-
-            Employee employee = Db.Users.Find(employeeId);
-            if (employee == null)
-            {
-                return InvokeHttp404(HttpContext);
-            }
-
-            int projectId = (int?)Session["SelectedProject"] ?? 0;
-            Project project = Db.Projects.Find(projectId) ?? Db.Projects.OrderBy(x => x.ProjectNo).First();
-
-            if (project == null)
-            {
-                return InvokeHttp404(HttpContext);
-            }
-
-            UserRate userRate = Db.UserRates.SingleOrDefault(x => x.EmployeeId == employeeId && x.ProjectId == project.ProjectID);
-
-            UserRateDetailsViewModel model = new UserRateDetailsViewModel();
-
-            List<SelectListItem> selectItems = GetProjectUserClassificationSelectItems(projectId);
-
-            SelectList availableProjectUserClassifications = new SelectList(selectItems, "Value", "Text", model.ProjectUserClassificationID);
-
-            ViewBag.AvailableProjectUserClassifications = availableProjectUserClassifications;
-
-            if (userRate != null)
-            {
-                model.EmployeeID = employee.Id;
-                model.EmployeeNo = employee.EmployeeNo;
-                model.EmailAddress = employee.Email;
-                model.Names = employee.Names;
-                model.StartDate = userRate.StartDate;
-                model.EndDate = userRate.EndDate;
-
-
-                var selected = availableProjectUserClassifications.Where(x => x.Value == "selectedValue").First();
-                selected.Selected = true;
-                model.ProjectUserClassificationSelectedValue = selected.Text;
-
-                model.ProjectUserClassificationID = userRate?.ProjectUserClassificationID?.ToString();
-                model.ProjectID = projectId;
-                model.ProjectUserClassifications = selectItems;
-
-                model.IsRatesConfirmed = userRate.IsRatesConfirmed;
-                //Fee Rates and Cost Rates
-                model.NTFeeRate = userRate?.NTFeeRate;
-                model.NTCostRate = userRate?.NTCostRate;
-                model.OT1FeeRate = userRate?.OT1FeeRate;
-                model.OT1CostRate = userRate?.OT1CostRate;
-                model.OT2FeeRate = userRate?.OT2FeeRate;
-                model.OT2CostRate = userRate?.OT2CostRate;
-                model.OT3FeeRate = userRate?.OT3FeeRate;
-                model.OT3CostRate = userRate?.OT3CostRate;
-                model.OT4FeeRate = userRate?.OT4FeeRate;
-                model.OT4CostRate = userRate?.OT4CostRate;
-                model.OT5FeeRate = userRate?.OT5FeeRate;
-                model.OT5CostRate = userRate?.OT5CostRate;
-                model.OT6FeeRate = userRate?.OT6FeeRate;
-                model.OT6CostRate = userRate?.OT6CostRate;
-                model.OT7FeeRate = userRate?.OT7FeeRate;
-                model.OT7CostRate = userRate?.OT7CostRate;
-
-            }
-
-            else
-            {
-                model.EmployeeID = employee.Id;
-                model.EmployeeNo = employee.EmployeeNo;
-                model.EmailAddress = employee.Email;
-                model.Names = employee.Names;
-                model.ProjectUserClassifications = selectItems;
-                model.ProjectID = projectId;
-                model.ProjectUserClassifications = selectItems;
-                model.IsRatesConfirmed = false;
-                model.StartDate = null;
-                model.EndDate = null;
-                //Fee Rates and Cost Rates
-                model.NTFeeRate = userRate?.NTFeeRate;
-                model.NTCostRate = userRate?.NTCostRate;
-                model.OT1FeeRate = userRate?.OT1FeeRate;
-                model.OT1CostRate = userRate?.OT1CostRate;
-                model.OT2FeeRate = userRate?.OT2FeeRate;
-                model.OT2CostRate = userRate?.OT2CostRate;
-                model.OT3FeeRate = userRate?.OT3FeeRate;
-                model.OT3CostRate = userRate?.OT3CostRate;
-                model.OT4FeeRate = userRate?.OT4FeeRate;
-                model.OT4CostRate = userRate?.OT4CostRate;
-                model.OT5FeeRate = userRate?.OT5FeeRate;
-                model.OT5CostRate = userRate?.OT5CostRate;
-                model.OT6FeeRate = userRate?.OT6FeeRate;
-                model.OT6CostRate = userRate?.OT6CostRate;
-                model.OT7FeeRate = userRate?.OT7FeeRate;
-                model.OT7CostRate = userRate?.OT7CostRate;
-            }
-
-            return View(model);
-        }
-
-        [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
-        public ActionResult EditUserRates2(int? employeeId)
-        {
-            if (employeeId == null)
-            {
-                return InvokeHttp400(HttpContext);
-            }
-
-            Employee employee = Db.Users.Find(employeeId);
-            if (employee == null)
-            {
-                return InvokeHttp404(HttpContext);
-            }
-
-            int projectId = (int?)Session["SelectedProject"] ?? 0;
-            Project project = Db.Projects.Find(projectId) ?? Db.Projects.OrderBy(x => x.ProjectNo).First();
-
-            if (project == null)
-            {
-                return InvokeHttp404(HttpContext);
-            }
-
-            List<UserRate> userRates = Db.UserRates.Where(x => x.EmployeeId == employeeId && x.ProjectId == project.ProjectID).ToList();
-            //UserRate userRate = Db.UserRates.SingleOrDefault(x => x.EmployeeId == employeeId && x.ProjectId == project.ProjectID);
-
-            // UserRateDetailsViewModel model = new UserRateDetailsViewModel();
-
-            List<SelectListItem> selectItems = GetProjectUserClassificationSelectItems(projectId);
-
-            //SelectList availableProjectUserClassifications = new SelectList(selectItems, "Value", "Text", model.ProjectUserClassificationID);
-            SelectList availableProjectUserClassifications = new SelectList(selectItems, "Value", "Text");
-
-            ViewBag.AvailableProjectUserClassifications = availableProjectUserClassifications;
-            ViewBag.EmployeeId = employeeId;
-            ViewBag.ProjectId = projectId;
-
-            //if (userRates.Count != 0)
-            //{
-            //    foreach (var item in userRates)
-            //    {
-            //        model.EmployeeID = employee.Id;
-            //        model.EmployeeNo = employee.EmployeeNo;
-            //        model.EmailAddress = employee.Email;
-            //        model.Names = employee.Names;
-            //        model.StartDate = item.StartDate;
-            //        model.EndDate = item.EndDate;
-            //        model.ProjectUserClassificationID = item?.ProjectUserClassificationID?.ToString();
-            //        model.ProjectID = projectId;
-            //        model.IsRatesConfirmed = item.IsRatesConfirmed;
-            //        //Fee Rates and Cost Rates
-            //        model.NTFeeRate = item?.NTFeeRate;
-            //        model.NTCostRate = item?.NTCostRate;
-            //        model.OT1FeeRate = item?.OT1FeeRate;
-            //        model.OT1CostRate = item?.OT1CostRate;
-            //        model.OT2FeeRate = item?.OT2FeeRate;
-            //        model.OT2CostRate = item?.OT2CostRate;
-            //        model.OT3FeeRate = item?.OT3FeeRate;
-            //        model.OT3CostRate = item?.OT3CostRate;
-            //        model.OT4FeeRate = item?.OT4FeeRate;
-            //        model.OT4CostRate = item?.OT4CostRate;
-            //        model.OT5FeeRate = item?.OT5FeeRate;
-            //        model.OT5CostRate = item?.OT5CostRate;
-            //        model.OT6FeeRate = item?.OT6FeeRate;
-            //        model.OT6CostRate = item?.OT6CostRate;
-            //        model.OT7FeeRate = item?.OT7FeeRate;
-            //        model.OT7CostRate = item?.OT7CostRate;
-            //    }
-
-            //}
-
-            //else
-            //{
-            //    foreach (var item in userRates)
-            //    {
-            //        model.EmployeeID = employee.Id;
-            //        model.EmployeeNo = employee.EmployeeNo;
-            //        model.EmailAddress = employee.Email;
-            //        model.Names = employee.Names;
-            //        model.ProjectUserClassifications = selectItems;
-            //        model.ProjectID = projectId;
-            //        model.IsRatesConfirmed = false;
-            //        model.StartDate = null;
-            //        model.EndDate = null;
-            //        //Fee Rates and Cost Rates
-            //        model.NTFeeRate = item?.NTFeeRate;
-            //        model.NTCostRate = item?.NTCostRate;
-            //        model.OT1FeeRate = item?.OT1FeeRate;
-            //        model.OT1CostRate = item?.OT1CostRate;
-            //        model.OT2FeeRate = item?.OT2FeeRate;
-            //        model.OT2CostRate = item?.OT2CostRate;
-            //        model.OT3FeeRate = item?.OT3FeeRate;
-            //        model.OT3CostRate = item?.OT3CostRate;
-            //        model.OT4FeeRate = item?.OT4FeeRate;
-            //        model.OT4CostRate = item?.OT4CostRate;
-            //        model.OT5FeeRate = item?.OT5FeeRate;
-            //        model.OT5CostRate = item?.OT5CostRate;
-            //        model.OT6FeeRate = item?.OT6FeeRate;
-            //        model.OT6CostRate = item?.OT6CostRate;
-            //        model.OT7FeeRate = item?.OT7FeeRate;
-            //        model.OT7CostRate = item?.OT7CostRate;
-            //    }
-            //}
-
-            return View(userRates);
-        }
-
-        [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
-        public ActionResult EditUserRates3(int? employeeId)
         {
             if (employeeId == null)
             {
@@ -710,7 +482,8 @@ namespace eTimeTrack.Controllers
             ViewBag.ProjectId = projectId;
             ViewBag.EmployeeNo = employee.EmployeeNo;
             ViewBag.EmployeeName = employee.Names;
-            // ViewBag.UserRateId = userRateId;
+            // ViewBag.UserRateId = userRateId;            
+
             return View(userRates);
         }
 
@@ -742,8 +515,7 @@ namespace eTimeTrack.Controllers
             ViewBag.userRateId = userRate?.UserRateId;
             return View(userRate);
         }
-
-        public ActionResult Edit(int userRateId, int? employeeId)
+        public ActionResult Edit(int? userRateId, int? employeeId)
         {
             UserRate userRate = Db.UserRates.Find(userRateId);
 
@@ -769,9 +541,39 @@ namespace eTimeTrack.Controllers
             ViewBag.EmployeeName = employee.Names;
             ViewBag.ProjectId = projectId;
             ViewBag.UserRateId = userRateId;
-
-            //return View("Create", userRate);
+            ViewBag.PreviousUserRates = GetPreviousTimesheet(employeeId, projectId, userRateId);
+            ViewBag.NextUserRates = GetNextTimesheet(employeeId, projectId, userRateId);
             return View("Create", userRate);
+        }        
+
+        private int GetPreviousTimesheet(int? employeeId, int? projectId, int? userRateId)
+        {
+            var idList = Db.UserRates.Where(x => x.EmployeeId == employeeId && x.ProjectId == projectId).Select(y => y.UserRateId).ToList();
+            var userId = idList.TakeWhile(x => !x.Equals(userRateId)).LastOrDefault();
+
+            return userId;
+        }
+
+        private int GetNextTimesheet(int? employeeId, int? projectId, int? userRateId)
+        {
+            var idList = Db.UserRates.Where(x => x.EmployeeId == employeeId && x.ProjectId == projectId).Select(y => y.UserRateId).ToList();
+            var userId = idList.SkipWhile(x => !x.Equals(userRateId)).Skip(1).FirstOrDefault();
+
+            return userId;
+        }
+
+        public ActionResult Prev(int? employeeId, int? projectId, int? userRateId)
+        {
+            var idList = Db.UserRates.Where(x => x.EmployeeId == employeeId && x.ProjectId == projectId).Select(y => y.UserRateId).ToList();
+            var userId = idList.TakeWhile(x => !x.Equals(userRateId)).LastOrDefault();
+            return Edit(userId, employeeId);
+        }
+
+        public ActionResult Next(int? employeeId, int? projectId, int? userRateId)
+        {
+            var idList = Db.UserRates.Where(x => x.EmployeeId == employeeId && x.ProjectId == projectId).Select(y => y.UserRateId).ToList();
+            var userId = idList.SkipWhile(x => !x.Equals(userRateId)).Skip(1).FirstOrDefault();
+            return Edit(userId, employeeId);
         }
 
         [HttpPost]

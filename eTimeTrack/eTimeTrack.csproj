@@ -1087,8 +1087,6 @@
     <Content Include="Views\UserRates\Details.cshtml" />
     <Content Include="Views\UserRates\Index.cshtml" />
     <Content Include="Views\UserRates\EditUserRates.cshtml" />
-    <Content Include="Views\UserRates\EditUserRates2.cshtml" />
-    <Content Include="Views\UserRates\EditUserRates3.cshtml" />
     <Content Include="Views\UserRates\Create.cshtml" />
     <Content Include="Views\UserRates\ImportRatesTemplates.cshtml" />
     <Content Include="Views\ExportTimesheets\Index.cshtml" />

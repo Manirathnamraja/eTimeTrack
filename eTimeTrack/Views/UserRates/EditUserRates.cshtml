@@ -1,187 +1,164 @@
 ﻿@using eTimeTrack.Helpers
-@model eTimeTrack.ViewModels.UserRateDetailsViewModel
-
+@model List<eTimeTrack.Models.UserRate>
 @{
-    ViewBag.Title = "Edit User Rates";
+    ViewBag.Title = "User Rates List";
+    ViewBag.BannerColour = AecomColour.Blue;
 }
 
 @Html.Partial("_Banner")
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
+<div class="modal fade" id="projectUserRatesModal" tabindex="-1" role="dialog"></div>
+<div class="card">
 
-    <div class="form-horizontal">
-        <div class="form-group">
-            <div class="col-md-4">
-                @Html.LabelFor(model => model.EmployeeNo, new { @class = "control-label" })
-            </div>
-            <div class="col-md-2 bottom-align-text">
-                @Html.DisplayFor(model => model.EmployeeNo)
-            </div>
-            <div class="col-md-2">
-                @Html.LabelFor(model => model.Names, new { @class = "control-label" })
-            </div>
-            <div class="col-md-4 bottom-align-text">
-                @Html.DisplayFor(model => model.Names)
-            </div>
+    <div class="card-body">
+        <a href='@Url.Action("Create", new {projectId = ViewBag.ProjectId, employeeId = ViewBag.EmployeeId })' class="btn btn-primary" role="button">Add New</a>
+        <div class="pull-right">
+            <a href="@Url.Action("Index", "UserRates")" class="btn btn-primary">Back</a>
         </div>
-        <form id="form1">
-            <h3>
 
-                Add New
-
-            </h3>
-
-            <table class='table table-bordered' id='Add'>
+        <div class="card-title">
+            <h2>Employee No : @ViewBag.EmployeeNo, Employee Name : @ViewBag.EmployeeName</h2>
+        </div>
+        <input type="hidden" id="employeeId" value="@ViewBag.EmployeeId" />
+        <table class="table table-hover" id='tbllist'>
+            <thead class="table-light bg-dark text-white" style="font-weight:bold">
                 <tr>
-
-                    <th>@Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label" })</th>
-                    <th>@Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label" })</th>
-                    <th>@Html.LabelFor(model => model.ProjectUserClassificationID, new { @class = "control-label" })</th>
-                    <th>@Html.LabelFor(model => model.IsRatesConfirmed, new { @class = "control-label" })</th>
-
+                    <td>Start Date</td>
+                    <td>End Date</td>
+                    <td>Project User Classifications</td>
+                    <td>Rates Confirmed</td>
+                    <td>Action</td>
                 </tr>
+            </thead>
+            <tbody>
+                @foreach (eTimeTrack.Models.UserRate item in Model)
+                {
+                    <tr>
+                        <td>
+                            <input type="hidden" id="userRateId" value="@item.UserRateId" />
+                            <input type="hidden" id="employeeId" value="@item.EmployeeId" />
 
-                <tr>
+                            @Html.DisplayFor(itemdisplay => item.StartDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(itemdisplay => item.EndDate)
+                        </td>
+                        <td>
+                            @*@Html.DisplayFor(itemdisplay => item.ProjectUserClassificationID)*@
+                            <span style="display: none;">@item.ProjectUserClassificationID</span>
+                            @Html.DropDownListFor(modelItem => item.ProjectUserClassificationID, new SelectList(ViewBag.AvailableProjectUserClassifications, "Value", "Text", item.ProjectUserClassificationID), new { @class = "form-control select-project-user-classification" })
+                        </td>
+                        <td>
+                            @*@Html.DisplayFor(itemdisplay => item.IsRatesConfirmed)*@
+                            @Html.CheckBoxFor(modelItem => item.IsRatesConfirmed, new { @class = "closed", @id = item.UserRateId })
+                        </td>
+                        <td>
+                            <a onclick="FunEdit(this)" class="btn btn-primary">View</a> |
+                            @*<a href='@Url.Action("Edit", new {userRateId = item.UserRateId})' class="btn btn-primary modal-link" role="button">View</a>*@
+                            <a onclick="FunRemove(this)" class="btn btn-danger">Remove</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
 
-                    <td>
-
-                        @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control datepicker", @readonly = true, @placeholder = "Select Start date",@id = "txtId" } })
-
-                        @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
-
-                    </td>
-
-                    <td>
-                        @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control datepicker", @readonly = true, @placeholder = "Select End date",@id = "txtname" } })
-                        @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
-                    </td>
-
-                    <td>
-                        @Html.DropDownList("ProjectUserClassificationID", (SelectList)ViewBag.AvailableProjectUserClassifications, "-- Select --", new { @class = "form-control", @id = "ddlRole" })
-                    </td>
-                    <!--<td>-->
-                        @*@Html.EditorFor(model => model.IsRatesConfirmed)*@
-                        @*@Html.ValidationMessageFor(model => model.IsRatesConfirmed, "", new { @class = "text-danger" })*@
-                        <!--@Html.CheckBoxFor(model => model.IsRatesConfirmed, new { id = "chckRates" })
-                    </td>-->
-
-                </tr>
-
-            </table>
-
-            <input type="button" id="btnAdd" style="display: block" value="Add" />
-
-            <input type="button" id="btnUpdate" style="display: none" value="Update" />
-
-            <br />
-            <table class='table table-bordered' id='UserInfo'>
-
-                <tr>
-                    <th>@Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label" })</th>
-                    <th>@Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label" })</th>
-                    <th>@Html.LabelFor(model => model.ProjectUserClassificationID, new { @class = "control-label" })</th>
-                    @*<th>@Html.LabelFor(model => model.IsRatesConfirmed, new { @class = "control-label" })</th>*@
-                </tr>
-
-                <tbody id="table_td"></tbody>
-
-            </table>
-
-            <div id="output"></div>
-
-        </form>
+        </table>
 
     </div>
-}
 
-<a href="@Url.Action("Index")" class="btn btn-primary">Back</a>
+</div>
 @section Scripts {
-
     @Scripts.Render("~/bundles/notify")
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+
+    @*<script src="~/lib/jquery/dist/jquery.min.js"></script>*@
+    @*<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>*@
+
+    <style type="text/css">
+        #tbllist_filter {
+            margin-bottom: 1%;
+        }
+    </style>
     <script>
+        var employeeId = $("#employeeId").val();
+        var userRateId = $("#userRateId").val();
+         var projectId = @ViewBag.ProjectId;
 
-        $(document).ready(function () {
+        var js = jQuery.noConflict(true);
+        js(document).ready(function () {
+            //js('#tbllist').DataTable({
+            //});
+            //LoadListing();
 
-          //  let i = 1;
-
-            $("#btnAdd").click(function () {
-
-                let newHtml = GetHtml().replace("$[Id]", $("#txtId").val()).replace("$[Name]", $("#txtname").val()).replace("$[role]", $("#ddlRole option:selected").val()).replace("$[action]", "Edit").replace("$[Delete]", "Delete");
-
-                $("#table_td").append(newHtml);
-
+            $('body').on('click', '.modal-link', function (e) {
+                e.preventDefault();
+                $(this).attr('data-target', '#projectUserRatesModal');
+                $(this).attr('data-toggle', 'modal');
             });
 
+            $('#projectUserRatesModal').on('hidden.bs.modal',
+                function () {
+                    $(this).removeData('bs.modal');
+                });
 
-
-            $("#btnUpdate").click(function () {
-
-                let newHtml = GetHtml().replace("$[Id]", $("#txtId").val()).replace("$[Name]", $("#txtname").val()).replace("$[role]", $("#ddlRole option:selected").val()).replace("$[action]", "Edit").replace("$[Delete]", "Delete");
-
-                $("#table_td").append(newHtml);
-
-                $("#btnAdd").show();
-
-                $("#btnUpdate").hide();
-
-                $("#txtId").val('');
-
-                $("#txtname").val('');
-
-                $("#ddlRole option:selected").val('Select')
-
-
-
-            });
-
-
-
-            $(document).on("click", "#A_Edit", function () {
-
-                $("#btnAdd").hide();
-
-                $("#btnUpdate").show();
-
-                $("#txtId").show();
-
-                $("#txtId").val($(this).parent().parent().find('.Id').html());
-
-                $("#txtname").val($(this).parent().parent().find('.Name').html());
-
-                $("#ddlRole option:selected").val($(this).parent().parent().find('.role').html())
-
-                $(this).parents("tr").remove();
-
-                $("#btnUpdate").focus();
-
-
-
-            });
-
-
-
-            $(document).on("click", "#A_delete", function () {
-
-                $(this).parents("tr").remove();
-
+            $('.closed').click(function (event) {
+                debugger;
+                var id = $(this).attr('id');
+                //var id = $(event).closest('tr').find('#userRateId').val();
+                 var state = $(this).is(":checked");
+                 $.post('@Url.Action("PeriodClosure", "UserRates")', { userRateId: id, state: state }).done(
+                    function() {
+                        $('#' + id).notify("Successfully Saved",
+                            { position: "right bottom", className: "success", autoHideDelay: 1500 });
+                    });
             });
 
         });
+        //Project Discipline
+        $('body').on('change', '.select-project-user-classification', function () {
+            debugger;
+            var dropdown = $(this);
+            //var employeeId = dropdown.closest('tr').data('user-id');
+            var userRateId = dropdown.closest('tr').find('#userRateId').val();
 
+            $.post('@Url.Action("UpdateProjectUserClassification")', { employeeId: employeeId, projectUserClassificationId: dropdown.val(), projectId: projectId, userRateId: userRateId }).done(
+                function(data) {
+                    dropdown.notify("Successfully Saved", { position: "right bottom", className: "success", autoHideDelay: 1500 });
+                }
+            );
+        });
 
+        function FunEdit(element) {
+            debugger;
+            var userRateId = $(element).closest('tr').find('input[type=hidden]').val();
+           // var employeeId = $(element).closest('tr').find('input[type=hidden]').val();
+            window.location.href = "/UserRates/Edit?userRateId=" + userRateId + "&employeeId=" + employeeId;
+        }
+        function FunRemove(element) {
+            var userRateId = $(element).closest('tr').find('input[type=hidden]').val();
+            if (confirm("Do you want to remove?")) {
+                $.ajax({
+                    type: "POST",
+                    url: "/UserRates/Remove",
+                    data: { userRateId: userRateId },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response) {
+                            alert("Removed Successfully");
+                            window.location.reload();
 
-        function GetHtml() {
+                        }
 
-            return "<tr><td class='Id'>$[Id]</td>"
-
-                + "<td class='Name'>$[Name]</td>"
-
-                + "<td class='role'>$[role]</td>"
-
-                + "<td class='action'><a href='#' id='A_Edit'> $[action] </a>  <a href='#' id='A_delete'>$[Delete]</a></td></tr>";
-
+                    },
+                    failure: function (err) {
+                    }
+                });
+            }
+            //window.location.href = "/employee/Edit?code="+code;
         }
 
 

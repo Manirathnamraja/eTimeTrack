@@ -28,12 +28,8 @@
             <tr data-user-id="@item.EmployeeId">
                 <td>@Html.DisplayFor(modelItem => item.Employee.EmployeeNo)</td>
                 <td>@Html.DisplayFor(modelItem => item.Employee.Names)</td>
-                <td>
-                    @*<a href='@Url.Action("Details", new {employeeId = item.EmployeeId})' class="btn btn-primary modal-link" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>*@
-
-                    @*<a href='@Url.Action("EditUserRates", new {employeeId = item.EmployeeId})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>*@
-                    @*<a href='@Url.Action("EditUserRates2", new {employeeId = item.EmployeeId})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>*@
-                    <a href='@Url.Action("EditUserRates3", new {employeeId = item.EmployeeId})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+                <td>                    
+                    <a href='@Url.Action("EditUserRates", new {employeeId = item.EmployeeId})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
                 </td>
                 
             </tr>

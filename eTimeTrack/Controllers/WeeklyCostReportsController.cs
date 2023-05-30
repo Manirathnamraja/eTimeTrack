@@ -94,6 +94,7 @@ namespace eTimeTrack.Controllers
                 ws.Cells[row, col++].Value = "Weekending Date";
                 ws.Cells[row, col++].Value = "Work Date";
                 ws.Cells[row, col++].Value = "Task No";
+                ws.Cells[row, col++].Value = "Alias Code";
                 ws.Cells[row, col++].Value = "Task Name";
                 ws.Cells[row, col++].Value = "Daily Hrs";
                 ws.Cells[row, col++].Value = "Daily Comments";
@@ -103,6 +104,7 @@ namespace eTimeTrack.Controllers
                 ws.Cells[row, col++].Value = "Part No";
                 ws.Cells[row, col++].Value = "Part Name";
                 ws.Cells[row, col++].Value = "Time Code";                
+                ws.Cells[row, col++].Value = "Time Code Name";                
                 ws.Cells[row, col++].Value = "Fee Rate";                
                 ws.Cells[row, col++].Value = "Cost Rate";                
                 ws.Cells[row, col++].Value = "Fee";                
@@ -128,6 +130,7 @@ namespace eTimeTrack.Controllers
                     ws.Cells[row, col++].Value = dailycostRate.WeekendingDate.ToDateStringGeneral();
                     ws.Cells[row, col++].Value = dailycostRate.WorkDate.ToDateStringGeneral();
                     ws.Cells[row, col++].Value = dailycostRate.TaskNo;
+                    ws.Cells[row, col++].Value = dailycostRate.AliasCode;
                     ws.Cells[row, col++].Value = dailycostRate.TaskName;
                     ws.Cells[row, col++].Value = dailycostRate.DailyHrs;
                     ws.Cells[row, col++].Value = dailycostRate.DailyComments;
@@ -137,6 +140,7 @@ namespace eTimeTrack.Controllers
                     ws.Cells[row, col++].Value = dailycostRate.PartNo;
                     ws.Cells[row, col++].Value = dailycostRate.PartName;
                     ws.Cells[row, col++].Value = dailycostRate.TimeCode;                    
+                    ws.Cells[row, col++].Value = dailycostRate.TimeCodeName;                    
                     ws.Cells[row, col++].Value = dailycostRate.FeeRate;
                     ws.Cells[row, col++].Value = dailycostRate.CostRate;
                     ws.Cells[row, col++].Value = dailycostRate.Fee;
@@ -168,10 +172,12 @@ namespace eTimeTrack.Controllers
             public DateTime WorkDate { get; set; }
             public decimal? DailyHrs { get; set; }
             public string TaskNo { get; set; }
+            public string AliasCode { get; set; }
             public string TaskName { get; set; }            
             public string PartNo { get; set; }
             public string PartName { get; set; }
             public int TimeCode { get; set; }
+            public string TimeCodeName { get; set; }
             public string Company_Code { get; set; }           
             public string Classifications { get; set; }            
             public string Disciplines { get; set; }
