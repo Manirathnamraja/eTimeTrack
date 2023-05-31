@@ -110,7 +110,7 @@ namespace eTimeTrack.Controllers
 
         protected SelectList GenerateDropdownReconciliationTemplates()
         {
-            List<ReconciliationTemplate> templates = Db.ReconciliationTemplates.Include(x => x.Company).OrderBy(x => x.Name).ToList();
+            List<ReconciliationTemplate> templates = Db.ReconciliationTemplates.Include(x => x.Company).OrderBy(x => x.Company.Company_Name).ToList();
 
             List<Tuple<int, string>> templatesAdjusted = templates.Select(x => new Tuple<int, string>(x.Id, $"{x.Company.Company_Name}: {x.Name}")).ToList();
 
