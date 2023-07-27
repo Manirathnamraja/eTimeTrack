@@ -109,7 +109,9 @@ namespace eTimeTrack.Controllers
                 ws.Cells[row, col++].Value = "Cost Rate";                
                 ws.Cells[row, col++].Value = "Fee";                
                 ws.Cells[row, col++].Value = "Cost";                            
-                ws.Cells[row, col++].Value = "Variation Approved";               
+                ws.Cells[row, col++].Value = "Variation Approved";
+                ws.Cells[row, col++].Value = "Rate Confirmed";
+                ws.Cells[row, col++].Value = "Office Name";
                 ws.Cells[row, 1, row, col].Style.Font.Bold = true;
                 ws.Cells[row, 1, row, col].Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
 
@@ -145,7 +147,9 @@ namespace eTimeTrack.Controllers
                     ws.Cells[row, col++].Value = dailycostRate.CostRate;
                     ws.Cells[row, col++].Value = dailycostRate.Fee;
                     ws.Cells[row, col++].Value = dailycostRate.Cost;                    
-                    ws.Cells[row, col++].Value = dailycostRate.VariationApproved ? "Y" : "N";                    
+                    ws.Cells[row, col++].Value = dailycostRate.VariationApproved ? "Y" : "N";
+                    ws.Cells[row, col++].Value = dailycostRate.RateConfirmed ? "Y" : "N";
+                    ws.Cells[row, col++].Value = dailycostRate.OfficeName;
                     row++;
                 }
 
@@ -190,6 +194,8 @@ namespace eTimeTrack.Controllers
             public bool VariationApproved { get; set; }
             public string DailyComments { get; set; }
             public string GeneralComments { get; set; }
+            public bool RateConfirmed { get; set; }
+            public string OfficeName { get; set; }
 
             public virtual Project Project { get; set; }
         }
