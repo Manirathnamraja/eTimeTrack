@@ -127,8 +127,8 @@ namespace eTimeTrack.Controllers
                     ws.Cells[row, col++].Value = dailycostRate.ProjectRole;
                     ws.Cells[row, col++].Value = dailycostRate.Classifications;
                     ws.Cells[row, col++].Value = dailycostRate.Disciplines;
-                    ws.Cells[row, col++].Value = dailycostRate.WeekendingDate.ToDateStringGeneral();
-                    ws.Cells[row, col++].Value = dailycostRate.WorkDate.ToDateStringGeneral();
+                    ws.Cells[row, col++].Value = dailycostRate.WeekendingDate;
+                    ws.Cells[row, col++].Value = dailycostRate.WorkDate;
                     ws.Cells[row, col++].Value = dailycostRate.TaskNo;
                     ws.Cells[row, col++].Value = dailycostRate.AliasCode;
                     ws.Cells[row, col++].Value = dailycostRate.TaskName;
@@ -168,8 +168,8 @@ namespace eTimeTrack.Controllers
             public string EmployeeNo { get; set; }
             public string EmployeeName { get; set; }
             public string ProjectRole { get; set; }
-            public DateTime WeekendingDate { get; set; }
-            public DateTime WorkDate { get; set; }
+            public string WeekendingDate { get; set; }
+            public string WorkDate { get; set; }
             public decimal? DailyHrs { get; set; }
             public string TaskNo { get; set; }
             public string AliasCode { get; set; }
