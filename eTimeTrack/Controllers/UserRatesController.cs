@@ -619,8 +619,8 @@ namespace eTimeTrack.Controllers
         {
             UserRate userRate = Db.UserRates.Find(userRateId);
 
-            //Db.UserRates.Remove(userRate);
-            userRate.IsDeleted = true;
+            Db.UserRates.Remove(userRate);
+            //userRate.IsDeleted = true;
             Db.SaveChanges();
             //return Json(userRate);
             return Json(new { Success = true });
