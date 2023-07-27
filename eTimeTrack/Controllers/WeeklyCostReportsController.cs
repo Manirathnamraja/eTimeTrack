@@ -96,11 +96,11 @@ namespace eTimeTrack.Controllers
                 ws.Cells[row, col++].Value = "Task No";
                 ws.Cells[row, col++].Value = "Alias Code";
                 ws.Cells[row, col++].Value = "Task Name";
+                ws.Cells[row, col++].Value = "Variation No";
+                ws.Cells[row, col++].Value = "Variation Name";
                 ws.Cells[row, col++].Value = "Daily Hrs";
                 ws.Cells[row, col++].Value = "Daily Comments";
                 ws.Cells[row, col++].Value = "General Comments";
-                ws.Cells[row, col++].Value = "Variation No";
-                ws.Cells[row, col++].Value = "Variation Name";
                 ws.Cells[row, col++].Value = "Part No";
                 ws.Cells[row, col++].Value = "Part Name";
                 ws.Cells[row, col++].Value = "Time Code";                
@@ -132,11 +132,11 @@ namespace eTimeTrack.Controllers
                     ws.Cells[row, col++].Value = dailycostRate.TaskNo;
                     ws.Cells[row, col++].Value = dailycostRate.AliasCode;
                     ws.Cells[row, col++].Value = dailycostRate.TaskName;
+                    ws.Cells[row, col++].Value = dailycostRate.VariationNo;
+                    ws.Cells[row, col++].Value = dailycostRate.VariationName;
                     ws.Cells[row, col++].Value = dailycostRate.DailyHrs;
                     ws.Cells[row, col++].Value = dailycostRate.DailyComments;
                     ws.Cells[row, col++].Value = dailycostRate.GeneralComments;
-                    ws.Cells[row, col++].Value = dailycostRate.VariationNo;
-                    ws.Cells[row, col++].Value = dailycostRate.VariationName;
                     ws.Cells[row, col++].Value = dailycostRate.PartNo;
                     ws.Cells[row, col++].Value = dailycostRate.PartName;
                     ws.Cells[row, col++].Value = dailycostRate.TimeCode;                    
