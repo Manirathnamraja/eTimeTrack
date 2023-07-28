@@ -17,19 +17,19 @@
 
 <div class="row form-group">
     <div class="col-md-6">
-        <div id="ProjectPartDiv" class="row form-group">
-            <div class="col-md-4">Project</div>
-            <div class="col-md-8">
-                @Html.DropDownList("ProjectPartSelector", Model.Project, "Select", new { id = "ProjectPartSelector", @class = "form-control ProjectPartSelector"})
+        <div class="row form-group">
+            <div class="col-md-6">
+                @Html.LabelFor(model => model.Project)
+                @Html.DropDownList("ProjectPartSelector", Model.Project, "Select", new { id = "ProjectPartSelector", @class = "form-control ProjectPartSelector" })
+            </div>
+
+            <div class="col-md-6">
+                @Html.LabelFor(model => model.Company)
+                @Html.DropDownListFor(model => model.Project, Model.Project, "Select", new { @class = "form-control" })
             </div>
         </div>
 
-        <div id="ProjectGroupDiv" class="row form-group">
-            <div class="col-md-4">Company</div>
-            <div class="col-md-8">
-                <select class="form-control ProjectGroupSelector"></select>
-            </div>
-        </div>
+        
     </div>
 </div>
     <hr />
@@ -40,7 +40,7 @@
         </div>
 
         <div class="col-md-4">
-            @Html.LabelFor(model => model.EndDate)
+            @Html.LabelFor(model => model.NewDate)
             @Html.DropDownListFor(model => model.NewDate, Model.DateSelect, "Select", new { @class = "form-control" })
         </div>
     </div>

@@ -17,6 +17,7 @@ using OfficeOpenXml;
 using System.Globalization;
 using System.Web.Hosting;
 using System.Threading.Tasks;
+using eTimeTrack.Extensions;
 
 namespace eTimeTrack.Controllers
 {
@@ -32,25 +33,39 @@ namespace eTimeTrack.Controllers
             UserEndDatesViewModel model = new UserEndDatesViewModel
             {
                 ProjectId = selectedProject,
-                Project = GetProjectPartsSelect(selectedProject)
+                Project = GetProject(selectedProject)
 
             };
-            SelectList select = GetProjectTimesheetPeriodsSelect(selectedProject);
+            SelectList select = GetEnddates(selectedProject);
             model.DateSelect = select;
 
             ViewBag.InfoMessage = TempData["InfoMessage"];
             return View(model);
         }
 
-        private SelectList GetProjectPartsSelect(int projectId)
+        private SelectList GetProject(int projectId)
         {
-            return new SelectList(GetProjectParts(projectId), "PartID", "DisplayName");
+            return new SelectList(GetProjectdetails(projectId), "ProjectID", "DisplayName");
         }
 
-        private List<Project> GetProjectParts(int? projectId)
+        private List<Project> GetProjectdetails(int? projectId)
         {
             return Db.Projects.Where(x => x.ProjectID == projectId).OrderBy(x => x.ProjectNo).ToList();
         }
-       
+        private SelectList GetEnddates(int projectId)
+        {
+            List<UserRate> projectDatePeriods = Db.UserRates.Where(x => x.ProjectId == projectId).ToList();
+
+            IEnumerable<SelectListItem> selectItems = projectDatePeriods.Select(x => new SelectListItem()
+            {
+                Value = x.UserRateId.ToString(),
+                Text = x.EndDate.ToString()
+            });
+            SelectList existingPeriods = new SelectList(selectItems, "Value", "Text");
+
+            var texts = selectItems.Select(x => x.Value).ToList();
+
+            return existingPeriods;
+        }
     }
 }
