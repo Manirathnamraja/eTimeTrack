@@ -33,7 +33,8 @@ namespace eTimeTrack.Controllers
             UserEndDatesViewModel model = new UserEndDatesViewModel
             {
                 ProjectId = selectedProject,
-                Project = GetProject(selectedProject)
+                Project = GetProject(selectedProject),
+                Company = GetCompany()
 
             };
             SelectList select = GetEnddates(selectedProject);
@@ -48,13 +49,23 @@ namespace eTimeTrack.Controllers
             return new SelectList(GetProjectdetails(projectId), "ProjectID", "DisplayName");
         }
 
+        private SelectList GetCompany()
+        {
+            return new SelectList(Getcompanydetails(), "Company_Id", "Company_Name");
+        }
         private List<Project> GetProjectdetails(int? projectId)
         {
-            return Db.Projects.Where(x => x.ProjectID == projectId).OrderBy(x => x.ProjectNo).ToList();
+            return Db.Projects.ToList();
+        }
+
+        private List<Company> Getcompanydetails()
+        {
+            List<Company> company  = Db.Companies.Join(Db.ProjectCompanies, c => c.Company_Id, p => p.CompanyId,(c, p) => c).Distinct().ToList();
+            return company;
         }
         private SelectList GetEnddates(int projectId)
         {
-            List<UserRate> projectDatePeriods = Db.UserRates.Where(x => x.ProjectId == projectId).ToList();
+            List<UserRate> projectDatePeriods = Db.UserRates.ToList();
 
             IEnumerable<SelectListItem> selectItems = projectDatePeriods.Select(x => new SelectListItem()
             {
