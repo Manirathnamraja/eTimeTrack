@@ -8,7 +8,7 @@
 @Html.Partial("_Banner")
 @Html.Partial("_InfoMessageRender")
 
-@using (Html.BeginForm("Index", "UserEndDates", FormMethod.Post))
+@using (Html.BeginForm("UserSelect", "UserEndDates", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
 
@@ -16,37 +16,33 @@
     @Html.HiddenFor(model => model.ProjectId)
 
 <div class="row form-group">
-    <div class="col-md-6">
-        <div class="row form-group">
-            <div class="col-md-6">
-                @Html.LabelFor(model => model.Project)
-                @Html.DropDownList("ProjectPartSelector", Model.Project, "Select", new { id = "ProjectPartSelector", @class = "form-control ProjectPartSelector" })
-            </div>
-
-            <div class="col-md-6">
-                @Html.LabelFor(model => model.Company)
-                @Html.DropDownListFor(model => model.Project, Model.Company, "Select", new { @class = "form-control" })
-            </div>
+    <div class="row form-group">
+        <div class="col-md-6">
+            @Html.LabelFor(model => model.Project)
+            @Html.DropDownList("Project", Model.Project, "Select", new { id = "Project", @class = "form-control Project" })
         </div>
 
-        
+        <div class="col-md-6">
+            @Html.LabelFor(model => model.Company)
+            @Html.DropDownListFor(model => model.Project, Model.Company, "Select", new { @class = "form-control" })
+        </div>
     </div>
-</div>
-    <hr />
     <div class="row form-group">
-        <div class="col-md-4">
+        <div class="col-md-6">
             @Html.LabelFor(model => model.EndDate)
             @Html.DropDownListFor(model => model.EndDate, Model.DateSelect, "Select", new { @class = "form-control" })
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-6">
             @Html.LabelFor(model => model.NewDate)
             @Html.DropDownListFor(model => model.NewDate, Model.DateSelect, "Select", new { @class = "form-control" })
         </div>
     </div>
 
+</div>
+   
     <div class="pull-right">
-        <input type="submit" id="submit" value="OK" class="btn btn-primary" disabled />
+        <input type="submit" id="submit" value="OK" class="btn btn-primary" />
     </div>
     <a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Cancel</a>
 }

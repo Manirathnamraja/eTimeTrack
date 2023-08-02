@@ -25,7 +25,7 @@ namespace eTimeTrack.Controllers
     public class UserEndDatesController : BaseController
     {
         [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
-        public ActionResult Index()
+        public ActionResult UserSelect()
         {
             int selectedProject = (int?)Session?["SelectedProject"] ?? 0;
             if (selectedProject == 0) { return InvokeHttp404(HttpContext); }
@@ -44,6 +44,30 @@ namespace eTimeTrack.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public ActionResult UserSelect(UserEndDatesViewModel model)
+        {
+            if (string.IsNullOrEmpty(model.Project.DataValueField) && string.IsNullOrEmpty(model.Company.DataValueField)
+                && string.IsNullOrEmpty(model.NewDate.ToString()) && string.IsNullOrEmpty(model.EndDate.ToString()))
+            {
+                TempData["InfoMessage"] = new InfoMessage { MessageContent = "Please select all required parameters", MessageType = InfoMessageType.Failure };
+                return RedirectToAction("UserSelect");
+            }
+
+            return RedirectToAction("UserItemSelect", new
+            {
+                project = model.Project.DataValueField,
+                company = model.Company.DataValueField,
+                newdate = model.NewDate,
+                enddate = model.EndDate
+            });
+        }
+
+        public ActionResult UserItemSelect()
+        {
+            return View();
+        }
+
         private SelectList GetProject(int projectId)
         {
             return new SelectList(GetProjectdetails(projectId), "ProjectID", "DisplayName");
@@ -55,7 +79,7 @@ namespace eTimeTrack.Controllers
         }
         private List<Project> GetProjectdetails(int? projectId)
         {
-            return Db.Projects.ToList();
+            return Db.Projects.Where(x => x.ProjectID == projectId).ToList();
         }
 
         private List<Company> Getcompanydetails()

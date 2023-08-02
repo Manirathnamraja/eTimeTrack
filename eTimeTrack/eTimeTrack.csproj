@@ -1096,7 +1096,8 @@
     <Content Include="Views\ExportTimesheets\Index.cshtml" />
     <Content Include="Views\ExportRates\Index.cshtml" />
     <Content Include="Views\WeeklyCostReports\Index.cshtml" />
-    <Content Include="Views\UserEndDates\Index.cshtml" />
+    <Content Include="Views\UserEndDates\UserSelect.cshtml" />
+    <Content Include="Views\UserEndDates\UserItemSelect.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\ProjectTimesheetPeriods\Assign.cshtml" />
