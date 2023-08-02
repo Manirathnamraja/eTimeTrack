@@ -93,6 +93,7 @@ namespace eTimeTrack.Models
         public DbSet<UserRatesUpload> UserRatesUploads { get; set; }
 
 
+
         internal int SaveChangesWithoutLogging()
         {
             return base.SaveChanges();

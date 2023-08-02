@@ -11,7 +11,7 @@ namespace eTimeTrack.ViewModels
 
         public int ProjectId { get; set; }
 
-        public int? NewDate { get; set; }
+        public string NewDate { get; set; } 
 
         public int? EndDate { get; set; }
 

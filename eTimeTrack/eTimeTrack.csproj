@@ -605,6 +605,7 @@
     <Compile Include="ViewModels\UserEndDatesViewModel.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="ViewModels\UserSelectviewmodel.cs" />
     <Compile Include="ViewModels\WeeklyCostReportsIndexUserVm.cs" />
     <Compile Include="ViewModels\ExportTimesheetsIndexViewModel.cs" />
     <Compile Include="ViewModels\ApplicationUserViewModel.cs" />

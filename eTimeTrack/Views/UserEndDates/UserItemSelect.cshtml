@@ -1,6 +1,6 @@
 ﻿@using eTimeTrack.Extensions
 @using eTimeTrack.ViewModels
-@model UserEndDatesViewModel
+@model UserSelectviewmodel
 
 @{
     ViewBag.Title = "User End Dates";
@@ -32,18 +32,15 @@
             </tr>
         </thead>
         <tbody>
-            @*@for (int i = 0; i < Model.Count; i++)
-            {
-                <tr>
-                    <td>@Model.EmployeeTimesheetItems[i].EmployeeTimesheetItem.Timesheet.TimesheetPeriod.EndDate.ToDateStringGeneral()</td>
-                    <td>@Model.EmployeeTimesheetItems[i].EmployeeTimesheetItem.Timesheet.Employee.EmployeeNo</td>
-                    @Html.HiddenFor(model => model.EmployeeTimesheetItems[i].EmployeeTimesheetItem.TimesheetItemID)
-                    <td>@Model.EmployeeTimesheetItems[i].EmployeeTimesheetItem.Timesheet.Employee.Names</td>
-
-                    <td>@Model.EmployeeTimesheetItems[i].EmployeeTimesheetItem.TotalHours().ToString("G29")</td>
-                    <td>@Html.CheckBoxFor(model => model.EmployeeTimesheetItems[i].Transfer)</td>
-                </tr>
-            }*@
+            
+            <tr>
+                <td>@Model.Company</td>
+                <td>@Model.UserNumber</td>
+                <td>@Model.UserName</td>
+                <td>@Model.EndDate</td>
+                <td>@Html.CheckBoxFor(model => model.Transfer)</td>
+            </tr>
+            
         </tbody>
     </table>
 
@@ -74,89 +71,7 @@
                 $('input:checkbox').prop('checked', !firstChecked);
             });
 
-            // project part change
-            $('.ProjectPartSelector').change(function () {
-                var fromTo = $(this).data('fromto');
-                var groupSelector = $('.ProjectGroupSelector[data-fromTo=' + fromTo + ']').first();
-                var taskSelector = $('.TaskSelector[data-fromTo=' + fromTo + ']').first();
-                var variationSelector = $('.VariationSelector[data-fromTo=' + fromTo + ']').first();
-
-                groupSelector.empty();
-                taskSelector.empty();
-                variationSelector.empty();
-
-                groupSelector.prop('disabled', true);
-                taskSelector.prop('disabled', true);
-                variationSelector.prop('disabled', true);
-
-                if ($(this).val() !== 'Select') {
-                    $.post('@Url.Action("GetProjectGroupList", "EmployeeTimesheets")',
-                        { projectPartId: $(this).val() }).done(function (data) {
-                            groupSelector.append($('<option>').text('Select'));
-                            for (var i = 0; i < data.length; i++) {
-                                groupSelector.append($('<option>', { value: data[i].GroupID }).text(data[i].Name));
-                            }
-                            if (data.length === 1) {
-                                groupSelector.selectedIndex = 1;
-                                groupSelector.change();
-                            }
-                            groupSelector.prop('disabled', false);
-                        });
-                }
-            });
-
-            // project group change
-            $('.ProjectGroupSelector').change(function () {
-                var fromTo = $(this).data('fromto');
-                var taskSelector = $('.TaskSelector[data-fromTo=' + fromTo + ']').first();
-                var variationSelector = $('.VariationSelector[data-fromTo=' + fromTo + ']').first();
-
-                taskSelector.empty();
-                variationSelector.empty();
-
-                taskSelector.prop('disabled', true);
-                variationSelector.prop('disabled', true);
-
-                if ($(this).val() !== 'Select') {
-                    $.post('@Url.Action("GetTaskList", "EmployeeTimesheets")',
-                        { projectGroupId: $(this).val() }).done(function (data) {
-                            taskSelector.append($('<option>').text('Select'));
-                            for (var i = 0; i < data.length; i++) {
-                                taskSelector.append($('<option>', { value: data[i].TaskID }).text(data[i].Name));
-                            }
-                            if (data.length === 1) {
-                                taskSelector.selectedIndex = 1;
-                                taskSelector.change();
-                            }
-                            taskSelector.prop('disabled', false);
-                        });
-                }
-            });
-
-            // task change
-            $('.TaskSelector').change(function () {
-                var fromTo = $(this).data('fromto');
-                var variationSelector = $('.VariationSelector[data-fromTo=' + fromTo + ']').first();
-                variationSelector.empty();
-
-                variationSelector.prop('disabled', true);
-
-                if ($(this).val() !== 'Select') {
-                    $.post('@Url.Action("GetVariationList", "EmployeeTimesheets")',
-                        { projectTaskId: $(this).val() }).done(function (data) {
-                            variationSelector.append($('<option>').text('Select'));
-                            for (var i = 0; i < data.length; i++) {
-                                variationSelector.append($('<option>', { value: data[i].VariationID })
-                                    .text(data[i].Description));
-                            }
-                            if (data.length === 1) {
-                                variationSelector.selectedIndex = 1;
-                            }
-                            variationSelector.prop('disabled', false);
-                        });
-                }
-            });
-
+          
         });
 
     </script>

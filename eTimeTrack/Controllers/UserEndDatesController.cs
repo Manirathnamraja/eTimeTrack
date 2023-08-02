@@ -34,8 +34,8 @@ namespace eTimeTrack.Controllers
             {
                 ProjectId = selectedProject,
                 Project = GetProject(selectedProject),
-                Company = GetCompany()
-
+                Company = GetCompany(),
+                NewDate = DateTime.Now.ToString("dd/MMM/yyyy")
             };
             SelectList select = GetEnddates(selectedProject);
             model.DateSelect = select;
@@ -45,37 +45,39 @@ namespace eTimeTrack.Controllers
         }
 
         [HttpPost]
-        public ActionResult UserSelect(UserEndDatesViewModel model)
+        public ActionResult UserSelect(UserSelectviewmodel model)
         {
-            if (string.IsNullOrEmpty(model.Project.DataValueField) && string.IsNullOrEmpty(model.Company.DataValueField)
-                && string.IsNullOrEmpty(model.NewDate.ToString()) && string.IsNullOrEmpty(model.EndDate.ToString()))
+            if(!ModelState.IsValid)
             {
                 TempData["InfoMessage"] = new InfoMessage { MessageContent = "Please select all required parameters", MessageType = InfoMessageType.Failure };
                 return RedirectToAction("UserSelect");
             }
-
             return RedirectToAction("UserItemSelect", new
             {
-                project = model.Project.DataValueField,
-                company = model.Company.DataValueField,
+                project = model.Project,
+                company = Convert.ToInt64(model.Company),
                 newdate = model.NewDate,
-                enddate = model.EndDate
+                enddate = Convert.ToInt64(model.EndDate)
             });
+            
         }
 
-        public ActionResult UserItemSelect()
+        public ActionResult UserItemSelect(int company, int enddate)
         {
-            return View();
+            Company companies = Db.Companies.Where(x => x.Company_Id == company).FirstOrDefault();
+            Employee emp = Db.Users.Where(x => x.CompanyID == company).FirstOrDefault();
+            UserRate userrates = Db.UserRates.Where(x => x.UserRateId == enddate).FirstOrDefault();
+            return View(new UserSelectviewmodel { Company = companies.Company_Name, UserNumber = emp.EmployeeNo, UserName = emp.Names, EndDate = userrates.EndDate.ToString() });
         }
 
         private SelectList GetProject(int projectId)
         {
-            return new SelectList(GetProjectdetails(projectId), "ProjectID", "DisplayName");
+            return new SelectList(GetProjectdetails(projectId), "ProjectID", "DisplayName", 1);
         }
 
         private SelectList GetCompany()
         {
-            return new SelectList(Getcompanydetails(), "Company_Id", "Company_Name");
+            return new SelectList(Getcompanydetails(), "Company_Id", "Company_Name", 1);
         }
         private List<Project> GetProjectdetails(int? projectId)
         {
@@ -96,7 +98,7 @@ namespace eTimeTrack.Controllers
                 Value = x.UserRateId.ToString(),
                 Text = x.EndDate.ToString()
             });
-            SelectList existingPeriods = new SelectList(selectItems, "Value", "Text");
+            SelectList existingPeriods = new SelectList(selectItems, "Value", "Text", 1);
 
             var texts = selectItems.Select(x => x.Value).ToList();
 
