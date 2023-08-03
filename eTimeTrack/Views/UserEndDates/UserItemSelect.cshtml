@@ -1,6 +1,6 @@
 ﻿@using eTimeTrack.Extensions
 @using eTimeTrack.ViewModels
-@model UserSelectviewmodel
+@model List<UserSelectviewmodel>
 
 @{
     ViewBag.Title = "User End Dates";
@@ -28,20 +28,21 @@
                 <th>User Number</th>
                 <th>User Name</th>
                 <th>Current End Date</th>
-                <th data-orderable="false">Transfer</th>
+                <th data-orderable="false">Update</th>
             </tr>
         </thead>
         <tbody>
-            
-            <tr>
-                <td>@Model.Company</td>
-                <td>@Model.UserNumber</td>
-                <td>@Model.UserName</td>
-                <td>@Model.EndDate</td>
-                <td>@Html.CheckBoxFor(model => model.Transfer)</td>
-            </tr>
-            
-        </tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Company</td>
+                    <td>@item.UserNumber</td>
+                    <td>@item.UserName</td>
+                    <td>@item.EndDate</td>
+                    <td>@Html.CheckBoxFor(model => item.Transfer)</td>
+                </tr>
+            }
+            </tbody>
     </table>
 
     <div class="pull-right">

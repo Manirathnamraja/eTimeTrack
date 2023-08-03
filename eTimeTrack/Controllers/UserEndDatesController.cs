@@ -64,10 +64,26 @@ namespace eTimeTrack.Controllers
 
         public ActionResult UserItemSelect(int company, int enddate)
         {
-            Company companies = Db.Companies.Where(x => x.Company_Id == company).FirstOrDefault();
-            Employee emp = Db.Users.Where(x => x.CompanyID == company).FirstOrDefault();
-            UserRate userrates = Db.UserRates.Where(x => x.UserRateId == enddate).FirstOrDefault();
-            return View(new UserSelectviewmodel { Company = companies.Company_Name, UserNumber = emp.EmployeeNo, UserName = emp.Names, EndDate = userrates.EndDate.ToString() });
+            var results = from emp1 in Db.Users
+                          join ur in Db.UserRates on emp1.Id equals ur.EmployeeId
+                          join comp in Db.Companies on emp1.CompanyID equals comp.Company_Id
+                          where comp.Company_Id == company && ur.UserRateId == enddate
+                          select new UserSelectviewmodel
+                          {
+                              Company = comp.Company_Name, 
+                              UserNumber = emp1.EmployeeNo,
+                              UserName = emp1.Names,
+                              EndDate = ur.EndDate.ToString()
+                          };
+            var res = results.ToList();
+            return View(results.ToList());
+        }
+
+        [HttpPost]
+        public ActionResult UpdateUserItemSelect(int companyid)
+        {
+            TempData["InfoMessage"] = new InfoMessage { MessageContent = "Updated Succesfully", MessageType = InfoMessageType.Success };
+            return RedirectToAction("UserItemSelect");
         }
 
         private SelectList GetProject(int projectId)
