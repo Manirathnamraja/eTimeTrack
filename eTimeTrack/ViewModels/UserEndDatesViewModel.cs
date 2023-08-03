@@ -11,9 +11,9 @@ namespace eTimeTrack.ViewModels
 
         public int ProjectId { get; set; }
 
-        public string NewDate { get; set; } 
+        public string NewDate { get; set; } = DateTime.Now.ToString("dd/MM/yyyy");
 
-        public int? EndDate { get; set; }
+        public int? EndDate { get; set; } = 0;
 
         public SelectList Project { get; set; }
 

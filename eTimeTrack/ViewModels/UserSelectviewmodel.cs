@@ -11,10 +11,10 @@ namespace eTimeTrack.ViewModels
         public int ProjectId { get; set; }
 
         [Required]
-        public DateTime NewDate { get; set; }
+        public string NewDate { get; set; } 
 
         [Required]
-        public string EndDate { get; set; }
+        public string EndDate { get; set; } 
 
         [Required]
         public string Project { get; set; }
@@ -28,5 +28,12 @@ namespace eTimeTrack.ViewModels
 
         public bool Transfer { get; set; }
 
+        public int EmployeeID { get; set; }
+
+        public int Company_Id { get; set; }
+        
+        public int UserRateId { get; set; }
     }
+
+    
 }

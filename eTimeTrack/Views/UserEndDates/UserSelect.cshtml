@@ -39,7 +39,7 @@
 
         <div class="col-md-6">
             @Html.LabelFor(model => model.NewDate)
-            <input  value="@Model.NewDate" class="form-control datepicker" placeholder="Select End date" />
+            @Html.TextBoxFor(model => model.NewDate, Model.NewDate, new { @class="form-control datepicker" })
         </div>
     </div>
 

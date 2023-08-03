@@ -18,6 +18,8 @@ using System.Globalization;
 using System.Web.Hosting;
 using System.Threading.Tasks;
 using eTimeTrack.Extensions;
+using Elmah.ContentSyndication;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 
 namespace eTimeTrack.Controllers
 {
@@ -35,7 +37,6 @@ namespace eTimeTrack.Controllers
                 ProjectId = selectedProject,
                 Project = GetProject(selectedProject),
                 Company = GetCompany(),
-                NewDate = DateTime.Now.ToString("dd/MMM/yyyy")
             };
             SelectList select = GetEnddates(selectedProject);
             model.DateSelect = select;
@@ -62,7 +63,7 @@ namespace eTimeTrack.Controllers
             
         }
 
-        public ActionResult UserItemSelect(int company, int enddate)
+        public ActionResult UserItemSelect(int company, int enddate, string newdate)
         {
             var results = from emp1 in Db.Users
                           join ur in Db.UserRates on emp1.Id equals ur.EmployeeId
@@ -70,20 +71,48 @@ namespace eTimeTrack.Controllers
                           where comp.Company_Id == company && ur.UserRateId == enddate
                           select new UserSelectviewmodel
                           {
-                              Company = comp.Company_Name, 
+                              Company = comp.Company_Name,
+                              Company_Id = comp.Company_Id,
+                              EmployeeID = emp1.Id,
                               UserNumber = emp1.EmployeeNo,
                               UserName = emp1.Names,
-                              EndDate = ur.EndDate.ToString()
+                              UserRateId = ur.UserRateId,
+                              EndDate = ur.EndDate.ToString(),
+                              NewDate = newdate
                           };
-            var res = results.ToList();
+           
             return View(results.ToList());
         }
 
         [HttpPost]
-        public ActionResult UpdateUserItemSelect(int companyid)
+        public ActionResult UserItemSelect(FormCollection formCollection)
         {
+            var companyid = formCollection["item.Company_Id"];
+            var employeeid = formCollection["item.EmployeeID"];
+            var userrateid = formCollection["item.UserRateId"];
+            var enddate = formCollection["item.EndDate"];
+            var username = formCollection["item.UserName"];
+            var usernumber = formCollection["item.UserNumber"];
+            var company = formCollection["item.Company"];
+            var newDate = formCollection["item.NewDate"];
+
+            TransferItems(Convert.ToInt32(userrateid), Convert.ToDateTime(newDate));
+
             TempData["InfoMessage"] = new InfoMessage { MessageContent = "Updated Succesfully", MessageType = InfoMessageType.Success };
-            return RedirectToAction("UserItemSelect");
+            return RedirectToAction("UserItemSelect", new
+            {
+                company = Convert.ToInt32(companyid),
+                enddate = userrateid,
+                newdate = newDate
+            });
+        }
+
+        private void TransferItems(int userrateid, DateTime newDate)
+        {
+            UserRate item = Db.UserRates.Find(userrateid);
+
+            item.EndDate = newDate;
+            Db.SaveChanges();
         }
 
         private SelectList GetProject(int projectId)
