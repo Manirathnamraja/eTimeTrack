@@ -3,7 +3,7 @@
 @model List<UserSelectviewmodel>
 
 @{
-    ViewBag.Title = "User End Dates";
+    ViewBag.Title = "Update User End Dates ";
 }
 
 @Html.Partial("_Banner")
@@ -12,6 +12,7 @@
 @using (Html.BeginForm("UserItemSelect", "UserEndDates", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
     <div class="row" style="height:100%; position: relative;">
         <div class="col-md-4" style="position: absolute; bottom: 2em; right: 1px">
@@ -48,18 +49,11 @@
                     <td>@item.EndDate</td>
                     @Html.HiddenFor(model => item.NewDate)
                     <td>
-                        @Html.CheckBoxFor(model => item.Transfer,
-                   new
-                            {
-                       Company_Id = item.Company_Id,
-                       EmployeeID = item.EmployeeID,
-                       UserRateId = item.UserRateId,
-                       EndDate = item.EndDate
-                   })
+                        @Html.CheckBoxFor(model => item.Transfer)
                     </td>
                 </tr>
             }
-            </tbody>
+        </tbody>
     </table>
 
     <div class="pull-right">
@@ -89,7 +83,7 @@
                 $('input:checkbox').prop('checked', !firstChecked);
             });
 
-          
+
         });
 
     </script>

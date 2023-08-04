@@ -95,10 +95,17 @@ namespace eTimeTrack.Controllers
             var usernumber = formCollection["item.UserNumber"];
             var company = formCollection["item.Company"];
             var newDate = formCollection["item.NewDate"];
-
+            var updateTransfer = formCollection["item.Transfer"].Split(',')[0];
+            
             TransferItems(Convert.ToInt32(userrateid), Convert.ToDateTime(newDate));
 
-            TempData["InfoMessage"] = new InfoMessage { MessageContent = "Updated Succesfully", MessageType = InfoMessageType.Success };
+            //if (updateTransfer == "false")
+            //{
+            //    TempData["InfoMessage"] = new InfoMessage { MessageContent = "Please select the check box", MessageType = InfoMessageType.Failure };
+            //}
+            //else
+            //{
+            //}
             return RedirectToAction("UserItemSelect", new
             {
                 company = Convert.ToInt32(companyid),
@@ -113,6 +120,7 @@ namespace eTimeTrack.Controllers
 
             item.EndDate = newDate;
             Db.SaveChanges();
+            TempData["InfoMessage"] = new InfoMessage { MessageContent = "Updated Succesfully", MessageType = InfoMessageType.Success };
         }
 
         private SelectList GetProject(int projectId)
