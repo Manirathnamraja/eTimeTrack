@@ -80,7 +80,7 @@ namespace eTimeTrack.Controllers
                               EndDate = ur.EndDate.ToString(),
                               NewDate = newdate
                           };
-           
+            ViewBag.InfoMessage = TempData["InfoMessage"];
             return View(results.ToList());
         }
 
@@ -96,31 +96,35 @@ namespace eTimeTrack.Controllers
             var company = formCollection["item.Company"];
             var newDate = formCollection["item.NewDate"];
             var updateTransfer = formCollection["item.Transfer"].Split(',')[0];
-            
-            TransferItems(Convert.ToInt32(userrateid), Convert.ToDateTime(newDate));
 
-            //if (updateTransfer == "false")
-            //{
-            //    TempData["InfoMessage"] = new InfoMessage { MessageContent = "Please select the check box", MessageType = InfoMessageType.Failure };
-            //}
-            //else
-            //{
-            //}
-            return RedirectToAction("UserItemSelect", new
+            if (updateTransfer == "false")
             {
-                company = Convert.ToInt32(companyid),
-                enddate = userrateid,
-                newdate = newDate
-            });
+                TempData["InfoMessage"] = new InfoMessage { MessageContent = "Please select the check box and proceed to Ok", MessageType = InfoMessageType.Failure };
+                return RedirectToAction("UserItemSelect", new
+                {
+                    company = Convert.ToInt32(companyid),
+                    enddate = userrateid,
+                    newdate = newDate
+                });
+            }
+            else
+            {
+                TransferItems(Convert.ToInt32(userrateid), Convert.ToDateTime(newDate));
+                TempData["InfoMessage"] = new InfoMessage { MessageContent = "User End Dates Updated Succesfully", MessageType = InfoMessageType.Success };
+                return RedirectToAction("UserItemSelect", new
+                {
+                    company = Convert.ToInt32(companyid),
+                    enddate = userrateid,
+                    newdate = newDate
+                });
+            }
         }
 
         private void TransferItems(int userrateid, DateTime newDate)
         {
             UserRate item = Db.UserRates.Find(userrateid);
-
             item.EndDate = newDate;
             Db.SaveChanges();
-            TempData["InfoMessage"] = new InfoMessage { MessageContent = "Updated Succesfully", MessageType = InfoMessageType.Success };
         }
 
         private SelectList GetProject(int projectId)

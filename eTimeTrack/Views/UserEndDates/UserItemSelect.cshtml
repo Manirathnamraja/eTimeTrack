@@ -3,11 +3,12 @@
 @model List<UserSelectviewmodel>
 
 @{
-    ViewBag.Title = "Update User End Dates ";
+    ViewBag.Title = "Update User End Dates";
 }
 
-@Html.Partial("_Banner")
 @Html.Partial("_InfoMessageRender")
+@Html.Partial("_Banner")
+
 
 @using (Html.BeginForm("UserItemSelect", "UserEndDates", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
