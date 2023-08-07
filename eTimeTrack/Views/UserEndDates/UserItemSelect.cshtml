@@ -16,6 +16,22 @@
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
     <div class="row" style="height:100%; position: relative;">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label class="control-label">Please select the User End dates items and click OK to complete the Update end dates.</label>
+            </div>
+
+            <p>Update User End Dates Details</p>
+            @foreach (var item in Model)
+            {
+                <ul>
+                    <li>ProjectName: @item.Project</li>
+                    <li>CompanyName: @item.Company</li>
+                    <li>EndDate: @item.EndDate</li>
+                    <li>NewDate: @item.NewDate</li>
+                </ul>
+            }
+        </div>
         <div class="col-md-4" style="position: absolute; bottom: 2em; right: 1px">
             <div class="pull-right">
                 <button type="button" class="btn btn-primary checkAll">Toggle Select All (Current Page)</button>
@@ -52,6 +68,7 @@
                     <td>
                         @Html.CheckBoxFor(model => item.Transfer)
                     </td>
+                    @Html.HiddenFor(model => item.ProjectId)
                 </tr>
             }
         </tbody>

@@ -55,7 +55,7 @@ namespace eTimeTrack.Controllers
             }
             return RedirectToAction("UserItemSelect", new
             {
-                project = model.Project,
+                project = Convert.ToInt32(model.Project),
                 company = Convert.ToInt64(model.Company),
                 newdate = model.NewDate,
                 enddate = Convert.ToInt64(model.EndDate)
@@ -63,8 +63,13 @@ namespace eTimeTrack.Controllers
             
         }
 
-        public ActionResult UserItemSelect(int company, int enddate, string newdate)
+        public ActionResult UserItemSelect(int company, int enddate, string newdate, int project)
         {
+            var projects = Db.Projects.Where(x => x.ProjectID == project).Select(x => new
+            {
+                x.Name,
+                x.ProjectID
+            }).FirstOrDefault();
             var results = from emp1 in Db.Users
                           join ur in Db.UserRates on emp1.Id equals ur.EmployeeId
                           join comp in Db.Companies on emp1.CompanyID equals comp.Company_Id
@@ -78,7 +83,9 @@ namespace eTimeTrack.Controllers
                               UserName = emp1.Names,
                               UserRateId = ur.UserRateId,
                               EndDate = ur.EndDate.ToString(),
-                              NewDate = newdate
+                              NewDate = newdate,
+                              Project = projects.Name,
+                              ProjectId = projects.ProjectID
                           };
             ViewBag.InfoMessage = TempData["InfoMessage"];
             return View(results.ToList());
@@ -92,7 +99,7 @@ namespace eTimeTrack.Controllers
             var userrateid = formCollection["item.UserRateId"];
             var enddate = formCollection["item.EndDate"];
             var username = formCollection["item.UserName"];
-            var usernumber = formCollection["item.UserNumber"];
+            var project = formCollection["item.ProjectId"];
             var company = formCollection["item.Company"];
             var newDate = formCollection["item.NewDate"];
             var updateTransfer = formCollection["item.Transfer"].Split(',')[0];
@@ -104,7 +111,8 @@ namespace eTimeTrack.Controllers
                 {
                     company = Convert.ToInt32(companyid),
                     enddate = userrateid,
-                    newdate = newDate
+                    newdate = newDate,
+                    project = Convert.ToInt32(project)
                 });
             }
             else
@@ -115,7 +123,8 @@ namespace eTimeTrack.Controllers
                 {
                     company = Convert.ToInt32(companyid),
                     enddate = userrateid,
-                    newdate = newDate
+                    newdate = newDate,
+                    project = Convert.ToInt32(project)
                 });
             }
         }
