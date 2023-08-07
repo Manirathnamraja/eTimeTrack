@@ -677,7 +677,6 @@
     <Compile Include="ViewModels\TimesheetCreateViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\Downloads\dummy.txt" />
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.flatly.css" />
@@ -1123,6 +1122,7 @@
     <Content Include="Views\Shared\EditorTemplates\EmployeeTimesheetItemMobile.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App_Data\Downloads\" />
     <Folder Include="Content\Upload\" />
     <Folder Include="Views\Base\" />
     <Folder Include="Views\EmployeeTimesheets\EditorTemplates\" />
