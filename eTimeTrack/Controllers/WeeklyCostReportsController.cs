@@ -53,25 +53,34 @@ namespace eTimeTrack.Controllers
             }
 
             WeeklyCostReportsIndexUserVm vm = new WeeklyCostReportsIndexUserVm { ProjectList = GenerateDropdownUserProjects() };
-
+            ViewBag.InfoMessage = TempData["InfoMessage"];
             return View(vm);
         }
 
-
         [HttpPost]
-        public FileResult PrintFriendlyExcelData(int projectId,DateTime fromDate,DateTime toDate)
+        public ActionResult PrintFriendlyExcelData(int projectId, DateTime fromDate, DateTime toDate)
         {
-            InfoMessage message;
-            var allData = Db.Database.SqlQuery<WeeklyCostReportDetails>("EXEC GetWeeklyCostReport2 @ProjectId, @FromDate, @ToDate",
+            List<WeeklyCostReportDetails> allData = Db.Database.SqlQuery<WeeklyCostReportDetails>("EXEC GetWeeklyCostReport2 @ProjectId, @FromDate, @ToDate",
                    new SqlParameter("ProjectId", projectId), new SqlParameter("FromDate", fromDate), new SqlParameter("ToDate", toDate)).ToList();
 
-            if(allData.Count == 0)
+            if (allData.Count == 0)
             {
-                message = new InfoMessage { MessageType = InfoMessageType.Failure, MessageContent = "There are no rates available for this date range. Please try for different date range." };
-                ViewBag.InfoMessage = message;
-                return null;
+                TempData["InfoMessage"] = new InfoMessage { MessageContent = "There are no rates available for this date range. Please try for different date range.", MessageType = InfoMessageType.Failure };
+                ViewBag.InfoMessage = TempData["InfoMessage"];
+                return RedirectToAction("Index");
             }
-             
+            TempData["reportdetails"] = allData;
+            return RedirectToAction("PrintFriendlyExcelData", new
+            {
+                projectId = projectId,
+                fromDate = fromDate,
+                toDate = toDate
+            });
+        }
+       
+        public FileResult PrintFriendlyExcelData(int projectId, DateTime fromDate, DateTime toDate, string all = "")
+        {
+            var allData = TempData["reportdetails"] as List<WeeklyCostReportDetails>;
             var projectName = "";
 
             FileInfo filePath = GetGuidFilePath("xlsx");
