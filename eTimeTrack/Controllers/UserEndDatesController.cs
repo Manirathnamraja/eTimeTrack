@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using eTimeTrack.Extensions;
 using Elmah.ContentSyndication;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
+using System.ComponentModel.Design;
 
 namespace eTimeTrack.Controllers
 {
@@ -38,9 +39,7 @@ namespace eTimeTrack.Controllers
                 Project = GetProject(selectedProject),
                 Company = GetCompany(),
             };
-            SelectList select = GetEnddates(selectedProject);
-            model.DateSelect = select;
-
+            
             ViewBag.InfoMessage = TempData["InfoMessage"];
             return View(model);
         }
@@ -48,88 +47,84 @@ namespace eTimeTrack.Controllers
         [HttpPost]
         public ActionResult UserSelect(UserSelectviewmodel model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 TempData["InfoMessage"] = new InfoMessage { MessageContent = "Please select all required parameters", MessageType = InfoMessageType.Failure };
                 return RedirectToAction("UserSelect");
             }
             return RedirectToAction("UserItemSelect", new
             {
-                project = Convert.ToInt32(model.Project),
-                company = Convert.ToInt64(model.Company),
+                project = Convert.ToInt64(model.Project),
+                enddate = model.EndDate,
                 newdate = model.NewDate,
-                enddate = Convert.ToInt64(model.EndDate)
+                company = Convert.ToInt32(model.Company),
             });
-            
+
         }
 
-        public ActionResult UserItemSelect(int company, int enddate, string newdate, int project)
+        public ActionResult UserItemSelect(int project, DateTime enddate, DateTime newdate, int company)
         {
-            var projects = Db.Projects.Where(x => x.ProjectID == project).Select(x => new
-            {
-                x.Name,
-                x.ProjectID
-            }).FirstOrDefault();
-            var results = from emp1 in Db.Users
-                          join ur in Db.UserRates on emp1.Id equals ur.EmployeeId
-                          join comp in Db.Companies on emp1.CompanyID equals comp.Company_Id
-                          where comp.Company_Id == company && ur.UserRateId == enddate
+            var results = from u in Db.UserRates
+                          join e in Db.Users on u.EmployeeId equals e.Id
+                          join c in Db.Companies on e.CompanyID equals c.Company_Id
+                          join p in Db.Projects on u.ProjectId equals p.ProjectID
+                          where p.ProjectID == project && u.EndDate == enddate
                           select new UserSelectviewmodel
                           {
-                              Company = comp.Company_Name,
-                              Company_Id = comp.Company_Id,
-                              EmployeeID = emp1.Id,
-                              UserNumber = emp1.EmployeeNo,
-                              UserName = emp1.Names,
-                              UserRateId = ur.UserRateId,
-                              EndDate = ur.EndDate.ToString(),
-                              NewDate = newdate,
-                              Project = projects.Name,
-                              ProjectId = projects.ProjectID
+                              Company = c.Company_Name,
+                              Company_Id = c.Company_Id,
+                              EmployeeID = e.Id,
+                              UserNumber = e.EmployeeNo,
+                              UserName = e.Names,
+                              UserRateId = u.UserRateId,
+                              Project = p.Name,
+                              ProjectId = p.ProjectID,
+                              EndDate = u.EndDate,
+                              NewDate = newdate
                           };
+
+            var projectname = Db.Projects.Where(x => x.ProjectID == project).Select(x => x.Name).FirstOrDefault();
+            var companies = Db.Companies.Where(x => x.Company_Id == company).Select(x => new
+            {
+                x.Company_Id,
+                x.Company_Name
+            }).FirstOrDefault();
+
             ViewBag.InfoMessage = TempData["InfoMessage"];
-            return View(results.ToList());
+            return View(new UserSelectUpdateViewModel { 
+                UserRatesDetails = results.ToList(),
+                Company = companies.Company_Name,
+                Project = projectname,
+                EndDate = enddate,
+                NewDate = newdate,
+                CompanyId = companies.Company_Id
+            });
         }
 
         [HttpPost]
-        public ActionResult UserItemSelect(FormCollection formCollection)
+        public ActionResult UserItemSelect(UserSelectUpdateViewModel model, DateTime enddate, int projectid, DateTime newdate)
         {
-            var companyid = formCollection["item.Company_Id"];
-            var employeeid = formCollection["item.EmployeeID"];
-            var userrateid = formCollection["item.UserRateId"];
-            var enddate = formCollection["item.EndDate"];
-            var username = formCollection["item.UserName"];
-            var project = formCollection["item.ProjectId"];
-            var company = formCollection["item.Company"];
-            var newDate = formCollection["item.NewDate"];
-            var updateTransfer = formCollection["item.Transfer"].Split(',')[0];
 
-            if (updateTransfer == "false")
+            foreach (var item in model.UserRatesDetails)
             {
-                TempData["InfoMessage"] = new InfoMessage { MessageContent = "Please select the check box and proceed to Ok", MessageType = InfoMessageType.Failure };
-                return RedirectToAction("UserItemSelect", new
+                if (item.Transfer == true)
                 {
-                    company = Convert.ToInt32(companyid),
-                    enddate = userrateid,
-                    newdate = newDate,
-                    project = Convert.ToInt32(project)
-                });
+                    TransferItems(item.UserRateId, item.NewDate);
+                }
             }
-            else
+
+            TempData["InfoMessage"] = new InfoMessage { MessageContent = $"<p>{model.UserRatesDetails.Count(x => x.Transfer)} User End Dates Updated Succesfully</p>", MessageType = InfoMessageType.Success };
+            return RedirectToAction("UserItemSelect", new
             {
-                TransferItems(Convert.ToInt32(userrateid), Convert.ToDateTime(newDate));
-                TempData["InfoMessage"] = new InfoMessage { MessageContent = "User End Dates Updated Succesfully", MessageType = InfoMessageType.Success };
-                return RedirectToAction("UserItemSelect", new
-                {
-                    company = Convert.ToInt32(companyid),
-                    enddate = userrateid,
-                    newdate = newDate,
-                    project = Convert.ToInt32(project)
-                });
-            }
+                enddate = enddate,
+                project = projectid,
+                newdate = newdate,
+                company = model.CompanyId
+
+            });
         }
 
-        private void TransferItems(int userrateid, DateTime newDate)
+        private void TransferItems(int userrateid, DateTime? newDate)
         {
             UserRate item = Db.UserRates.Find(userrateid);
             item.EndDate = newDate;
@@ -152,7 +147,7 @@ namespace eTimeTrack.Controllers
 
         private List<Company> Getcompanydetails()
         {
-            List<Company> company  = Db.Companies.Join(Db.ProjectCompanies, c => c.Company_Id, p => p.CompanyId,(c, p) => c).Distinct().ToList();
+            List<Company> company = Db.Companies.Join(Db.ProjectCompanies, c => c.Company_Id, p => p.CompanyId, (c, p) => c).Distinct().ToList();
             return company;
         }
         private SelectList GetEnddates(int projectId)

@@ -33,13 +33,12 @@
     <div class="row form-group">
         <div class="col-md-6">
             @Html.LabelFor(model => model.EndDate)
-            @Html.DropDownListFor(model => model.EndDate, Model.DateSelect, "Select", new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+            @Html.TextBoxFor(model => model.EndDate, new { @class = "form-control datepicker" })
         </div>
 
         <div class="col-md-6">
             @Html.LabelFor(model => model.NewDate)
-            @Html.TextBoxFor(model => model.NewDate, Model.NewDate, new { @class="form-control datepicker" })
+            @Html.TextBoxFor(model => model.NewDate, new { @class="form-control datepicker" })
         </div>
     </div>
 

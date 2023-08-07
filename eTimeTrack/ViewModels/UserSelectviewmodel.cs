@@ -10,11 +10,21 @@ namespace eTimeTrack.ViewModels
     {
         public int ProjectId { get; set; }
 
-        [Required]
-        public string NewDate { get; set; } 
+        //[Required]
+        //public string NewDate { get; set; } 
+
+        //[Required]
+        //public string EndDate { get; set; }
 
         [Required]
-        public string EndDate { get; set; } 
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:d/MMM/yyyy}", ApplyFormatInEditMode = false)]
+        public DateTime? NewDate { get; set; }
+
+        [Required]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:d/MMM/yyyy}", ApplyFormatInEditMode = false)]
+        public DateTime? EndDate { get; set; }
 
         [Required]
         public string Project { get; set; }

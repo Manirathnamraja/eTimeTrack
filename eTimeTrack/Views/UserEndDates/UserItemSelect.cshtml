@@ -1,6 +1,6 @@
 ﻿@using eTimeTrack.Extensions
 @using eTimeTrack.ViewModels
-@model List<UserSelectviewmodel>
+@model UserSelectUpdateViewModel
 
 @{
     ViewBag.Title = "Update User End Dates";
@@ -22,15 +22,12 @@
             </div>
 
             <p>Update User End Dates Details</p>
-            @foreach (var item in Model)
-            {
                 <ul>
-                    <li>ProjectName: @item.Project</li>
-                    <li>CompanyName: @item.Company</li>
-                    <li>EndDate: @item.EndDate</li>
-                    <li>NewDate: @item.NewDate</li>
+                    <li>ProjectName: @Model.Project</li>
+                    <li>CompanyName: @Model.Company</li>
+                    <li>EndDate: @Model.EndDate</li>
+                    <li>NewDate: @Model.NewDate</li>
                 </ul>
-            }
         </div>
         <div class="col-md-4" style="position: absolute; bottom: 2em; right: 1px">
             <div class="pull-right">
@@ -50,25 +47,29 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
+            @for (int i = 0; i < Model.UserRatesDetails.Count; i++)
             {
                 <tr>
-                    @Html.HiddenFor(model => item.Company_Id)
-                    @Html.HiddenFor(model => item.Company)
-                    <td>@item.Company</td>
-                    @Html.HiddenFor(model => item.EmployeeID)
-                    @Html.HiddenFor(model => item.UserNumber)
-                    <td>@item.UserNumber</td>
-                    @Html.HiddenFor(model => item.UserName)
-                    <td>@item.UserName</td>
-                    @Html.HiddenFor(model => item.UserRateId)
-                    @Html.HiddenFor(model => item.EndDate)
-                    <td>@item.EndDate</td>
-                    @Html.HiddenFor(model => item.NewDate)
+                    @Html.HiddenFor(model => model.UserRatesDetails[i].Company_Id)
+                    @Html.HiddenFor(model => model.UserRatesDetails[i].Company)
+                    <td>@Model.UserRatesDetails[i].Company</td>
+                    @Html.HiddenFor(model => model.UserRatesDetails[i].EmployeeID)
+                    @Html.HiddenFor(model => model.UserRatesDetails[i].UserNumber)
+                    <td>@Model.UserRatesDetails[i].UserNumber</td>
+                    @Html.HiddenFor(model => model.UserRatesDetails[i].UserName)
+                    <td>@Model.UserRatesDetails[i].UserName</td>
+                    @Html.HiddenFor(model => model.UserRatesDetails[i].UserRateId)
+                    @Html.HiddenFor(model => model.UserRatesDetails[i].EndDate)
+                    <td>@Model.UserRatesDetails[i].EndDate</td>
+                    @Html.HiddenFor(model => model.UserRatesDetails[i].NewDate)
                     <td>
-                        @Html.CheckBoxFor(model => item.Transfer)
+                        @Html.CheckBoxFor(model => model.UserRatesDetails[i].Transfer)
                     </td>
-                    @Html.HiddenFor(model => item.ProjectId)
+                    @Html.HiddenFor(model => model.UserRatesDetails[i].ProjectId)
+                    @Html.Hidden("enddate", Request.QueryString["enddate"])
+                    @Html.Hidden("projectid", Request.QueryString["project"])
+                    @Html.Hidden("newdate", Request.QueryString["newdate"])
+                    @Html.HiddenFor(model => model.CompanyId)
                 </tr>
             }
         </tbody>
