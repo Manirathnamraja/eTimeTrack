@@ -6,9 +6,9 @@
     ViewBag.Title = "Update User End Dates";
 }
 
-@Html.Partial("_InfoMessageRender")
-@Html.Partial("_Banner")
 
+@Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
 
 @using (Html.BeginForm("UserItemSelect", "UserEndDates", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
@@ -21,13 +21,13 @@
                 <label class="control-label">Please select the User End dates items and click OK to complete the Update end dates.</label>
             </div>
 
-            <p>Update User End Dates Details</p>
-                <ul>
-                    <li>ProjectName: @Model.Project</li>
-                    <li>CompanyName: @Model.Company</li>
-                    <li>EndDate: @Model.EndDate</li>
-                    <li>NewDate: @Model.NewDate</li>
-                </ul>
+            <p><b>Update User End Dates Details:</b></p>
+            <ul>
+                <li>ProjectName: @Model.Project</li>
+                <li>CompanyName: @Model.Company</li>
+                <li>EndDate: @Model.EndDate</li>
+                <li>NewDate: @Model.NewDate</li>
+            </ul>
         </div>
         <div class="col-md-4" style="position: absolute; bottom: 2em; right: 1px">
             <div class="pull-right">
