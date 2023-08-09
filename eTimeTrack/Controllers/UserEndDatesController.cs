@@ -68,7 +68,7 @@ namespace eTimeTrack.Controllers
                           join e in Db.Users on u.EmployeeId equals e.Id
                           join c in Db.Companies on e.CompanyID equals c.Company_Id
                           join p in Db.Projects on u.ProjectId equals p.ProjectID
-                          where p.ProjectID == project && u.EndDate == enddate
+                          where p.ProjectID == project && u.EndDate == enddate && e.CompanyID == company
                           select new UserSelectviewmodel
                           {
                               Company = c.Company_Name,
@@ -113,7 +113,7 @@ namespace eTimeTrack.Controllers
                 }
             }
 
-            TempData["InfoMessage"] = new InfoMessage { MessageContent = $"<p>{model.UserRatesDetails.Count(x => x.Transfer)} User End Dates Updated Succesfully</p>", MessageType = InfoMessageType.Success };
+            TempData["InfoMessage"] = new InfoMessage { MessageContent = $"<p>{model.UserRatesDetails.Count(x => x.Transfer)} User End Dates Updated Succesfully</p><p>Old Date:</p><ul><li>{enddate}</li></ul><p>New Date:</p><ul><li>{newdate}</li></ul>", MessageType = InfoMessageType.Success };
             return RedirectToAction("UserItemSelect", new
             {
                 enddate = enddate,
