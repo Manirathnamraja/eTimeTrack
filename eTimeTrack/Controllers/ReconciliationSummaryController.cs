@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Data.Entity;
-using System.IO;
-using System.Linq;
-using System.Web.Mvc;
-using eTimeTrack.Extensions;
+﻿using eTimeTrack.Extensions;
 using eTimeTrack.Helpers;
 using eTimeTrack.Models;
 using eTimeTrack.ViewModels;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Web.Mvc;
 
 namespace eTimeTrack.Controllers
 {
@@ -122,7 +121,8 @@ namespace eTimeTrack.Controllers
                 ws.Cells[row, col++].Value = "Reconciliation Type";
                 ws.Cells[row, col++].Value = "Complete";
                 ws.Cells[row, col++].Value = "Comments";
-                ws.Cells[row, col].Value = "Employee Comments";
+                ws.Cells[row, col++].Value = "Employee Comments";
+                ws.Cells[row, col++].Value = "Email Address";
                 ws.Cells[row, 1, row, col].Style.Font.Bold = true;
                 ws.Cells[row, 1, row, col].Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
 
@@ -134,8 +134,8 @@ namespace eTimeTrack.Controllers
                     ws.Cells[row, col++].Value = reconEntry.OriginalReconciliationUpload.ReconciliationTemplate.Company.Company_Name;
                     ws.Cells[row, col++].Value = reconEntry.Employee.EmployeeNo;
                     ws.Cells[row, col++].Value = reconEntry.Employee.Names;
-                    ws.Cells[row, col++].Value = reconEntry.TimesheetPeriod.StartDate.ToDateStringGeneral();
-                    ws.Cells[row, col++].Value = reconEntry.TimesheetPeriod.EndDate.ToDateStringGeneral();
+                    ws.Cells[row, col++].Value = reconEntry.TimesheetPeriod.StartDate.ToString("yyyy-MM-dd HH:mm:ss");
+                    ws.Cells[row, col++].Value = reconEntry.TimesheetPeriod.EndDate.ToString("yyyy-MM-dd HH:mm:ss");
                     ws.Cells[row, col].Value = reconEntry.Hours;
                     ws.Cells[row, col++].Style.Numberformat.Format = "0.00";
                     ws.Cells[row, col].Value = reconEntry.EmployeeTimesheet?.TimesheetItems.Where(z => z.ProjectTask.ProjectID == projectId).Sum(i => i.TotalHours()) ?? 0.0m;
@@ -144,6 +144,7 @@ namespace eTimeTrack.Controllers
                     ws.Cells[row, col++].Value = reconEntry.Complete;
                     ws.Cells[row, col++].Value = reconEntry.ReconciliationComment;
                     ws.Cells[row, col++].Value = reconEntry.EmployeeComment;
+                    ws.Cells[row, col++].Value = reconEntry.Employee.Email;
 
                     row++;
                 }
