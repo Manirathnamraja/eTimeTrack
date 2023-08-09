@@ -71,7 +71,7 @@
                         @Html.ActionLink("User Rates", "Index", "UserRates")
                     </dd>
 
-                     <dd>
+                    <dd>
                         @Html.ActionLink("User End Dates", "UserSelect", "UserEndDates")
                     </dd>
                 }
@@ -164,7 +164,18 @@
 
         }
 
-        
+        if (User.IsUserPlusOrAbove())
+        {
+            <dl class="dl-horizontal">
+                <dt>WBS:</dt>
+                <dd>
+                    @Html.ActionLink("Search WBS", "Index", "SearchWBS")
+                </dd>
+            </dl>
+
+        }
+
+
 
         @*if (User.IsTimesheetEditorOrAbove())
             {

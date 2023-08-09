@@ -1,0 +1,39 @@
+﻿@using eTimeTrack.Controllers
+@using eTimeTrack.Extensions
+@using eTimeTrack.Helpers
+@using eTimeTrack.Models
+@{
+    ViewBag.Title = "Search WBS";
+}
+
+@Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
+@using (Html.BeginForm("Create", "SearchWBS", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div id="ProjectDiv" class="row form-group">
+        <div class="col-md-2 col-xs-3">Project</div>
+        <div class="col-md-10 col-xs-12">
+            @Html.Hidden("ProjectSelector", Session["SelectedProject"])
+            <label id="selectedProjectDisplay">@Session["SelectedProjectName"]</label>
+        </div>
+
+    </div>
+}
+
+<table class="table table-striped table-hover data-table" width="100%">
+    <thead>
+        <tr>
+            <th>Task Number</th>
+            <th>Task Name</th>
+            <th>Variation Number</th>
+            <th>Variation Name</th>
+            <th data-orderable="false">Closed Task</th>
+            <th data-orderable="false">Closed Variation</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>

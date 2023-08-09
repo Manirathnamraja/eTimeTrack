@@ -392,6 +392,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CompaniesController.cs" />
     <Compile Include="Controllers\BaseEmployeesController.cs" />
+    <Compile Include="Controllers\SearchWBSController.cs" />
     <Compile Include="Controllers\UserEndDatesController.cs" />
     <Compile Include="Controllers\WeeklyCostReportsController.cs" />
     <Compile Include="Controllers\ExportRatesController.cs" />
@@ -1099,6 +1100,7 @@
     <Content Include="Views\WeeklyCostReports\Index.cshtml" />
     <Content Include="Views\UserEndDates\UserSelect.cshtml" />
     <Content Include="Views\UserEndDates\UserItemSelect.cshtml" />
+    <Content Include="Views\SearchWBS\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\ProjectTimesheetPeriods\Assign.cshtml" />
