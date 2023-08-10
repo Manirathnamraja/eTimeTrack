@@ -38,8 +38,12 @@
             <dd>
                 @Html.ActionLink("My Timesheets", "TimesheetIndex", "EmployeeTimesheets")
             </dd>
+            <dd>
+                @Html.ActionLink("Search WBS", "Index", "SearchWBS")
+            </dd>
         </dl>
 
+        
         <hr />
         <h4>Project-Level Controls</h4>
 
@@ -159,17 +163,6 @@
                 </dd>
                 <dd>
                     @Html.ActionLink("Daily Cost Report", "Index", "WeeklyCostReports")
-                </dd>
-            </dl>
-
-        }
-
-        if (User.IsUserPlusOrAbove())
-        {
-            <dl class="dl-horizontal">
-                <dt>WBS:</dt>
-                <dd>
-                    @Html.ActionLink("Search WBS", "Index", "SearchWBS")
                 </dd>
             </dl>
 

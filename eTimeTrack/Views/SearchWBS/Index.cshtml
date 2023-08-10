@@ -1,24 +1,25 @@
-﻿@using eTimeTrack.Controllers
-@using eTimeTrack.Extensions
-@using eTimeTrack.Helpers
-@using eTimeTrack.Models
+﻿@using eTimeTrack.Extensions
+@using eTimeTrack.ViewModels
+@model ShowSearchWPSViewModel
+
 @{
     ViewBag.Title = "Search WBS";
 }
 
 @Html.Partial("_Banner")
 @Html.Partial("_InfoMessageRender")
-@using (Html.BeginForm("Create", "SearchWBS", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    <div id="ProjectDiv" class="row form-group">
-        <div class="col-md-2 col-xs-3">Project</div>
-        <div class="col-md-10 col-xs-12">
-            @Html.Hidden("ProjectSelector", Session["SelectedProject"])
-            <label id="selectedProjectDisplay">@Session["SelectedProjectName"]</label>
-        </div>
-
+<div class="row">
+    <div class="col-md-6 form-group">
+        <label>Project: </label>
+        @Html.Hidden("ProjectSelector", Session["SelectedProject"])
+        <label>@Session["SelectedProjectName"]</label>
     </div>
-}
+    <div class="col-md-6" >
+        <label>Hide Closed</label>
+        @Html.CheckBoxFor(model => Model.HideClosed, new { id = "filter-complete", style = "width: 40px" })
+    </div>
+
+</div>
 
 <table class="table table-striped table-hover data-table" width="100%">
     <thead>
@@ -27,12 +28,24 @@
             <th>Task Name</th>
             <th>Variation Number</th>
             <th>Variation Name</th>
-            <th data-orderable="false">Closed Task</th>
-            <th data-orderable="false">Closed Variation</th>
+            <th data-orderable="false">Task Closed</th>
+            <th data-orderable="false">Variation Closed</th>
+            <th data-orderable="false">Var Item Closed</th>
         </tr>
     </thead>
     <tbody>
-        
+        @foreach (var item in Model.searchWPS)
+        {
+            <tr>
+                <td>@item.TaskNo </td>
+                <td>@item.TaskName </td>
+                <td>@item.VariationNo </td>
+                <td>@item.VariationName </td>
+                <td>@Html.CheckBox("active", item.TaskIsClosed)</td>
+                <td>@Html.CheckBox("active", item.VariationIsClosed)</td>
+                <td>@Html.CheckBox("active", item.VarItemIsClosed)</td>
+            </tr>
+        }
     </tbody>
 </table>
 
