@@ -13,7 +13,7 @@ namespace eTimeTrack.Controllers
     public class SearchWBSController : BaseController
     {
         [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
-        public ActionResult Index()
+        public ActionResult Index(bool hideClosed = true)
         {
             int selectedProject = (int?)Session?["SelectedProject"] ?? 0;
             if (selectedProject == 0) { return InvokeHttp404(HttpContext); }
@@ -31,10 +31,25 @@ namespace eTimeTrack.Controllers
                               VariationName = v.Description,
                               VariationNo = v.VariationNo
                           };
+
             var res = results.ToList();
+
+            if (hideClosed)
+            {
+                if (res.Count > 0)
+                {
+                    res = res.Where(x => (x.TaskIsClosed == false && x.VarItemIsClosed == false && x.VariationIsClosed == false)).ToList();
+                }
+            }
+            else
+            {
+                res = results.ToList();
+            }
+
             return View(new ShowSearchWPSViewModel
             {
-                searchWPS = res
+                searchWPS = res,
+                HideClosed = hideClosed
             });
         }
         

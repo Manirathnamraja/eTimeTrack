@@ -14,9 +14,9 @@
         @Html.Hidden("ProjectSelector", Session["SelectedProject"])
         <label>@Session["SelectedProjectName"]</label>
     </div>
-    <div class="col-md-6" >
+    <div class="col-md-6">
         <label>Hide Closed</label>
-        @Html.CheckBoxFor(model => Model.HideClosed, new { id = "filter-complete", style = "width: 40px" })
+        @Html.CheckBoxFor(model => Model.HideClosed, new { id = "filter-closed", style = "width: 40px" })
     </div>
 
 </div>
@@ -50,3 +50,21 @@
 </table>
 
 <a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/notify")
+    <script>
+        $(document).ready(function () {
+
+            $('#filter-closed').change(function () {
+                updatePage();
+            });
+
+        });
+
+        function updatePage() {
+            var completeFilter = $('#filter-closed').is(":checked");
+            window.location = 'SearchWBS?hideClosed=' + completeFilter;
+        }
+    </script>
+}
