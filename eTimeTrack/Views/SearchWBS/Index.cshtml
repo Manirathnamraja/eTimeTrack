@@ -41,9 +41,9 @@
                 <td>@item.TaskName </td>
                 <td>@item.VariationNo </td>
                 <td>@item.VariationName </td>
-                <td>@Html.CheckBox("active", item.TaskIsClosed)</td>
-                <td>@Html.CheckBox("active", item.VariationIsClosed)</td>
-                <td>@Html.CheckBox("active", item.VarItemIsClosed)</td>
+                <td>@Html.CheckBoxFor(m => item.TaskIsClosed, new { onclick = "return false" })</td>
+                <td>@Html.CheckBoxFor(m => item.VariationIsClosed, new { onclick = "return false" })</td>
+                <td>@Html.CheckBoxFor(m => item.VarItemIsClosed, new { onclick = "return false" })</td>
             </tr>
         }
     </tbody>
