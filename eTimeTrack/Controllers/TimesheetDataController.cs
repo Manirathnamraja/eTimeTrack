@@ -45,13 +45,21 @@ namespace eTimeTrack.Controllers
                 var alldata = from e in Db.EmployeeTimesheetItems
                               join t in Db.ProjectTasks on e.TaskID equals t.TaskID
                               join v in Db.ProjectVariations on e.VariationID equals v.VariationID
+                              join et in Db.EmployeeTimesheets on e.TimesheetID equals et.TimesheetID
+                              join tp in Db.TimesheetPeriods on et.TimesheetPeriodID equals tp.TimesheetPeriodID
+                              join emp in Db.Users on et.EmployeeID equals emp.Id
                               where t.ProjectID == projectId
                               select new ExportTimesheetDataViewModel
                               {
                                   employeeTimesheetItem = e,
                                   projectTask = t,
-                                  projectVariation = v
+                                  projectVariation = v,
+                                  employeeTimesheet = et,
+                                  timesheetPeriod = tp,
+                                  employee = emp
                               };
+
+                var projectconfig = Db.ProjectTimeCodeConfigs.Where(x => x.ProjectID == projectId).ToList();
 
                 var projectName = "";
 
@@ -72,6 +80,8 @@ namespace eTimeTrack.Controllers
                     ws.Cells[row, col++].Value = "Task Name";
                     ws.Cells[row, col++].Value = "Variation No";
                     ws.Cells[row, col++].Value = "Variation Name";
+                    ws.Cells[row, col++].Value = "Employee Number";
+                    ws.Cells[row, col++].Value = "User Name";
                     ws.Cells[row, col++].Value = "Time Code";
                     ws.Cells[row, col++].Value = "Time Code Name";
                     ws.Cells[row, col++].Value = "Day1 Hrs";
@@ -99,16 +109,37 @@ namespace eTimeTrack.Controllers
 
                     foreach (ExportTimesheetDataViewModel Entry in alldata)
                     {
+                        var timecodename = "";
+                        if (Entry.employeeTimesheetItem.TimeCode == TimeCode.NT)
+                        {
+                            timecodename = projectconfig.Select(x => x.NTName).FirstOrDefault();
+                        }
+                        if (Entry.employeeTimesheetItem.TimeCode == TimeCode.OT1)
+                        {
+                            timecodename = projectconfig.Select(x => x.OT1Name).FirstOrDefault();
+                        }
+                        if (Entry.employeeTimesheetItem.TimeCode == TimeCode.OT2)
+                        {
+                            timecodename = projectconfig.Select(x => x.OT2Name).FirstOrDefault();
+                        }
+                        if (Entry.employeeTimesheetItem.TimeCode == TimeCode.OT3)
+                        {
+                            timecodename = projectconfig.Select(x => x.OT3Name).FirstOrDefault();
+                        }
+
+
                         col = 1;
                         ws.Cells[row, col++].Value = Entry.employeeTimesheetItem.TimesheetItemID;
                         ws.Cells[row, col++].Value = Entry.employeeTimesheetItem.TimesheetID;
-                        ws.Cells[row, col++].Value = "Weekending";
+                        ws.Cells[row, col++].Value = Entry.timesheetPeriod.EndDate.ToString("yyyy-MM-dd HH:mm:ss");
                         ws.Cells[row, col++].Value = Entry.projectTask.TaskNo;
                         ws.Cells[row, col++].Value = Entry.projectTask.Name;
                         ws.Cells[row, col++].Value = Entry.projectVariation.VariationNo;
                         ws.Cells[row, col++].Value = Entry.projectVariation.Description;
+                        ws.Cells[row, col++].Value = Entry.employee.EmployeeNo;
+                        ws.Cells[row, col++].Value = Entry.employee.UserName;
                         ws.Cells[row, col++].Value = Entry.employeeTimesheetItem.TimeCode;
-                        ws.Cells[row, col++].Value = "timecodename";
+                        ws.Cells[row, col++].Value = timecodename;
                         ws.Cells[row, col++].Value = Entry.employeeTimesheetItem.Day1Hrs;
                         ws.Cells[row, col++].Value = Entry.employeeTimesheetItem.Day1Comments;
                         ws.Cells[row, col++].Value = Entry.employeeTimesheetItem.Day2Hrs;

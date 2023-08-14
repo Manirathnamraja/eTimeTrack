@@ -15,5 +15,9 @@ namespace eTimeTrack.ViewModels
         public ProjectTask projectTask { get; set; }
         public ProjectVariation projectVariation { get; set; }
         public EmployeeTimesheetItem employeeTimesheetItem { get; set; } 
+        public EmployeeTimesheet employeeTimesheet { get; set; }
+        public TimesheetPeriod timesheetPeriod { get; set; }
+        public Employee employee { get; set; }
+        public ProjectTimeCodeConfig projectTimeCodeConfig { get; set; }
     }
 }
