@@ -113,6 +113,10 @@ namespace eTimeTrack.Controllers
                         if (Entry.employeeTimesheetItem.TimeCode == TimeCode.NT)
                         {
                             timecodename = projectconfig.Select(x => x.NTName).FirstOrDefault();
+                            if (string.IsNullOrEmpty(timecodename))
+                            {
+                                timecodename = "NT: Normal Time";
+                            }
                         }
                         if (Entry.employeeTimesheetItem.TimeCode == TimeCode.OT1)
                         {
