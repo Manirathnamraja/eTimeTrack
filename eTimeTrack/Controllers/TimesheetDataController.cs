@@ -48,6 +48,7 @@ namespace eTimeTrack.Controllers
                               join et in Db.EmployeeTimesheets on e.TimesheetID equals et.TimesheetID
                               join tp in Db.TimesheetPeriods on et.TimesheetPeriodID equals tp.TimesheetPeriodID
                               join emp in Db.Users on et.EmployeeID equals emp.Id
+                              join empl in Db.Users on e.LastModifiedBy equals empl.Id
                               where t.ProjectID == projectId
                               select new ExportTimesheetDataViewModel
                               {
@@ -56,7 +57,8 @@ namespace eTimeTrack.Controllers
                                   projectVariation = v,
                                   employeeTimesheet = et,
                                   timesheetPeriod = tp,
-                                  employee = emp
+                                  employee = emp,
+                                  employeeNames = empl
                               };
 
                 var projectconfig = Db.ProjectTimeCodeConfigs.Where(x => x.ProjectID == projectId).ToList();
@@ -115,7 +117,7 @@ namespace eTimeTrack.Controllers
                             timecodename = projectconfig.Select(x => x.NTName).FirstOrDefault();
                             if (string.IsNullOrEmpty(timecodename))
                             {
-                                timecodename = "NT: Normal Time";
+                                timecodename = "Normal Time";
                             }
                         }
                         if (Entry.employeeTimesheetItem.TimeCode == TimeCode.OT1)
@@ -141,7 +143,7 @@ namespace eTimeTrack.Controllers
                         ws.Cells[row, col++].Value = Entry.projectVariation.VariationNo;
                         ws.Cells[row, col++].Value = Entry.projectVariation.Description;
                         ws.Cells[row, col++].Value = Entry.employee.EmployeeNo;
-                        ws.Cells[row, col++].Value = Entry.employee.UserName;
+                        ws.Cells[row, col++].Value = Entry.employee.Names;
                         ws.Cells[row, col++].Value = Entry.employeeTimesheetItem.TimeCode;
                         ws.Cells[row, col++].Value = timecodename;
                         ws.Cells[row, col++].Value = Entry.employeeTimesheetItem.Day1Hrs;
@@ -160,7 +162,7 @@ namespace eTimeTrack.Controllers
                         ws.Cells[row, col++].Value = Entry.employeeTimesheetItem.Day7Comments;
                         ws.Cells[row, col++].Value = Entry.employeeTimesheetItem.InvoiceID;
                         ws.Cells[row, col++].Value = Entry.employeeTimesheetItem.Comments;
-                        ws.Cells[row, col++].Value = Entry.employeeTimesheetItem.LastModifiedBy;
+                        ws.Cells[row, col++].Value = Entry.employeeNames.Names;
                         ws.Cells[row, col++].Value = Entry.employeeTimesheetItem.LastModifiedDate?.ToString("yyyy-MM-dd HH:mm:ss");
                         row++;
                     }
