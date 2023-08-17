@@ -392,7 +392,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CompaniesController.cs" />
     <Compile Include="Controllers\BaseEmployeesController.cs" />
-    <Compile Include="Controllers\EmployeeInputsTimesheetController.cs" />
+    <Compile Include="Controllers\TimesheetApprovalController.cs" />
     <Compile Include="Controllers\SearchWBSController.cs" />
     <Compile Include="Controllers\TimesheetDataController.cs" />
     <Compile Include="Controllers\UserEndDatesController.cs" />
@@ -1106,7 +1106,7 @@
     <Content Include="Views\UserEndDates\UserItemSelect.cshtml" />
     <Content Include="Views\SearchWBS\Index.cshtml" />
     <Content Include="Views\TimesheetData\Index.cshtml" />
-    <Content Include="Views\EmployeeInputsTimesheet\Index.cshtml" />
+    <Content Include="Views\TimesheetApproval\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\ProjectTimesheetPeriods\Assign.cshtml" />

@@ -8,7 +8,7 @@ using System.Web.Mvc;
 namespace eTimeTrack.Controllers
 {
     [Authorize(Roles = UserHelpers.AuthTextUserAdministratorOrAboveExcludeTimesheetEditor)]
-    public class EmployeeInputsTimesheetController : BaseController
+    public class TimesheetApprovalController : BaseController
     {
         [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
         public ActionResult Index()
