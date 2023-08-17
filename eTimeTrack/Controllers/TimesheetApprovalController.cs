@@ -25,7 +25,7 @@ namespace eTimeTrack.Controllers
                                  join emp in Db.Users on et.EmployeeID equals emp.Id
                                  join pt in Db.ProjectTimesheetPeriods on t.ProjectID equals pt.ProjectID
                                  join tp in Db.TimesheetPeriods on et.TimesheetPeriodID equals tp.TimesheetPeriodID
-                                 where t.ProjectID == selectedProject && e.IsApproval != true 
+                                 where t.ProjectID == selectedProject && e.IsTimeSheetApproval != true 
                                  select new TimesheetApprovaldetails
                                  {
                                      Comments = e.Comments,
@@ -100,12 +100,12 @@ namespace eTimeTrack.Controllers
         {
             foreach (var item in timesheet.timesheetApprovaldetails)
             {
-                if(item.IsApproval == true)
+                if(item.IsApproval == true && !string.IsNullOrEmpty(item.Reviewercomments))
                 {
                     EmployeeTimesheetItem timesheetItem = Db.EmployeeTimesheetItems.Find(item.TimesheetItemID);
                     if (timesheetItem != null)
                     {
-                        timesheetItem.IsApproval = item.IsApproval;
+                        timesheetItem.IsTimeSheetApproval = item.IsApproval;
                         timesheetItem.Reviewercomments = item.Reviewercomments;
                         timesheetItem.LastApprovedBy = UserHelpers.GetCurrentUserId();
                         timesheetItem.LastApprovedDate = DateTime.UtcNow;

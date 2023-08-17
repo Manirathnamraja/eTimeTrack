@@ -61,7 +61,7 @@ namespace eTimeTrack.Models
         public DateTime? LastModifiedDate { get; set; }
         public TimeCode TimeCode { get; set; }
 
-        public bool? IsApproval { get; set; }
+        public bool? IsTimeSheetApproval { get; set; }
         public string Reviewercomments { get; set; }
 
         public int? LastApprovedBy { get; set; }
