@@ -61,6 +61,13 @@ namespace eTimeTrack.Models
         public DateTime? LastModifiedDate { get; set; }
         public TimeCode TimeCode { get; set; }
 
+        public bool? IsApproval { get; set; }
+        public string Reviewercomments { get; set; }
+
+        public int? LastApprovedBy { get; set; }
+
+        public DateTime? LastApprovedDate { get; set; }
+
         [JsonIgnore]
         [NotMapped]
         public string TimeCodeText { get; set; }

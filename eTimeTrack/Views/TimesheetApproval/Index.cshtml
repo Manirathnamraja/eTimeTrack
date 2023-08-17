@@ -1,6 +1,6 @@
 ﻿@using eTimeTrack.Extensions
 @using eTimeTrack.ViewModels
-
+@model TimesheetApprovalViewModel
 
 @{
     ViewBag.Title = "Timesheet Approval";
@@ -8,3 +8,107 @@
 
 @Html.Partial("_Banner")
 @Html.Partial("_InfoMessageRender")
+@using (Html.BeginForm("ApproveTimesheet", "TimesheetApproval", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="row" style="height:100%; position: relative;">
+        <div class="col-md-4" style="position: absolute; bottom: 2em; right: 1px">
+            <div class="pull-right">
+                <button type="button" class="btn btn-primary checkAll">Toggle Select All (Current Page)</button>
+            </div>
+        </div>
+    </div>
+
+    <table id="UpdateTable" class="table table-striped table-hover data-table" width="100%">
+        <thead>
+            <tr>
+                <th>Week Ending</th>
+                <th>Task No</th>
+                <th>Var No</th>
+                <th>Emp Name</th>
+                <th>Day</th>
+                <th>Hours</th>
+                <th>Reviewer Comments</th>
+                <th data-orderable="false">Tick Box</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.timesheetApprovaldetails.Count; i++)
+            {
+                <tr>
+                    <td>
+                        @Model.timesheetApprovaldetails[i].EndDate
+                        <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.timesheetApprovaldetails[i].Comments">
+                            <i class='glyphicon glyphicon-info-sign'></i>
+                        </a>
+                    </td>
+                    <td>
+                        @Model.timesheetApprovaldetails[i].TaskNo
+                        <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.timesheetApprovaldetails[i].Name">
+                            <i class='glyphicon glyphicon-info-sign'></i>
+                        </a>
+                    </td>
+                    <td>
+                        @Model.timesheetApprovaldetails[i].VariationNo
+                        <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.timesheetApprovaldetails[i].Description">
+                            <i class='glyphicon glyphicon-info-sign'></i>
+                        </a>
+                    </td>
+                    <td>@Model.timesheetApprovaldetails[i].Names</td>
+                    <td>@Model.timesheetApprovaldetails[i].days</td>
+                    <td>
+                        @Model.timesheetApprovaldetails[i].Hours
+                        <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.timesheetApprovaldetails[i].DailyComments">
+                            <i class='glyphicon glyphicon-info-sign'></i>
+                        </a>
+                    </td>
+                    <td>
+                        <div class="col-xs-9 col-md-10">
+                            @Html.TextAreaFor(modelItem => modelItem.timesheetApprovaldetails[i].Reviewercomments, new { @class = "form-control", style = "display: inline;max-width: none;", maxlength = 254, id = "reviewerCommentTextArea" })
+                            <span id="text-counter">254</span> character(s) left.
+                        </div>
+                    </td>
+                    <td>
+                        @Html.CheckBoxFor(model => model.timesheetApprovaldetails[i].IsApproval)
+                    </td>
+
+                    @Html.HiddenFor(model => model.timesheetApprovaldetails[i].TimesheetItemID)
+
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="pull-right">
+        <input type="submit" id="submit" value="Approve" class="btn btn-primary" />
+    </div>
+    <a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+
+        $(document).ready(function () {
+
+            // intercept form submission if no hours entered
+            $("#submit").click(function () {
+                var dataTable = $('#UpdateTable').DataTable();
+                dataTable.search('').draw();
+                dataTable.page.len(-1).draw();
+                return true;
+            });
+
+            $(".checkAll").click(function () {
+                var firstChecked = $('input:checkbox').first().is(':checked');
+                $('input:checkbox').prop('checked', !firstChecked);
+            });
+            $('#UpdateTable').DataTable().on("draw", function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
+        });
+
+    </script>
+}
