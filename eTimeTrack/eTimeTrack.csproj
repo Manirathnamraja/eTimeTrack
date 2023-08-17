@@ -581,6 +581,10 @@
     <Compile Include="Migrations\202104122316597_ReconProjectTemplateToUpload.Designer.cs">
       <DependentUpon>202104122316597_ReconProjectTemplateToUpload.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202308171610401_EmployeeTimesheetItems.cs" />
+    <Compile Include="Migrations\202308171610401_EmployeeTimesheetItems.designer.cs">
+      <DependentUpon>202308171610401_EmployeeTimesheetItems.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BulkImportStatus.cs" />
@@ -1246,6 +1250,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202104122316597_ReconProjectTemplateToUpload.resx">
       <DependentUpon>202104122316597_ReconProjectTemplateToUpload.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202308171610401_EmployeeTimesheetItems.resx">
+      <DependentUpon>202308171610401_EmployeeTimesheetItems.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
