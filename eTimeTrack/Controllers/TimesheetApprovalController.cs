@@ -23,7 +23,6 @@ namespace eTimeTrack.Controllers
                                  join v in Db.ProjectVariations on e.VariationID equals v.VariationID
                                  join et in Db.EmployeeTimesheets on e.TimesheetID equals et.TimesheetID
                                  join emp in Db.Users on et.EmployeeID equals emp.Id
-                                 join pt in Db.ProjectTimesheetPeriods on t.ProjectID equals pt.ProjectID
                                  join tp in Db.TimesheetPeriods on et.TimesheetPeriodID equals tp.TimesheetPeriodID
                                  where t.ProjectID == selectedProject && e.IsTimeSheetApproval != true 
                                  select new TimesheetApprovaldetails
@@ -100,7 +99,7 @@ namespace eTimeTrack.Controllers
         {
             foreach (var item in timesheet.timesheetApprovaldetails)
             {
-                if(item.IsApproval == true && !string.IsNullOrEmpty(item.Reviewercomments))
+                if(item.IsApproval == true)
                 {
                     EmployeeTimesheetItem timesheetItem = Db.EmployeeTimesheetItems.Find(item.TimesheetItemID);
                     if (timesheetItem != null)
