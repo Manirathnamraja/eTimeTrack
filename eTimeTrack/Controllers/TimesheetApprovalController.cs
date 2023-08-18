@@ -52,42 +52,6 @@ namespace eTimeTrack.Controllers
                                  };
 
             var res = empresultslist.Distinct().OrderByDescending(x => x.EndDate).ToList();
-            foreach (var item in res)
-            {
-                DateTime dateValue = new DateTime(item.EndDate.Year, item.EndDate.Month, item.EndDate.Day);
-                item.days = dateValue.ToString("dddd");
-                switch (item.days.ToLower())
-                {
-                    case "saturday":
-                        item.Hours = item.Day1Hrs;
-                        item.DailyComments = item.Day1Comments;
-                        break;
-                    case "sunday":
-                        item.Hours = item.Day2Hrs;
-                        item.DailyComments = item.Day2Comments;
-                        break;
-                    case "monday":
-                        item.Hours = item.Day3Hrs;
-                        item.DailyComments = item.Day3Comments;
-                        break;
-                    case "tuesday":
-                        item.Hours = item.Day4Hrs;
-                        item.DailyComments = item.Day4Comments;
-                        break;
-                    case "wednesday":
-                        item.Hours = item.Day5Hrs;
-                        item.DailyComments = item.Day5Comments;
-                        break;
-                    case "thursday":
-                        item.Hours = item.Day6Hrs;
-                        item.DailyComments = item.Day6Comments;
-                        break;
-                    case "friday":
-                        item.Hours = item.Day7Hrs;
-                        item.DailyComments = item.Day7Comments;
-                        break;
-                }
-            }
             return View(new TimesheetApprovalViewModel
             {
                 timesheetApprovaldetails = res
