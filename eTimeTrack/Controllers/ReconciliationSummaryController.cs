@@ -96,8 +96,6 @@ namespace eTimeTrack.Controllers
             IQueryable<ReconciliationEntry> query = Db.ReconciliationEntries.Where(x => x.TimesheetPeriod.EndDate <= endPeriod.EndDate &&
                 !x.Deleted && x.OriginalReconciliationUpload.ProjectId == projectId);
 
-            var assignproject = Db.Users.Where(x => Db.EmployeeProjects.Any(y => y.EmployeeId == x.Id && y.ProjectId == projectId)).ToList();
-            var assignToProject = assignproject.Count > 0 ? "Y" : "N";
 
             if (companyId.HasValue)
                 query = query.Where(x => x.OriginalReconciliationUpload.ReconciliationTemplate.CompanyId == companyId);
@@ -126,7 +124,7 @@ namespace eTimeTrack.Controllers
                 ws.Cells[row, col++].Value = "Comments";
                 ws.Cells[row, col++].Value = "Employee Comments";
                 ws.Cells[row, col++].Value = "Email Address";
-                ws.Cells[row, col++].Value = "Assign to Project";
+                ws.Cells[row, col++].Value = "Assigned to Project";
                 ws.Cells[row, 1, row, col].Style.Font.Bold = true;
                 ws.Cells[row, 1, row, col].Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
 
@@ -134,6 +132,8 @@ namespace eTimeTrack.Controllers
 
                 foreach (ReconciliationEntry reconEntry in allData)
                 {
+                    var assignproject = Db.EmployeeProjects.Where(x => x.EmployeeId == reconEntry.Employee.Id && x.ProjectId == projectId).ToList();
+
                     col = 1;
                     ws.Cells[row, col++].Value = reconEntry.OriginalReconciliationUpload.ReconciliationTemplate.Company.Company_Name;
                     ws.Cells[row, col++].Value = reconEntry.Employee.EmployeeNo;
@@ -149,7 +149,7 @@ namespace eTimeTrack.Controllers
                     ws.Cells[row, col++].Value = reconEntry.ReconciliationComment;
                     ws.Cells[row, col++].Value = reconEntry.EmployeeComment;
                     ws.Cells[row, col++].Value = reconEntry.Employee.Email;
-                    ws.Cells[row, col++].Value = assignToProject;
+                    ws.Cells[row, col++].Value = assignproject.Count > 0 ? "Y" : "N";
 
                     row++;
                 }
