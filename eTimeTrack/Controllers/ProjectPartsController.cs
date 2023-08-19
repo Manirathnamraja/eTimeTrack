@@ -82,7 +82,7 @@ namespace eTimeTrack.Controllers
         private void SetViewbag(int? projectId)
         {
             ViewBag.ProjectID = new SelectList(Db.Projects, "ProjectID", "Name");
-            ViewBag.PMUser = new SelectList(GetEmployeeDetails(projectId), "Id", "Names", 1);
+            ViewBag.PM = new SelectList(GetEmployeeDetails(projectId), "Id", "Names");
         }
 
         protected override void Dispose(bool disposing)

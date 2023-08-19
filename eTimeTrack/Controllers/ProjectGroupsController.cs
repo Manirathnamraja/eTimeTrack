@@ -84,7 +84,7 @@ namespace eTimeTrack.Controllers
         {
             ViewBag.PartID = new SelectList(Db.ProjectParts.Where(x => x.ProjectID == projectId), "PartID", "Name");
             ViewBag.ProjectID = new SelectList(Db.Projects, "ProjectID", "Name");
-            ViewBag.PMUser = new SelectList(GetEmployeeDetails(projectId), "Id", "Names");
+            ViewBag.PM = new SelectList(GetEmployeeDetails(projectId), "Id", "Names");
         }
 
         protected override void Dispose(bool disposing)
