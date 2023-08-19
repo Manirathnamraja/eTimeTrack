@@ -610,6 +610,7 @@
     <Compile Include="Models\ProjectUserType.cs" />
     <Compile Include="Models\UserType.cs" />
     <Compile Include="ViewModels\ExportTimesheetDataViewModel.cs" />
+    <Compile Include="ViewModels\ProjectPartsViewModel.cs" />
     <Compile Include="ViewModels\SearchWBSViewModel.cs" />
     <Compile Include="ViewModels\TimesheetApprovalViewModel.cs" />
     <Compile Include="ViewModels\UserEndDatesViewModel.cs">
