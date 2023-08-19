@@ -1,6 +1,6 @@
 ﻿@using eTimeTrack.Controllers
 @using eTimeTrack.Helpers
-@model eTimeTrack.ViewModels.ProjectPartsViewModel
+@model eTimeTrack.Models.ProjectPart
 
 @{
     ViewBag.Title = ViewBag.Source + " Project Part";
@@ -13,76 +13,77 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    @Html.HiddenFor(model => model.part.PartID)
+    @Html.HiddenFor(model => model.PartID)
     @Html.Hidden("Source", (Source)ViewBag.Source)
 
     <div class="form-horizontal">
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
-            @Html.LabelFor(model => model.part.ProjectID, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.ProjectID, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
 
                 @if (Session["SelectedProject"] != null)
                 {
-                    if (Model.part.PartID == 0)
+                    if (Model.PartID == 0)
                     {
                         @Html.Hidden("ProjectID", Session["SelectedProject"], new { id = "selectedProjectId" })
                         <label class="labelFormValue" id="selectedProjectDisplay">@Session["SelectedProjectName"]</label>
                     }
                     else
                     {
-                        @Html.HiddenFor(model => model.part.ProjectID)
-                        @Html.HiddenFor(model => model.part.Project.ProjectNo)
-                        @Html.HiddenFor(model => model.part.Project.Name)
-                        <label class="labelFormValue">@Model.part.Project.DisplayName</label>
+                        @Html.HiddenFor(model => model.ProjectID)
+                        @Html.HiddenFor(model => model.Project.ProjectNo)
+                        @Html.HiddenFor(model => model.Project.Name)
+                        <label class="labelFormValue">@Model.Project.DisplayName</label>
                     }
                 }
                 else
                 {
-                    @Html.DropDownListFor(model => model.part.ProjectID, null, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.part.ProjectID, "", new { @class = "text-danger" })
+                    @Html.DropDownListFor(model => model.ProjectID, null, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.ProjectID, "", new { @class = "text-danger" })
                 }
 
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.part.PartNo, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.PartNo, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.part.PartNo, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.part.PartNo, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.PartNo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.PartNo, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.part.Name, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.part.Name, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.part.Name, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.part.Notes, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Notes, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextAreaFor(model => model.part.Notes, new { @class = "form-control fullWidth", rows = 3 })
-                @Html.ValidationMessageFor(model => model.part.Notes, "", new { @class = "text-danger" })
+                @Html.TextAreaFor(model => model.Notes, new { @class = "form-control fullWidth", rows = 3 })
+                @Html.ValidationMessageFor(model => model.Notes, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
             <label class="control-label col-md-2">TimesheetReviewer</label>
             <div class="col-md-10">
-                @Html.DropDownList("employeesSelector", Model.employees, "Select", new { id = "employeesSelector", @class = "form-control employeesSelector"})
+                @Html.DropDownListFor(model => model.PMUser, null, "Select", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.PMUser, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.part.IsClosed, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.IsClosed, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <div class="checkbox">
-                    @Html.EditorFor(model => model.part.IsClosed)
-                    @Html.ValidationMessageFor(model => model.part.IsClosed, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.IsClosed)
+                    @Html.ValidationMessageFor(model => model.IsClosed, "", new { @class = "text-danger" })
                 </div>
             </div>
         </div>

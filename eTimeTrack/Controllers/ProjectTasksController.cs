@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 using eTimeTrack.Helpers;
@@ -88,6 +89,7 @@ namespace eTimeTrack.Controllers
             ViewBag.GroupID = new SelectList(Db.ProjectGroups.Where(x => x.PartID == partId), "GroupID", "DisplayName");
             ViewBag.PartID = new SelectList(Db.ProjectParts.Where(x => x.ProjectID == projectId), "PartID", "DisplayName", partId);
             ViewBag.ProjectID = new SelectList(Db.Projects, "ProjectID", "DisplayName");
+            ViewBag.PMUser = new SelectList(GetEmployeeDetails(projectId), "Id", "Names", 1);
         }
 
         protected override void Dispose(bool disposing)
@@ -97,6 +99,15 @@ namespace eTimeTrack.Controllers
                 Db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private List<Employee> GetEmployeeDetails(int? projectid)
+        {
+            List<Employee> emp = (from p in Db.EmployeeProjects
+                                  join e in Db.Users on p.EmployeeId equals e.Id
+                                  where p.ProjectId == projectid
+                                  select e).ToList();
+            return emp;
         }
     }
 }

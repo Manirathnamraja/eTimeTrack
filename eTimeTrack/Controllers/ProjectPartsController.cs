@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Data;
-using System;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using eTimeTrack.Helpers;
 using eTimeTrack.Models;
-using eTimeTrack.ViewModels;
 
 namespace eTimeTrack.Controllers
 {
@@ -16,12 +13,12 @@ namespace eTimeTrack.Controllers
     {
         public ActionResult CreateEdit(int? id, int? projectId)
         {
-            ProjectPartsViewModel projectPart = new ProjectPartsViewModel();
+            ProjectPart projectPart;
             if (id == null)
             {
                 if (projectId != null)
                 {
-                    projectPart.part.ProjectID = (int)projectId;
+                    projectPart = new ProjectPart { ProjectID = (int)projectId };
                     ViewBag.Source = Source.Create;
                 }
                 else
@@ -31,62 +28,61 @@ namespace eTimeTrack.Controllers
             }
             else
             {
-                projectPart.part = Db.ProjectParts.Find(id);
-                if (projectPart.part == null)
+                projectPart = Db.ProjectParts.Find(id);
+                if (projectPart == null)
                 {
                     return InvokeHttp404(HttpContext);
                 }
                 ViewBag.Source = Source.Existing;
             }
 
-            projectPart.employees = GetEmployee(projectPart.part.ProjectID);
-
-            SetViewbag();
+            SetViewbag(projectPart.ProjectID);
 
             return View(projectPart);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateEdit(ProjectPartsViewModel projectPart, Source source)
+        public ActionResult CreateEdit(ProjectPart projectPart, Source source)
         {
             ViewBag.Source = source;
             if (ModelState.IsValid)
             {
                 // check for existing part in the system
-                bool existingPart = Db.ProjectParts.Any(x => x.ProjectID == projectPart.part.ProjectID && x.PartNo == projectPart.part.PartNo && x.PartID != projectPart.part.PartID);
+                bool existingPart = Db.ProjectParts.Any(x => x.ProjectID == projectPart.ProjectID && x.PartNo == projectPart.PartNo && x.PartID != projectPart.PartID);
                 if (existingPart)
                 {
-                    Project project = Db.Projects.Find(projectPart.part.ProjectID);
-                    ViewBag.InfoMessage = new InfoMessage { MessageType = InfoMessageType.Warning, MessageContent = $"Part No {projectPart.part.PartNo} already exists under project {project?.ProjectNo}. Please choose a different one."};
-                    SetViewbag();
-                    projectPart.part.Project = project;
+                    Project project = Db.Projects.Find(projectPart.ProjectID);
+                    ViewBag.InfoMessage = new InfoMessage { MessageType = InfoMessageType.Warning, MessageContent = $"Part No {projectPart.PartNo} already exists under project {project?.ProjectNo}. Please choose a different one." };
+                    SetViewbag(projectPart.ProjectID);
+                    projectPart.Project = project;
                     return View(projectPart);
                 }
 
-                projectPart.part  = Db.ProjectParts.Find(projectPart.part.PartID);
+                ProjectPart existing = Db.ProjectParts.Find(projectPart.PartID);
 
-                if (projectPart.part != null)
+                if (existing != null)
                 {
-                    Db.Entry(projectPart.part).CurrentValues.SetValues(projectPart.part);
-                    Db.Entry(projectPart.part).State = EntityState.Modified;
+                    Db.Entry(existing).CurrentValues.SetValues(projectPart);
+                    Db.Entry(existing).State = EntityState.Modified;
                 }
                 else
                 {
-                    Db.ProjectParts.Add(projectPart.part);
+                    Db.ProjectParts.Add(projectPart);
                 }
 
                 Db.SaveChanges();
-                TempData["InfoMessage"] = new InfoMessage { MessageContent = $"Project Part {projectPart.part.PartNo} saved.", MessageType = InfoMessageType.Success };
+                TempData["InfoMessage"] = new InfoMessage { MessageContent = $"Project Part {projectPart.PartNo} saved.", MessageType = InfoMessageType.Success };
                 return RedirectToAction("Index", "ProjectComponent", new { type = ProjectComponentType.ProjectPart });
             }
 
-            SetViewbag();
+            SetViewbag(projectPart.ProjectID);
             return View(projectPart);
         }
-        private void SetViewbag()
+        private void SetViewbag(int? projectId)
         {
             ViewBag.ProjectID = new SelectList(Db.Projects, "ProjectID", "Name");
+            ViewBag.PMUser = new SelectList(GetEmployeeDetails(projectId), "Id", "Names", 1);
         }
 
         protected override void Dispose(bool disposing)
@@ -98,11 +94,8 @@ namespace eTimeTrack.Controllers
             base.Dispose(disposing);
         }
 
-        private SelectList GetEmployee(int projectId) { 
-            return new SelectList(GetEmployeeDetails(projectId), "Id", "Names", 1);
-        }
-
-        private List<Employee> GetEmployeeDetails(int projectid) { 
+        private List<Employee> GetEmployeeDetails(int? projectid)
+        {
             List<Employee> emp = (from p in Db.EmployeeProjects
                                   join e in Db.Users on p.EmployeeId equals e.Id
                                   where p.ProjectId == projectid
