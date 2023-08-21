@@ -103,11 +103,11 @@ namespace eTimeTrack.Controllers
 
         private List<Employee> GetEmployeeDetails(int? projectid)
         {
-            List<Employee> emp = (from p in Db.EmployeeProjects
-                                  join e in Db.Users on p.EmployeeId equals e.Id
-                                  where p.ProjectId == projectid
-                                  select e).ToList();
-            return emp;
+            var emp = from p in Db.EmployeeProjects
+                      join e in Db.Users on p.EmployeeId equals e.Id
+                      where p.ProjectId == projectid
+                      select e;
+            return emp.Distinct().OrderBy(x => x.Names).ToList();
         }
     }
 }
