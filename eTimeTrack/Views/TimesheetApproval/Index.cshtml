@@ -44,9 +44,12 @@
                 <tr>
                     <td style="text-wrap: nowrap;">
                         @Model.timesheetApprovaldetails[i].EndDate.ToString("dd-MM-yyyy")
-                        <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.timesheetApprovaldetails[i].Comments">
-                            <i class='glyphicon glyphicon-info-sign'></i>
-                        </a>
+                        @if (Model.timesheetApprovaldetails[i].Comments != null)
+                        {
+                            <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.timesheetApprovaldetails[i].Comments">
+                                <i class='glyphicon glyphicon-info-sign'></i>
+                            </a>
+                        }
                     </td>
                     <td>
                         @Model.timesheetApprovaldetails[i].TaskNo
@@ -63,45 +66,67 @@
                     <td>@Model.timesheetApprovaldetails[i].Names</td>
                     <td>
                         @Model.timesheetApprovaldetails[i].Day1Hrs
-                        <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.timesheetApprovaldetails[i].Day1Comments">
-                            <i class='glyphicon glyphicon-info-sign'></i>
-                        </a>
+                        @if (Model.timesheetApprovaldetails[i].Day1Comments != null)
+                        {
+                            <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.timesheetApprovaldetails[i].Day1Comments">
+                                <i class='glyphicon glyphicon-info-sign'></i>
+                            </a>
+                        }
+
                     </td>
                     <td>
                         @Model.timesheetApprovaldetails[i].Day2Hrs
-                        <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.timesheetApprovaldetails[i].Day2Comments">
-                            <i class='glyphicon glyphicon-info-sign'></i>
-                        </a>
+                        @if (Model.timesheetApprovaldetails[i].Day2Comments != null)
+                        {
+                            <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.timesheetApprovaldetails[i].Day2Comments">
+                                <i class='glyphicon glyphicon-info-sign'></i>
+                            </a>
+                        }
                     </td>
                     <td>
                         @Model.timesheetApprovaldetails[i].Day3Hrs
-                        <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.timesheetApprovaldetails[i].Day3Comments">
-                            <i class='glyphicon glyphicon-info-sign'></i>
-                        </a>
+                        @if (Model.timesheetApprovaldetails[i].Day3Comments != null)
+                        {
+                            <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.timesheetApprovaldetails[i].Day3Comments">
+                                <i class='glyphicon glyphicon-info-sign'></i>
+                            </a>
+                        }
                     </td>
                     <td>
                         @Model.timesheetApprovaldetails[i].Day4Hrs
-                        <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.timesheetApprovaldetails[i].Day4Comments">
-                            <i class='glyphicon glyphicon-info-sign'></i>
-                        </a>
+                        @if (Model.timesheetApprovaldetails[i].Day4Comments != null)
+                        {
+                            <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.timesheetApprovaldetails[i].Day4Comments">
+                                <i class='glyphicon glyphicon-info-sign'></i>
+                            </a>
+                        }
                     </td>
                     <td>
                         @Model.timesheetApprovaldetails[i].Day5Hrs
-                        <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.timesheetApprovaldetails[i].Day5Comments">
-                            <i class='glyphicon glyphicon-info-sign'></i>
-                        </a>
+                        @if (Model.timesheetApprovaldetails[i].Day5Comments != null)
+                        {
+                            <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.timesheetApprovaldetails[i].Day5Comments">
+                                <i class='glyphicon glyphicon-info-sign'></i>
+                            </a>
+                        }
                     </td>
                     <td>
                         @Model.timesheetApprovaldetails[i].Day6Hrs
-                        <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.timesheetApprovaldetails[i].Day6Comments">
-                            <i class='glyphicon glyphicon-info-sign'></i>
-                        </a>
+                        @if (Model.timesheetApprovaldetails[i].Day6Comments != null)
+                        {
+                            <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.timesheetApprovaldetails[i].Day6Comments">
+                                <i class='glyphicon glyphicon-info-sign'></i>
+                            </a>
+                        }
                     </td>
                     <td>
                         @Model.timesheetApprovaldetails[i].Day7Hrs
-                        <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.timesheetApprovaldetails[i].Day7Comments">
-                            <i class='glyphicon glyphicon-info-sign'></i>
-                        </a>
+                        @if (Model.timesheetApprovaldetails[i].Day7Comments != null)
+                        {
+                            <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.timesheetApprovaldetails[i].Day7Comments">
+                                <i class='glyphicon glyphicon-info-sign'></i>
+                            </a>
+                        }
                     </td>
                     <td>
                         <div class="col-xs-9 col-md-10">
