@@ -18,15 +18,13 @@ namespace eTimeTrack.Controllers
             int selectedProject = (int?)Session?["SelectedProject"] ?? 0;
             if (selectedProject == 0) { return InvokeHttp404(HttpContext); }
 
-            var employeeid = UserHelpers.GetCurrentUserId();
-
             var empresultslist = from e in Db.EmployeeTimesheetItems
                                  join t in Db.ProjectTasks on e.TaskID equals t.TaskID
                                  join v in Db.ProjectVariations on e.VariationID equals v.VariationID
                                  join et in Db.EmployeeTimesheets on e.TimesheetID equals et.TimesheetID
                                  join emp in Db.Users on et.EmployeeID equals emp.Id
                                  join tp in Db.TimesheetPeriods on et.TimesheetPeriodID equals tp.TimesheetPeriodID
-                                 where t.ProjectID == selectedProject && e.IsTimeSheetApproval != true && emp.Id == employeeid
+                                 where t.ProjectID == selectedProject && e.IsTimeSheetApproval != true 
                                  select new TimesheetApprovaldetails
                                  {
                                      Comments = e.Comments,
