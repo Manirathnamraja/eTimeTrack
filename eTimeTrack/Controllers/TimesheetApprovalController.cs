@@ -19,6 +19,7 @@ namespace eTimeTrack.Controllers
             if (selectedProject == 0) { return InvokeHttp404(HttpContext); }
 
             var employeeid = UserHelpers.GetCurrentUserId();
+            var empPM = Db.ProjectTasks.Where(x => x.PM == employeeid).FirstOrDefault();
 
             var empresultslist = from e in Db.EmployeeTimesheetItems
                                  join t in Db.ProjectTasks on e.TaskID equals t.TaskID
@@ -26,7 +27,7 @@ namespace eTimeTrack.Controllers
                                  join et in Db.EmployeeTimesheets on e.TimesheetID equals et.TimesheetID
                                  join emp in Db.Users on et.EmployeeID equals emp.Id
                                  join tp in Db.TimesheetPeriods on et.TimesheetPeriodID equals tp.TimesheetPeriodID
-                                 where t.ProjectID == selectedProject && e.IsTimeSheetApproval != true && emp.Id == employeeid
+                                 where t.ProjectID == selectedProject && e.IsTimeSheetApproval != true && t.PM == empPM.PM
                                  select new TimesheetApprovaldetails
                                  {
                                      Comments = e.Comments,
@@ -53,7 +54,7 @@ namespace eTimeTrack.Controllers
                                      TimesheetItemID = e.TimesheetItemID
                                  };
 
-            var res = empresultslist.Distinct().OrderByDescending(x => x.EndDate).ToList();
+            var res = empresultslist?.Distinct().OrderByDescending(x => x.EndDate).ToList();
             return View(new TimesheetApprovalViewModel
             {
                 timesheetApprovaldetails = res
