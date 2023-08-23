@@ -18,16 +18,36 @@ namespace eTimeTrack.Controllers
             int selectedProject = (int?)Session?["SelectedProject"] ?? 0;
             if (selectedProject == 0) { return InvokeHttp404(HttpContext); }
 
+            int? groupid = 0; int? taskid = 0; int? partid = 0;
+
             var employeeid = UserHelpers.GetCurrentUserId();
-            var empPM = Db.ProjectTasks.Where(x => x.PM == employeeid).FirstOrDefault();
+            var empPt = Db.ProjectTasks.Where(x => x.PM == employeeid).FirstOrDefault();
+            if (empPt != null)
+            {
+                taskid = empPt.PM;
+            }
+            var empPg = Db.ProjectGroups.Where(x => x.PM == employeeid).FirstOrDefault();
+            if (empPg != null)
+            {
+                groupid = empPg.PM;
+            }
+            var empPp = Db.ProjectParts.Where(x => x.PM == employeeid).FirstOrDefault();
+            if (empPp != null)
+            {
+                partid = empPp.PM;
+            }
 
             var empresultslist = from e in Db.EmployeeTimesheetItems
-                                 join t in Db.ProjectTasks on e.TaskID equals t.TaskID
                                  join v in Db.ProjectVariations on e.VariationID equals v.VariationID
                                  join et in Db.EmployeeTimesheets on e.TimesheetID equals et.TimesheetID
                                  join emp in Db.Users on et.EmployeeID equals emp.Id
+                                 join t in Db.ProjectTasks on e.TaskID equals t.TaskID
+                                 join g in Db.ProjectGroups on t.GroupID equals g.GroupID
+                                 join p in Db.ProjectParts on g.PartID equals p.PartID
                                  join tp in Db.TimesheetPeriods on et.TimesheetPeriodID equals tp.TimesheetPeriodID
-                                 where t.ProjectID == selectedProject && e.IsTimeSheetApproval != true && t.PM == empPM.PM
+                                 where t.ProjectID == selectedProject
+                                 && e.IsTimeSheetApproval != true
+                                 && (t.PM == taskid || g.PM == groupid || p.PM == partid)
                                  select new TimesheetApprovaldetails
                                  {
                                      Comments = e.Comments,
@@ -54,7 +74,7 @@ namespace eTimeTrack.Controllers
                                      TimesheetItemID = e.TimesheetItemID
                                  };
 
-            var res = empresultslist?.Distinct().OrderByDescending(x => x.EndDate).ToList();
+            var res = empresultslist.Distinct().OrderByDescending(x => x.EndDate).ToList();
             return View(new TimesheetApprovalViewModel
             {
                 timesheetApprovaldetails = res
@@ -66,7 +86,7 @@ namespace eTimeTrack.Controllers
         {
             foreach (var item in timesheet.timesheetApprovaldetails)
             {
-                if(item.IsApproval == true)
+                if (item.IsApproval == true)
                 {
                     EmployeeTimesheetItem timesheetItem = Db.EmployeeTimesheetItems.Find(item.TimesheetItemID);
                     if (timesheetItem != null)
@@ -81,6 +101,6 @@ namespace eTimeTrack.Controllers
             }
             return RedirectToAction("Index");
         }
-        
+
     }
 }
