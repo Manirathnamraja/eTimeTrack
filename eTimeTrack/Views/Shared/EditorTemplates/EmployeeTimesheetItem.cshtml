@@ -16,7 +16,7 @@
     <td class="timesheet-heading-value">
         @Html.DisplayFor(model => model.ProjectTask.Project.Name)
         @Html.HiddenFor(model => model.ProjectTask.Project.Name)
-        @Html.HiddenFor(model => model.ProjectTask.Project.ProjectID, new {@class="item-container-project-id"})
+        @Html.HiddenFor(model => model.ProjectTask.Project.ProjectID, new { @class = "item-container-project-id" })
         @Html.HiddenFor(model => model.ProjectTask.Project.ProjectNo)
     </td>
     <td class="timesheet-heading-value">
@@ -24,7 +24,7 @@
         @Html.HiddenFor(model => model.ProjectTask.ProjectGroup.ProjectPart.Name)
         @Html.HiddenFor(model => model.ProjectTask.ProjectGroup.ProjectPart.PartNo)
         @Html.HiddenFor(model => model.ProjectTask.ProjectGroup.ProjectPart.ProjectID)
-     
+
     </td>
     <td class="timesheet-heading-value">
         @Html.DisplayFor(model => model.ProjectTask.ProjectGroup.GroupNo):
@@ -86,6 +86,11 @@
             <a class="btn btn-primary deleteitem disableInReadOnly@(Model.ReadOnly ? " disabled" : string.Empty)" role="button" onclick="deleteTimesheetItem('@Model.TimesheetItemID');"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
         </td>
     }
+    <td style="padding-left:32px">
+            <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.Reviewercomments">
+                <i class='glyphicon glyphicon-info-sign'></i>
+            </a>
+    </td>
 </tr>
 
 <tr class="userTypeNotificationDisplay @(Model.TimesheetItemID)" data-id="@(Model.TimesheetItemID)" style="display: none;">

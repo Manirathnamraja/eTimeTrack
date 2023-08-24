@@ -25,7 +25,7 @@
             <td colspan="2">
                 @Html.DisplayFor(model => model.ProjectTask.Project.Name)
                 @Html.HiddenFor(model => model.ProjectTask.Project.Name)
-                @Html.HiddenFor(model => model.ProjectTask.Project.ProjectID, new {@class="item-container-project-id"})
+                @Html.HiddenFor(model => model.ProjectTask.Project.ProjectID, new { @class = "item-container-project-id" })
                 @Html.HiddenFor(model => model.ProjectTask.Project.ProjectNo)
                 @if (!readOnly)
                 {
@@ -201,21 +201,21 @@
                 <td>Task</td>
                 <td>Week</td>
             </tr>*@
-    <tr class="taskTotalRow">
-        <th colspan="2">Task Total</th>
-        <th class="totalTaskHours"></th>
-        @*<td class="totalWeeklyHours"></td>*@
-    </tr>
-    
-    <tr class="@Model.TimesheetItemID userTypeNotificationDisplay" data-id="@Model.TimesheetItemID" style="display: none;">
-        <td colspan="3">
-            <div class="alert alert-danger">
-                <div class="userTypeNotificationDisplayText"></div>
-            </div>
-        </td>
-    </tr>
+        <tr class="taskTotalRow">
+            <th colspan="2">Task Total</th>
+            <th class="totalTaskHours"></th>
+            @*<td class="totalWeeklyHours"></td>*@
+        </tr>
 
-    <tr>
+        <tr class="@Model.TimesheetItemID userTypeNotificationDisplay" data-id="@Model.TimesheetItemID" style="display: none;">
+            <td colspan="3">
+                <div class="alert alert-danger">
+                    <div class="userTypeNotificationDisplayText"></div>
+                </div>
+            </td>
+        </tr>
+
+        <tr>
             @*  <td class="totalTaskHours"></td>*@
             <td colspan="3">
                 @Html.TextAreaFor(model => model.Comments, new { @class = "form-control disableInReadOnly generalCommentsField fullWidth", placeholder = "General Comments" })

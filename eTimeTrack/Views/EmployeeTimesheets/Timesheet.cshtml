@@ -202,7 +202,7 @@
                     </div>
                 }
             }
-            
+
         </div>
     </div>
 </div>
@@ -289,8 +289,10 @@
                 </div>
 
                 <div class="col-md-5">
-                    <button type="button" class="btn btn-primary" onclick="@("window.location.href='" + @Url.Action("Index", "SearchWBS") + "'");" 
-                            id="btnOpenWBS" style="margin-top: 50px; margin-left: 190px; background-color:blue">Open WBS Search</button>
+                    <button type="button" class="btn btn-primary" onclick="@("window.location.href='" + @Url.Action("Index", "SearchWBS") + "'");"
+                            id="btnOpenWBS" style="margin-top: 50px; margin-left: 190px; background-color:blue">
+                        Open WBS Search
+                    </button>
                 </div>
 
                 <div id="task-notes-display-container" style="display: none;" class="col-md-5 notes-container">
@@ -349,6 +351,8 @@
                             {
                                 <th>Delete</th>
                             }
+                            <th>Reviewer Comments</th>
+
                         </tr>
                     </thead>
                     <tfoot>
@@ -366,7 +370,7 @@
                         </tr>
                     </tfoot>
                     <tbody id="timesheetItemList">
-                        @Html.EditorForMany(x => x.TimesheetItems, "EmployeeTimesheetItem", x => x.TimesheetItemID.ToString(), false)
+                            @Html.EditorForMany(x => x.TimesheetItems, "EmployeeTimesheetItem", x => x.TimesheetItemID.ToString(), false)
                     </tbody>
                 </table>
             }
