@@ -73,7 +73,8 @@ namespace eTimeTrack.Controllers
                                      Day7Hrs = e.Day7Hrs,
                                      EndDate = tp.EndDate,
                                      TimesheetItemID = e.TimesheetItemID,
-                                     TimeCode = e.TimeCode
+                                     TimeCode = e.TimeCode,
+                                     Reviewercomments = e.Reviewercomments
                                  };
 
             var res = empresultslist.Distinct().OrderByDescending(x => x.EndDate).ToList();
@@ -110,6 +111,19 @@ namespace eTimeTrack.Controllers
                 }
             }
             return RedirectToAction("Index");
+        }
+
+        public JsonResult SaveComment(int? id, string comment)
+        {
+            EmployeeTimesheetItem existingItem = Db.EmployeeTimesheetItems.Find(id);
+            if (existingItem != null)
+            {
+                existingItem.Reviewercomments = comment;
+                Db.SaveChanges();
+                return Json(true);
+            }
+
+            return Json(false);
         }
 
         private string timecodename(TimeCode time)

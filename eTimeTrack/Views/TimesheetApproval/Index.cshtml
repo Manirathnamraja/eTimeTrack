@@ -1,4 +1,6 @@
-﻿@using eTimeTrack.Extensions
+﻿@using eTimeTrack.Controllers
+@using eTimeTrack.Extensions
+@using eTimeTrack.Helpers
 @using eTimeTrack.ViewModels
 @model TimesheetApprovalViewModel
 
@@ -8,6 +10,7 @@
 
 @Html.Partial("_Banner")
 @Html.Partial("_InfoMessageRender")
+
 @using (Html.BeginForm("ApproveTimesheet", "TimesheetApproval", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
@@ -20,7 +23,7 @@
         </div>
     </div>
 
-    <table id="UpdateTable" class="table table-striped table-hover data-table" width="100%">
+    <table class="table data-table" width="100%" id="UpdateTable">
         <thead>
             <tr>
                 <th>Week Ending</th>
@@ -42,7 +45,7 @@
         <tbody>
             @for (int i = 0; i < Model.timesheetApprovaldetails.Count; i++)
             {
-                <tr>
+                <tr id="@Model.timesheetApprovaldetails[i].TimesheetItemID">
                     <td style="text-wrap: nowrap;">
                         @Model.timesheetApprovaldetails[i].EndDate.ToString("dd-MM-yyyy")
                         @if (Model.timesheetApprovaldetails[i].Comments != null)
@@ -65,7 +68,8 @@
                         </a>
                     </td>
                     <td>@Model.timesheetApprovaldetails[i].Names</td>
-                    <td>@Model.timesheetApprovaldetails[i].Timecodes
+                    <td>
+                        @Model.timesheetApprovaldetails[i].Timecodes
                         <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.timesheetApprovaldetails[i].TimeCode">
                             <i class='glyphicon glyphicon-info-sign'></i>
                         </a>
@@ -135,9 +139,28 @@
                         }
                     </td>
                     <td>
-                        <div class="col-xs-9 col-md-10">
-                            @Html.TextAreaFor(modelItem => modelItem.timesheetApprovaldetails[i].Reviewercomments, new { @class = "form-control", style = "display: inline;max-width: none;", maxlength = 254, id = "reviewerCommentTextArea" })
-                            <span id="text-counter">254</span> character(s) left.
+                        <div class="tcomment-readonly-container">
+                            <div class="row">
+                                <div class="col-xs-10" style="width:225px">
+                                    <div class="tcomment-readonly" style="display: inline;">@Html.DisplayFor(modelItem => modelItem.timesheetApprovaldetails[i].Reviewercomments)</div>
+                                    <a class="btn btn-default tcomment-edit pull-right" title="Edit comment">
+                                        <i class='glyphicon glyphicon-edit'></i>
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="tedit-comment-container" style="display: none;">
+                            <div class="row">
+                                <div class="col-xs-10">
+                                    @Html.TextAreaFor(modelItem => modelItem.timesheetApprovaldetails[i].Reviewercomments, new { @class = "form-control tcomment", style = "display: inline;max-width: none;" })
+                                </div>
+                                <div class="col-xs-2">
+                                    <a class="btn btn-default tcomment-save pull-right" title="Save comment changes">
+                                        <i class='glyphicon glyphicon-ok'></i>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </td>
                     <td>
@@ -179,7 +202,57 @@
             $('#UpdateTable').DataTable().on("draw", function () {
                 $('[data-toggle="tooltip"]').tooltip();
             });
+
+            $('#UpdateTable').on('draw.dt', function () {
+                setupChangeActions();
+            });
+
+            setupChangeActions();
+
         });
+
+          function setupChangeActions() {
+            $('.tcomment-edit').click(function () {
+                var editButton = $(this);
+                var tableCell = editButton.closest('td');
+                var editCommentContainer = tableCell.find('.tedit-comment-container');
+                var readonlyComment = tableCell.find('.tcomment-readonly');
+                //var saveButton = tableCell.find('comment-save');
+
+                readonlyComment.hide();
+                editButton.hide();
+                //saveButton.show();
+                editCommentContainer.show();
+            });
+
+              $('.tcomment-save').click(function () {
+                var saveButton = $(this);
+                var tableCell = saveButton.closest('td');
+                var editCommentContainer = tableCell.find('.tedit-comment-container');
+                var tableRow = saveButton.closest('tr');
+                  console.log(tableRow);
+                var readonlyComment = tableCell.find('.tcomment-readonly');
+                var id = tableRow.attr('id');
+
+                var editButton = tableCell.find('.tcomment-edit');
+                var commentElement = tableCell.find('.tcomment');
+                var commentText = commentElement.val();
+
+                editButton.show();
+                //saveButton.hide();
+                readonlyComment.text(commentText);
+                readonlyComment.show();
+                editCommentContainer.hide();
+
+                $.post('@Url.Action("SaveComment")', { id: id, comment: commentText }).done(function (saved) {
+                    if (saved) {
+                        tableRow.notify("Comment saved", { position: "right", className: "success", autoHideDelay: 6000 });
+                    } else {
+                        tableRow.notify("Comment could not be saved", { position: "right", className: "warning", autoHideDelay: 6000 });
+                    }
+                });
+            });
+        }
 
     </script>
 }
