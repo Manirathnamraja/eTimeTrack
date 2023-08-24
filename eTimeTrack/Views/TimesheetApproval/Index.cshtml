@@ -182,6 +182,7 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/notify")
 
     <script>
 
@@ -230,7 +231,6 @@
                 var tableCell = saveButton.closest('td');
                 var editCommentContainer = tableCell.find('.tedit-comment-container');
                 var tableRow = saveButton.closest('tr');
-                  console.log(tableRow);
                 var readonlyComment = tableCell.find('.tcomment-readonly');
                 var id = tableRow.attr('id');
 
