@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Xml.Linq;
+using eTimeTrack.Enums;
 using eTimeTrack.Models;
 
 namespace eTimeTrack.ViewModels
@@ -11,6 +12,7 @@ namespace eTimeTrack.ViewModels
     public class TimesheetApprovalViewModel
     {
         public List<TimesheetApprovaldetails> timesheetApprovaldetails { get; set; }
+
     }
     public class TimesheetApprovaldetails
     {
@@ -87,5 +89,10 @@ namespace eTimeTrack.ViewModels
         public DateTime LastApprovedDate { get; set; }
 
         public int TimesheetItemID { get; set; }
+
+        public TimeCode TimeCode { get; set; }
+
+        public int Timecodes { get; set; }
+
     }
 }

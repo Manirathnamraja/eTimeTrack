@@ -27,6 +27,7 @@
                 <th>Task No</th>
                 <th>Var No</th>
                 <th>Emp Name</th>
+                <th>Time Code</th>
                 <th>S</th>
                 <th>S</th>
                 <th>M</th>
@@ -64,6 +65,11 @@
                         </a>
                     </td>
                     <td>@Model.timesheetApprovaldetails[i].Names</td>
+                    <td>@Model.timesheetApprovaldetails[i].Timecodes
+                        <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.timesheetApprovaldetails[i].TimeCode">
+                            <i class='glyphicon glyphicon-info-sign'></i>
+                        </a>
+                    </td>
                     <td>
                         @Model.timesheetApprovaldetails[i].Day1Hrs
                         @if (Model.timesheetApprovaldetails[i].Day1Comments != null)

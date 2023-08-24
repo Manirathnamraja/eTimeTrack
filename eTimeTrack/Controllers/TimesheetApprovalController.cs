@@ -1,4 +1,5 @@
-﻿using eTimeTrack.Helpers;
+﻿using eTimeTrack.Enums;
+using eTimeTrack.Helpers;
 using eTimeTrack.Models;
 using eTimeTrack.ViewModels;
 using System;
@@ -71,10 +72,19 @@ namespace eTimeTrack.Controllers
                                      Day6Hrs = e.Day6Hrs,
                                      Day7Hrs = e.Day7Hrs,
                                      EndDate = tp.EndDate,
-                                     TimesheetItemID = e.TimesheetItemID
+                                     TimesheetItemID = e.TimesheetItemID,
+                                     TimeCode = e.TimeCode
                                  };
 
             var res = empresultslist.Distinct().OrderByDescending(x => x.EndDate).ToList();
+            if (res.Count > 0)
+            {
+                foreach (var item in res)
+                {
+                    item.Timecodes = timecode(item.TimeCode);
+                }
+            }
+            
             return View(new TimesheetApprovalViewModel
             {
                 timesheetApprovaldetails = res
@@ -100,6 +110,73 @@ namespace eTimeTrack.Controllers
                 }
             }
             return RedirectToAction("Index");
+        }
+
+        private string timecodename(TimeCode time)
+        {
+            var result = string.Empty;
+            switch (time)
+            {
+                case 0:
+                    result = "NT: Normal Time";
+                    break;
+                case (TimeCode)1:
+                    result = "OT1: Other Time 1";
+                    break;
+                case (TimeCode)2:
+                    result = "OT2: Other Time 2";
+                    break;
+                case (TimeCode)3:
+                    result = "OT3: Other Time 3";
+                    break;
+                case (TimeCode)4:
+                    result = "OT4: Other Time 4";
+                    break;
+                case (TimeCode)5:
+                    result = "OT5: Other Time 5";
+                    break;
+                case (TimeCode)6:
+                    result = "OT6: Other Time 6";
+                    break;
+                case (TimeCode)7:
+                    result = "OT7: Other Time 7";
+                    break;
+
+            }
+            return result;
+        }
+        private int timecode(TimeCode time)
+        {
+            int result = 0;
+            switch (time)
+            {
+                case TimeCode.NT:
+                    result = 0;
+                    break;
+                case TimeCode.OT1:
+                    result = 1;
+                    break;
+                case TimeCode.OT2:
+                    result = 2;
+                    break;
+                case TimeCode.OT3:
+                    result = 3;
+                    break;
+                case TimeCode.OT4:
+                    result = 4;
+                    break;
+                case TimeCode.OT5:
+                    result = 5;
+                    break;
+                case TimeCode.OT6:
+                    result = 6;
+                    break;
+                case TimeCode.OT7:
+                    result = 7;
+                    break;
+
+            }
+            return result;
         }
 
     }
