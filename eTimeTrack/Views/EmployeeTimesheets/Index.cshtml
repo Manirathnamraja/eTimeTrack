@@ -33,6 +33,7 @@ else
         <tr>
             <th style="min-width: 100px;">Date Range</th>
             @*<th data-orderable="false">Date Approved</th>*@
+            <th>Reviewer Comments</th>
             <th>Reconciliation Discrepancy</th>
             <th data-orderable="false">Discrepancy Comments</th>
             <th data-orderable="false">Edit</th>
@@ -49,19 +50,26 @@ else
                 <td>
                     @dateRange
                 </td>
+                @foreach (var item1 in item.EmployeeTimesheetItem)
+                {
+                    <td>
+                        @item1.Reviewercomments
+                    </td>
+                }
+
                 @*<td>
-                    @{
-                        if (item.EmployeeTimesheet.DateApproved == null)
-                        {
-                            <span>Not Approved</span>
-                        }
-                        else
-                        {
-                            @Html.DisplayFor(modelItem => item.EmployeeTimesheet.DateApproved)
-                        }
-                    }
-                </td>*@
-                
+            @{
+                if (item.EmployeeTimesheet.DateApproved == null)
+                {
+                    <span>Not Approved</span>
+                }
+                else
+                {
+                    @Html.DisplayFor(modelItem => item.EmployeeTimesheet.DateApproved)
+                }
+            }
+        </td>*@
+
                 <td>
                     @{
                         if (item.EmployeeTimesheet.ReconciliationEntries.Any(x => !x.HoursEqual))
@@ -70,7 +78,7 @@ else
                         }
                     }
                 </td>
-                
+
                 <td>
                     @{
                         List<ReconciliationEntry> hoursNotEqual = item.EmployeeTimesheet.ReconciliationEntries.Where(x => !x.HoursEqual).ToList();

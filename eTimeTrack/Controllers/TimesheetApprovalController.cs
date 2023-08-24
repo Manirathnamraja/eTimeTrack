@@ -83,6 +83,7 @@ namespace eTimeTrack.Controllers
                 foreach (var item in res)
                 {
                     item.Timecodes = timecode(item.TimeCode);
+                    item.TimecodesName = timecodename(item.Timecodes);
                 }
             }
             
@@ -126,7 +127,7 @@ namespace eTimeTrack.Controllers
             return Json(false);
         }
 
-        private string timecodename(TimeCode time)
+        private string timecodename(int time)
         {
             var result = string.Empty;
             switch (time)
@@ -134,28 +135,27 @@ namespace eTimeTrack.Controllers
                 case 0:
                     result = "NT: Normal Time";
                     break;
-                case (TimeCode)1:
+                case 1:
                     result = "OT1: Other Time 1";
                     break;
-                case (TimeCode)2:
+                case 2:
                     result = "OT2: Other Time 2";
                     break;
-                case (TimeCode)3:
+                case 3:
                     result = "OT3: Other Time 3";
                     break;
-                case (TimeCode)4:
+                case 4:
                     result = "OT4: Other Time 4";
                     break;
-                case (TimeCode)5:
+                case 5:
                     result = "OT5: Other Time 5";
                     break;
-                case (TimeCode)6:
+                case 6:
                     result = "OT6: Other Time 6";
                     break;
-                case (TimeCode)7:
+                case 7:
                     result = "OT7: Other Time 7";
                     break;
-
             }
             return result;
         }

@@ -94,5 +94,7 @@ namespace eTimeTrack.ViewModels
 
         public int Timecodes { get; set; }
 
+        public string TimecodesName { get; set; }
+
     }
 }

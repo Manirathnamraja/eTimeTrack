@@ -15,6 +15,8 @@ namespace eTimeTrack.ViewModels
     public class OpenEmployeeTimesheet
     {
         public EmployeeTimesheet EmployeeTimesheet { get; set; }
+        public List<EmployeeTimesheetItem> EmployeeTimesheetItem { get; set; }
+
         public bool Open { get; set; }
     }
 }

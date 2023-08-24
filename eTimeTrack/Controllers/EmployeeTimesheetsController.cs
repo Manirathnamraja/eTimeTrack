@@ -49,6 +49,7 @@ namespace eTimeTrack.Controllers
                 .OrderByDescending(x => x.TimesheetPeriod.StartDate).Select(x => new OpenEmployeeTimesheet { EmployeeTimesheet = x, Open = true })
                 .ToList();
 
+
             ViewBag.InfoMessage = TempData["InfoMessage"];
 
             TimesheetPeriod existingPeriod = GetCurrentTimesheetPeriod();
@@ -61,10 +62,21 @@ namespace eTimeTrack.Controllers
                 CloseUserClosedPeriods(employeeTimesheets);
             }
 
+            //List<EmployeeTimesheetItem> reviewcomment = Db.EmployeeTimesheetItems.Join(Db.EmployeeTimesheets, i => i.TimesheetID, t => t.TimesheetID, (i, t) => i).Distinct().ToList();
+
+            foreach (var item in employeeTimesheets)
+            {
+                List<EmployeeTimesheetItem> reviewcomment = (from t in Db.EmployeeTimesheets
+                                                             join i in Db.EmployeeTimesheetItems on t.TimesheetID equals i.TimesheetID
+                                                             where i.TimesheetID == item.EmployeeTimesheet.TimesheetID
+                                                             select i).ToList();
+                item.EmployeeTimesheetItem = reviewcomment;
+            }
+
             return View("Index", new EmployeeTimesheetIndexViewModel
             {
                 Employee = UserHelpers.GetCurrentUser(),
-                EmployeeTimesheets = employeeTimesheets
+                EmployeeTimesheets = employeeTimesheets,
             });
         }
 
@@ -279,7 +291,7 @@ namespace eTimeTrack.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(EmployeeTimesheet employeeTimesheet, int? timesheetPeriodDuplicateID = null, bool duplicateHours = false)
         {
-            bool existingFromPeriod =Db.EmployeeTimesheets.Any(x => x.EmployeeID == employeeTimesheet.EmployeeID && x.TimesheetPeriodID == employeeTimesheet.TimesheetPeriodID);
+            bool existingFromPeriod = Db.EmployeeTimesheets.Any(x => x.EmployeeID == employeeTimesheet.EmployeeID && x.TimesheetPeriodID == employeeTimesheet.TimesheetPeriodID);
 
             if (existingFromPeriod)
             {
@@ -1203,7 +1215,7 @@ namespace eTimeTrack.Controllers
         public JsonResult GetUserTypeDescription(int? employeeId, int? projectId)
         {
             ProjectUserType projectUserType = Db.EmployeeProjects.SingleOrDefault(x => x.EmployeeId == employeeId && x.ProjectId == projectId)?.ProjectUserType;
-            if(projectUserType == null)
+            if (projectUserType == null)
             {
                 return Json(false);
             }
