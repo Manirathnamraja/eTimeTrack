@@ -3,9 +3,7 @@ using eTimeTrack.Helpers;
 using eTimeTrack.Models;
 using eTimeTrack.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace eTimeTrack.Controllers
@@ -86,7 +84,7 @@ namespace eTimeTrack.Controllers
                     item.TimecodesName = timecodename(item.Timecodes);
                 }
             }
-            
+
             return View(new TimesheetApprovalViewModel
             {
                 timesheetApprovaldetails = res
@@ -117,13 +115,26 @@ namespace eTimeTrack.Controllers
         public JsonResult SaveComment(int? id, string comment)
         {
             EmployeeTimesheetItem existingItem = Db.EmployeeTimesheetItems.Find(id);
+            var result = (from i in Db.EmployeeTimesheetItems
+                         join t in Db.EmployeeTimesheets on i.TimesheetID equals t.TimesheetID
+                         join e in Db.Users on t.EmployeeID equals e.Id
+                         where i.TimesheetItemID == id
+                         select new
+                         {
+                             email = e.Email,
+                             lastapprovedby = i.LastApprovedBy
+                         }).FirstOrDefault();
+
+            var emailto = result.email;
+            var sub = "Timesheet Reviewer Comments";
+            var body = "A reviewer has raised a query on your recent eTimeTrack timesheet. The query can be accessed via My Timesheets in eTimeTrack. Please address this as soon as possible.";
             if (existingItem != null)
             {
                 existingItem.Reviewercomments = comment;
                 Db.SaveChanges();
+                EmailHelper.SendEmail(emailto, sub, body);
                 return Json(true);
             }
-
             return Json(false);
         }
 
