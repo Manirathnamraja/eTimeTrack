@@ -44,66 +44,66 @@ else
 
         @foreach (OpenEmployeeTimesheet item in Model.EmployeeTimesheets)
         {
-            string dateRange = item.EmployeeTimesheet.TimesheetPeriod.GetStartEndDates();
+            foreach (var item1 in item.EmployeeTimesheet.TimesheetItems)
+            {
+                string dateRange = item.EmployeeTimesheet.TimesheetPeriod.GetStartEndDates();
 
-            <tr>
-                <td>
-                    @dateRange
-                </td>
-                @foreach (var item1 in item.EmployeeTimesheetItem)
-                {
+                <tr>
+                    <td>
+                        @dateRange
+                    </td>
                     <td>
                         @item1.Reviewercomments
                     </td>
-                }
 
-                @*<td>
-            @{
-                if (item.EmployeeTimesheet.DateApproved == null)
-                {
-                    <span>Not Approved</span>
-                }
-                else
-                {
-                    @Html.DisplayFor(modelItem => item.EmployeeTimesheet.DateApproved)
-                }
-            }
-        </td>*@
+                    @*<td>
+                            @{
+                                if (item.EmployeeTimesheet.DateApproved == null)
+                                {
+                                    <span>Not Approved</span>
+                                }
+                                else
+                                {
+                                    @Html.DisplayFor(modelItem => item.EmployeeTimesheet.DateApproved)
+                                }
+                            }
+                        </td>*@
 
-                <td>
-                    @{
-                        if (item.EmployeeTimesheet.ReconciliationEntries.Any(x => !x.HoursEqual))
-                        {
-                            <span>Hours Discrepency</span>
-                        }
-                    }
-                </td>
-
-                <td>
-                    @{
-                        List<ReconciliationEntry> hoursNotEqual = item.EmployeeTimesheet.ReconciliationEntries.Where(x => !x.HoursEqual).ToList();
-                        if (hoursNotEqual.Any())
-                        {
-                            if (hoursNotEqual.All(x => !string.IsNullOrWhiteSpace(x.EmployeeComment)))
+                    <td>
+                        @{
+                            if (item.EmployeeTimesheet.ReconciliationEntries.Any(x => !x.HoursEqual))
                             {
-                                <span class="glyphicon glyphicon-ok" aria-hidden="true" title="Employee comments associated with all outstanding discrepancies"></span>
+                                <span>Hours Discrepency</span>
                             }
                         }
-                    }
-                </td>
+                    </td>
 
-                <td>
+                    <td>
+                        @{
+                            List<ReconciliationEntry> hoursNotEqual = item.EmployeeTimesheet.ReconciliationEntries.Where(x => !x.HoursEqual).ToList();
+                            if (hoursNotEqual.Any())
+                            {
+                                if (hoursNotEqual.All(x => !string.IsNullOrWhiteSpace(x.EmployeeComment)))
+                                {
+                                    <span class="glyphicon glyphicon-ok" aria-hidden="true" title="Employee comments associated with all outstanding discrepancies"></span>
+                                }
+                            }
+                        }
+                    </td>
 
-                    @if (item.Open)
-                    {
-                        <a href='@Url.Action("Timesheet", "EmployeeTimesheets", new {id = item.EmployeeTimesheet.TimesheetID})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
-                    }
-                </td>
+                    <td>
 
-                <td>
-                    <a href='@Url.Action("Details", "EmployeeTimesheets", new {id = item.EmployeeTimesheet.TimesheetID})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
-                </td>
-            </tr>
+                        @if (item.Open)
+                        {
+                            <a href='@Url.Action("Timesheet", "EmployeeTimesheets", new { id = item.EmployeeTimesheet.TimesheetID })' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                        }
+                    </td>
+
+                    <td>
+                        <a href='@Url.Action("Details", "EmployeeTimesheets", new { id = item.EmployeeTimesheet.TimesheetID })' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+                    </td>
+                </tr>
+            }
         }
 
     </tbody>
