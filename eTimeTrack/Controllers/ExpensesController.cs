@@ -2,6 +2,7 @@
 using eTimeTrack.Helpers;
 using eTimeTrack.Models;
 using eTimeTrack.ViewModels;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,12 +43,28 @@ namespace eTimeTrack.Controllers
                 expensesTypesViewModel.variations = Getvariations(item.ProjectId, item.Description);
 
             }
+
+            ViewBag.InfoMessage = TempData["InfoMessage"];
             return View(new ExpensesTypesViewModel
             {
                 ExpensesTypesDetails = result,
                 Tasks = expensesTypesViewModel.Tasks,
                 variations = expensesTypesViewModel.variations
             }); 
+        }
+
+        [HttpPost]
+        public ActionResult DeleteConfirmed(int? id)
+        {
+            ProjectExpenseType expensesTypes = Db.ProjectExpenseTypes.Where(x => x.ExpenseTypeID == id).FirstOrDefault();
+            if(expensesTypes != null)
+            {
+                Db.ProjectExpenseTypes.Attach(expensesTypes);
+                Db.ProjectExpenseTypes.Remove(expensesTypes);
+                Db.SaveChanges();
+            }
+            TempData["InfoMessage"] = new InfoMessage(InfoMessageType.Success, "Succesfully deleted item");
+            return RedirectToAction("ExpensesTypes");
         }
 
         private SelectList Gettask(int projectId, string name)
