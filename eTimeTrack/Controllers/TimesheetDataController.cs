@@ -100,6 +100,7 @@ namespace eTimeTrack.Controllers
                     ws.Cells[row, col++].Value = "Day 6 Comments";
                     ws.Cells[row, col++].Value = "Day7 Hrs";
                     ws.Cells[row, col++].Value = "Day 7 Comments";
+                    ws.Cells[row, col++].Value = "Total Hours";
                     ws.Cells[row, col++].Value = "Invoice ID";
                     ws.Cells[row, col++].Value = "Comments";
                     ws.Cells[row, col++].Value = "Last Modified By (Name)";
@@ -160,6 +161,7 @@ namespace eTimeTrack.Controllers
                         ws.Cells[row, col++].Value = Entry.employeeTimesheetItem.Day6Comments;
                         ws.Cells[row, col++].Value = Entry.employeeTimesheetItem.Day7Hrs;
                         ws.Cells[row, col++].Value = Entry.employeeTimesheetItem.Day7Comments;
+                        ws.Cells[row, col++].Value = Entry.employeeTimesheetItem.TotalHours();
                         ws.Cells[row, col++].Value = Entry.employeeTimesheetItem.InvoiceID;
                         ws.Cells[row, col++].Value = Entry.employeeTimesheetItem.Comments;
                         ws.Cells[row, col++].Value = Entry.employeeNames.Names;
