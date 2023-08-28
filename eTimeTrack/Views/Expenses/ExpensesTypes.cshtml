@@ -1,0 +1,42 @@
+﻿@using eTimeTrack.Extensions
+@using eTimeTrack.ViewModels
+@model ExpensesTypesViewModel
+
+@{
+    ViewBag.Title = "Expenses Types";
+}
+
+@Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
+
+<table class="table table-striped table-hover data-table" width="100%">
+    <thead>
+        <tr>
+            <th>Expense Type</th>
+            <th>Default Task</th>
+            <th>Default Variation</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @*@foreach (var item in Model.searchWPS)
+        {
+            <tr>
+                <td>@item.TaskNo </td>
+                <td>@item.TaskName </td>
+                <td>@item.VariationNo </td>
+                <td>@item.VariationName </td>
+                <td>@Html.CheckBoxFor(m => item.TaskIsClosed, new { onclick = "return false" })</td>
+                <td>@Html.CheckBoxFor(m => item.VariationIsClosed, new { onclick = "return false" })</td>
+                <td>@Html.CheckBoxFor(m => item.VarItemIsClosed, new { onclick = "return false" })</td>
+            </tr>
+        }*@
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/notify")
+    
+}
