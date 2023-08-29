@@ -1132,6 +1132,7 @@
     <Content Include="Views\TimesheetData\Index.cshtml" />
     <Content Include="Views\TimesheetApproval\Index.cshtml" />
     <Content Include="Views\Expenses\ExpensesTypes.cshtml" />
+    <Content Include="Views\Expenses\CreateEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\ProjectTimesheetPeriods\Assign.cshtml" />

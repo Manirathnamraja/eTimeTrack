@@ -1,0 +1,69 @@
+﻿@using eTimeTrack.Controllers
+@using eTimeTrack.Helpers
+@model eTimeTrack.Models.ProjectExpenseType
+
+@{
+    ViewBag.Title = ViewBag.Source + " Expense Type";
+}
+
+@Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
+@using (Html.BeginForm("CreateEdit", "Expenses", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ExpenseTypeID)
+    @Html.HiddenFor(model => model.ProjectID)
+    @Html.Hidden("Source", (Source)ViewBag.Source)
+
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <label class="control-label col-md-2">Project</label>
+            <div class="col-md-10">
+                <label class="labelFormValue" id="selectedProjectDisplay">@Session["SelectedProjectName"]</label>
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ExpenseType, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ExpenseType, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ExpenseType, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Default Task</label>
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.TaskID, null, "Select", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.TaskID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Default Variation</label>
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.VariationID, null, "Select", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.VariationID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsClosed, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.IsClosed)
+                    @Html.ValidationMessageFor(model => model.IsClosed, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+
+        <div class="pull-right">
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
+
+    </div>
+}
+
+<a href='@Url.Action("ExpensesTypes", "Expenses")' class="btn btn-primary" role="button">Back</a>
+
+

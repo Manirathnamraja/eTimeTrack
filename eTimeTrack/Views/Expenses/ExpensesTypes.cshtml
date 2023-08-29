@@ -11,7 +11,7 @@
 
 @using (Html.BeginForm("Create", "Expenses", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    <input type="submit" id="submit" data-to="@Url.Action("Create", "Expenses")" class="btn btn-primary" value="Create New" />
+    <input type="submit" id="submit"  class="btn btn-primary" value="Create New" />
 }
 <!-- Modal Delete Dialog -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -63,7 +63,7 @@
                     @Html.CheckBox("active", @Model.ExpensesTypesDetails[i].IsClosed, new { data_id = @Model.ExpensesTypesDetails[i].ExpenseTypeID, @class = "activeCheckbox" })
                 </td>
                 <td>
-                    <a href='@Url.Action("Edit", new {type = Model.ExpensesTypesDetails, id = @Model.ExpensesTypesDetails[i].ExpenseTypeID})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                    <a href='@Url.Action("Edit", new {id = @Model.ExpensesTypesDetails[i].ExpenseTypeID})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
                 </td>
                 <td>
                     <button class="btn btn-primary delete" data-id="@Model.ExpensesTypesDetails[i].ExpenseTypeID" role="button"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
