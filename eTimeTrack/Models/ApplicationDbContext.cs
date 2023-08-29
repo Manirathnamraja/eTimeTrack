@@ -93,6 +93,7 @@ namespace eTimeTrack.Models
         public DbSet<UserRatesUpload> UserRatesUploads { get; set; }
 
         public DbSet<ProjectExpenseType> ProjectExpenseTypes { get; set; }
+        public DbSet<ProjectExpensesUpload> ProjectExpensesUploads { get; set; }
 
 
 
