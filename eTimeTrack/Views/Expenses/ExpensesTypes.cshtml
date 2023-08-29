@@ -8,6 +8,11 @@
 
 @Html.Partial("_Banner")
 @Html.Partial("_InfoMessageRender")
+
+@using (Html.BeginForm("Create", "Expenses", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <input type="submit" id="submit" data-to="@Url.Action("Create", "Expenses")" class="btn btn-primary" value="Create New" />
+}
 <!-- Modal Delete Dialog -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
@@ -36,7 +41,9 @@
             <th>Expense Type</th>
             <th>Default Task</th>
             <th>Default Variation</th>
-            <th>Delete</th>
+            <th data-orderable="false">IsClosed</th>
+            <th data-orderable="false">Edit</th>
+            <th data-orderable="false">Delete</th>
         </tr>
     </thead>
     <tbody>
@@ -47,10 +54,16 @@
                     @Model.ExpensesTypesDetails[i].ExpenseType
                 </td>
                 <td>
-                    @Html.DropDownListFor(m => m.ExpensesTypesDetails[i].TaskID, Model.Tasks, new { @class = "form-control" })
+                    @Model.ExpensesTypesDetails[i].Name
                 </td>
                 <td>
-                    @Html.DropDownListFor(model => model.ExpensesTypesDetails[i].VariationID, Model.variations, new { @class = "form-control" })
+                    @Model.ExpensesTypesDetails[i].Description
+                </td>
+                <td>
+                    @Html.CheckBox("active", @Model.ExpensesTypesDetails[i].IsClosed, new { data_id = @Model.ExpensesTypesDetails[i].ExpenseTypeID, @class = "activeCheckbox" })
+                </td>
+                <td>
+                    <a href='@Url.Action("Edit", new {type = Model.ExpensesTypesDetails, id = @Model.ExpensesTypesDetails[i].ExpenseTypeID})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
                 </td>
                 <td>
                     <button class="btn btn-primary delete" data-id="@Model.ExpensesTypesDetails[i].ExpenseTypeID" role="button"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
@@ -62,7 +75,7 @@
 
 <a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>
 
-@section Scripts 
+@section Scripts
 {
     @Scripts.Render("~/bundles/notify")
     <script>

@@ -590,6 +590,18 @@
     <Compile Include="Migrations\202308281051194_ProjectExpenseType.designer.cs">
       <DependentUpon>202308281051194_ProjectExpenseType.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202308290249237_ProjectExpenseType1.cs" />
+    <Compile Include="Migrations\202308290249237_ProjectExpenseType1.designer.cs">
+      <DependentUpon>202308290249237_ProjectExpenseType1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202308290254445_ProjectExpenseType2.cs" />
+    <Compile Include="Migrations\202308290254445_ProjectExpenseType2.designer.cs">
+      <DependentUpon>202308290254445_ProjectExpenseType2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202308290300228_ProjectExpenseType3.cs" />
+    <Compile Include="Migrations\202308290300228_ProjectExpenseType3.designer.cs">
+      <DependentUpon>202308290300228_ProjectExpenseType3.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BulkImportStatus.cs" />
@@ -1264,6 +1276,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202308281051194_ProjectExpenseType.resx">
       <DependentUpon>202308281051194_ProjectExpenseType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202308290249237_ProjectExpenseType1.resx">
+      <DependentUpon>202308290249237_ProjectExpenseType1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202308290254445_ProjectExpenseType2.resx">
+      <DependentUpon>202308290254445_ProjectExpenseType2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202308290300228_ProjectExpenseType3.resx">
+      <DependentUpon>202308290300228_ProjectExpenseType3.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

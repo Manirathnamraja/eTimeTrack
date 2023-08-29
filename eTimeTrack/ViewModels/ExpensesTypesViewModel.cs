@@ -10,8 +10,6 @@ namespace eTimeTrack.ViewModels
     public class ExpensesTypesViewModel
     {
         public List<ExpensesTypes> ExpensesTypesDetails { get; set; }
-        public SelectList Tasks { get; set; }
-        public SelectList variations { get; set; }
     }
 
     public class ExpensesTypes
@@ -23,6 +21,7 @@ namespace eTimeTrack.ViewModels
         public string Name { get; set; }
         public int VariationID { get; set; }
         public string Description { get; set; }
+        public bool IsClosed { get; set; }
 
     }
 }

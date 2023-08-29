@@ -20,7 +20,6 @@ namespace eTimeTrack.Controllers
         {
             int selectedProject = (int?)Session?["SelectedProject"] ?? 0;
             if (selectedProject == 0) { return InvokeHttp404(HttpContext); }
-            ExpensesTypesViewModel expensesTypesViewModel = new ExpensesTypesViewModel();
             var result = (from e in Db.ProjectExpenseTypes
                          join t in Db.ProjectTasks on e.TaskID equals t.TaskID
                          join v in Db.ProjectVariations on e.VariationID equals v.VariationID
@@ -33,23 +32,14 @@ namespace eTimeTrack.Controllers
                              VariationID = e.VariationID,
                              Name = t.Name,
                              Description = v.Description,
-                             ProjectId = t.ProjectID
+                             ProjectId = t.ProjectID,
+                             IsClosed = e.IsClosed
                          }).ToList();
-
-            // SetViewbag(result);
-            foreach (var item in result)
-            {
-                expensesTypesViewModel.Tasks = Gettask(item.ProjectId, item.Name);
-                expensesTypesViewModel.variations = Getvariations(item.ProjectId, item.Description);
-
-            }
 
             ViewBag.InfoMessage = TempData["InfoMessage"];
             return View(new ExpensesTypesViewModel
             {
-                ExpensesTypesDetails = result,
-                Tasks = expensesTypesViewModel.Tasks,
-                variations = expensesTypesViewModel.variations
+                ExpensesTypesDetails = result
             }); 
         }
 
