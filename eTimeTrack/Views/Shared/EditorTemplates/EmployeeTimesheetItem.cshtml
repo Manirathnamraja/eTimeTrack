@@ -87,9 +87,10 @@
         </td>
     }
     <td style="padding-left:32px">
-            <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.Reviewercomments">
-                <i class='glyphicon glyphicon-info-sign'></i>
-            </a>
+        @Html.HiddenFor(model => model.Reviewercomments)
+        <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.Reviewercomments">
+            <i class='glyphicon glyphicon-info-sign'></i>
+        </a>
     </td>
 </tr>
 
