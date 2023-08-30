@@ -27,6 +27,7 @@ namespace eTimeTrack.Controllers
                 ProjectList = GenerateDropdownUserProjects(),
                 CompanyList = GetCompany()
             };
+            ViewBag.InfoMessage = TempData["Infomessage"];
             return View(viewModel);
         }
 
