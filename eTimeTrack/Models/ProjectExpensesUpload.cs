@@ -15,13 +15,13 @@ namespace eTimeTrack.Models
 
         public int CompanyId { get; set; }
 
-        public int? InvoiceNumber { get; set; }
+        public string InvoiceNumber { get; set; }
 
         [Display(Name = "Transaction ID")]
         public string TransactionID { get; set; }
         [Required]
         [Display(Name = "Expense Date")]
-        public DateTime ExpenseDate { get; set; }
+        public string ExpenseDate { get; set; }
         [Display(Name = "Costed In Week Ending")]
         public string CostedInWeekEnding { get; set; }
         [Required]

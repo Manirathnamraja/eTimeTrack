@@ -18,7 +18,7 @@ namespace eTimeTrack.ViewModels
         public int CompanyId { get; set; }
 
         [Display(Name = "Invoice Number")]
-        public int? InvoiceNumber { get; set; }
+        public string InvoiceNumber { get; set; }
 
         [Display(Name = "Transaction ID")]
         public string TransactionID { get; set; }
