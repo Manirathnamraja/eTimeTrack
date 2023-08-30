@@ -16,8 +16,22 @@ namespace eTimeTrack.Controllers
         [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
         public ActionResult Index()
         {
-            ExpensesUploadViewModel viewModel = new ExpensesUploadViewModel { ProjectList = GenerateDropdownUserProjects() };
+            ExpensesUploadViewModel viewModel = new ExpensesUploadViewModel 
+            { 
+                ProjectList = GenerateDropdownUserProjects(),
+                CompanyList = GetCompany()
+            };
             return View(viewModel);
+        }
+
+        private SelectList GetCompany()
+        {
+            return new SelectList(Getcompanydetails(), "Company_Id", "Company_Name", 1);
+        }
+        private List<Company> Getcompanydetails()
+        {
+            List<Company> company = Db.Companies.Join(Db.ProjectCompanies, c => c.Company_Id, p => p.CompanyId, (c, p) => c).Distinct().ToList();
+            return company;
         }
     }
 }

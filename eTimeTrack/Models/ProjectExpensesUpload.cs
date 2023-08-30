@@ -12,6 +12,11 @@ namespace eTimeTrack.Models
         public int ExpenseUploadID { get; set; }
         [Display(Name = "Project")]
         public int ProjectId { get; set; }
+
+        public int CompanyId { get; set; }
+
+        public int? InvoiceNumber { get; set; }
+
         [Display(Name = "Transaction ID")]
         public string TransactionID { get; set; }
         [Required]
