@@ -44,8 +44,7 @@ else
 
         @foreach (OpenEmployeeTimesheet item in Model.EmployeeTimesheets)
         {
-            foreach (var item1 in item.EmployeeTimesheet.TimesheetItems)
-            {
+           
                 string dateRange = item.EmployeeTimesheet.TimesheetPeriod.GetStartEndDates();
 
                 <tr>
@@ -53,7 +52,10 @@ else
                         @dateRange
                     </td>
                     <td>
-                        @item1.Reviewercomments
+                        @foreach (var item1 in item.EmployeeTimesheet.TimesheetItems)
+                        {
+                            @item1.Reviewercomments
+                        }
                     </td>
 
                     @*<td>
@@ -103,7 +105,7 @@ else
                         <a href='@Url.Action("Details", "EmployeeTimesheets", new { id = item.EmployeeTimesheet.TimesheetID })' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
                     </td>
                 </tr>
-            }
+            
         }
 
     </tbody>
