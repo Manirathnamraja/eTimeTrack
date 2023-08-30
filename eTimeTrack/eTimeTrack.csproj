@@ -392,6 +392,8 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CompaniesController.cs" />
     <Compile Include="Controllers\BaseEmployeesController.cs" />
+    <Compile Include="Controllers\ExpensesController.cs" />
+    <Compile Include="Controllers\ExpensesUploadController.cs" />
     <Compile Include="Controllers\TimesheetApprovalController.cs" />
     <Compile Include="Controllers\SearchWBSController.cs" />
     <Compile Include="Controllers\TimesheetDataController.cs" />
@@ -585,10 +587,40 @@
     <Compile Include="Migrations\202308171610401_EmployeeTimesheetItems.designer.cs">
       <DependentUpon>202308171610401_EmployeeTimesheetItems.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202308281051194_ProjectExpenseType.cs" />
+    <Compile Include="Migrations\202308281051194_ProjectExpenseType.designer.cs">
+      <DependentUpon>202308281051194_ProjectExpenseType.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202308290249237_ProjectExpenseType1.cs" />
+    <Compile Include="Migrations\202308290249237_ProjectExpenseType1.designer.cs">
+      <DependentUpon>202308290249237_ProjectExpenseType1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202308290254445_ProjectExpenseType2.cs" />
+    <Compile Include="Migrations\202308290254445_ProjectExpenseType2.designer.cs">
+      <DependentUpon>202308290254445_ProjectExpenseType2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202308290300228_ProjectExpenseType3.cs" />
+    <Compile Include="Migrations\202308290300228_ProjectExpenseType3.designer.cs">
+      <DependentUpon>202308290300228_ProjectExpenseType3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202308291408397_ProjectExpensesUpload.cs" />
+    <Compile Include="Migrations\202308291408397_ProjectExpensesUpload.designer.cs">
+      <DependentUpon>202308291408397_ProjectExpensesUpload.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202308291412370_ProjectExpensesUpload1.cs" />
+    <Compile Include="Migrations\202308291412370_ProjectExpensesUpload1.designer.cs">
+      <DependentUpon>202308291412370_ProjectExpensesUpload1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202308291443105_ProjectExpensesUpload2.cs" />
+    <Compile Include="Migrations\202308291443105_ProjectExpensesUpload2.designer.cs">
+      <DependentUpon>202308291443105_ProjectExpensesUpload2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BulkImportStatus.cs" />
     <Compile Include="Models\AECOMUserClassification.cs" />
+    <Compile Include="Models\ProjectExpensesUpload.cs" />
+    <Compile Include="Models\ProjectExpenseType.cs" />
     <Compile Include="Models\UserRatesUpload.cs" />
     <Compile Include="Models\UserRate.cs" />
     <Compile Include="Models\ProjectUserClassification.cs" />
@@ -609,6 +641,8 @@
     <Compile Include="Models\ProjectTimesheetPeriod.cs" />
     <Compile Include="Models\ProjectUserType.cs" />
     <Compile Include="Models\UserType.cs" />
+    <Compile Include="ViewModels\ExpensesTypesViewModel.cs" />
+    <Compile Include="ViewModels\ExpensesUploadViewModel.cs" />
     <Compile Include="ViewModels\ExportTimesheetDataViewModel.cs" />
     <Compile Include="ViewModels\SearchWBSViewModel.cs" />
     <Compile Include="ViewModels\TimesheetApprovalViewModel.cs" />
@@ -1112,6 +1146,9 @@
     <Content Include="Views\SearchWBS\Index.cshtml" />
     <Content Include="Views\TimesheetData\Index.cshtml" />
     <Content Include="Views\TimesheetApproval\Index.cshtml" />
+    <Content Include="Views\Expenses\ExpensesTypes.cshtml" />
+    <Content Include="Views\Expenses\CreateEdit.cshtml" />
+    <Content Include="Views\ExpensesUpload\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\ProjectTimesheetPeriods\Assign.cshtml" />
@@ -1253,6 +1290,27 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202308171610401_EmployeeTimesheetItems.resx">
       <DependentUpon>202308171610401_EmployeeTimesheetItems.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202308281051194_ProjectExpenseType.resx">
+      <DependentUpon>202308281051194_ProjectExpenseType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202308290249237_ProjectExpenseType1.resx">
+      <DependentUpon>202308290249237_ProjectExpenseType1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202308290254445_ProjectExpenseType2.resx">
+      <DependentUpon>202308290254445_ProjectExpenseType2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202308290300228_ProjectExpenseType3.resx">
+      <DependentUpon>202308290300228_ProjectExpenseType3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202308291408397_ProjectExpensesUpload.resx">
+      <DependentUpon>202308291408397_ProjectExpensesUpload.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202308291412370_ProjectExpensesUpload1.resx">
+      <DependentUpon>202308291412370_ProjectExpensesUpload1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202308291443105_ProjectExpensesUpload2.resx">
+      <DependentUpon>202308291443105_ProjectExpensesUpload2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

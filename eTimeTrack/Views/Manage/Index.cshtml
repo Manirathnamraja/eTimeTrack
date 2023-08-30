@@ -160,6 +160,20 @@
         if (User.IsUserPlusOrAbove())
         {
             <dl class="dl-horizontal">
+                <dt>Expenses:</dt>
+                <dd>
+                    @Html.ActionLink("Expenses Types", "ExpensesTypes", "Expenses")
+                </dd>
+                <dd>
+                    @Html.ActionLink("Expenses Upload", "Index", "ExpensesUpload")
+                </dd>
+            </dl>
+
+        }
+
+        if (User.IsUserPlusOrAbove())
+        {
+            <dl class="dl-horizontal">
                 <dt>Reports:</dt>
                 <dd>
                     @Html.ActionLink("Timesheet Data", "Index", "TimesheetData")
