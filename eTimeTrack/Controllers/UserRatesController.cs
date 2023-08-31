@@ -208,20 +208,27 @@ namespace eTimeTrack.Controllers
                             //getting startDate and EndDate
                             string sDate = ws.Cells[i, startDateColumn].Value?.ToString()?.Trim();
                             double date = 0;
-                            if (!string.IsNullOrEmpty(sDate))
+                            if (!CheckDate(sDate))
                             {
-                               DateTime date3 =  Convert.ToDateTime(sDate);
-                               date = date3.ToOADate();
+                                date = string.IsNullOrEmpty(sDate) ? 0 : double.Parse(sDate);
                             }
-
+                            else
+                            {
+                                DateTime date3 = Convert.ToDateTime(sDate);
+                                date = date3.ToOADate();
+                            }
                             DateTime? startdate = (date == 0) ? (DateTime?)null : Convert.ToDateTime(DateTime.FromOADate(date).ToString("MMMM dd, yyyy"));
 
                             string eDate = ws.Cells[i, endDateColumn].Value?.ToString()?.Trim();
                             double date2 = 0;
-                            if (!string.IsNullOrEmpty(eDate))
+                            if (!CheckDate(eDate))
                             {
-                                DateTime datee = Convert.ToDateTime(eDate);
-                                date2 = datee.ToOADate();
+                                date2 = string.IsNullOrEmpty(eDate) ? 0 : double.Parse(eDate);
+                            }
+                            else
+                            {
+                                DateTime date3 = Convert.ToDateTime(eDate);
+                                date2 = date3.ToOADate();
                             }
                             DateTime? endDate = (date2 == 0) ? (DateTime?)null : Convert.ToDateTime(DateTime.FromOADate(date2).ToString("MMMM dd, yyyy"));
 
@@ -322,6 +329,18 @@ namespace eTimeTrack.Controllers
 
         }
 
+        private bool CheckDate(string date)
+        {
+            try
+            {
+                DateTime dt = DateTime.Parse(date);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public string ParseBool(string input)
         {
             if (!string.IsNullOrEmpty(input))

@@ -14,6 +14,7 @@ using Elmah.ContentSyndication;
 using OfficeOpenXml;
 using System.Globalization;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
+using System.Text.RegularExpressions;
 
 namespace eTimeTrack.Controllers
 {
@@ -135,6 +136,13 @@ namespace eTimeTrack.Controllers
                                 break;
                             }
                             var transactionIDdetails = ws.Cells[i, transactionID].Text?.Trim();
+                            string exDate = ws.Cells[i, expenseItemDate].Value?.ToString()?.Trim();
+                            var ischeckexdate = CheckDate(exDate);
+                            DateTime expenDate = !ischeckexdate ? DateTime.FromOADate(Convert.ToDouble(exDate)) : Convert.ToDateTime(exDate);
+
+                            string costDate = ws.Cells[i, costedInWeekEnding].Value?.ToString()?.Trim();
+                            var ischeckcostdate = CheckDate(costDate);
+                            DateTime cdate = !ischeckcostdate ? DateTime.FromOADate(Convert.ToDouble(costDate)) : Convert.ToDateTime(costDate);
 
                             bool existexpenses = context.ProjectExpensesUploads.Any(x => x.TransactionID == transactionIDdetails);
                             if (!existexpenses)
@@ -144,8 +152,8 @@ namespace eTimeTrack.Controllers
                                     TransactionID = transactionIDdetails,
                                     ProjectId = model.ProjectId,
                                     CompanyId = model.CompanyId,
-                                    ExpenseDate = expenseItemDate != 0 ? ws.Cells[i, expenseItemDate].Value?.ToString()?.Trim() : null,
-                                    CostedInWeekEnding = costedInWeekEnding != 0 ? ws.Cells[i, costedInWeekEnding].Value?.ToString()?.Trim() : null,
+                                    ExpenseDate = expenDate.ToString(),
+                                    CostedInWeekEnding = cdate.ToString(),
                                     Cost = cost != 0 ? ws.Cells[i, cost].Value?.ToString()?.Trim() : null,
                                     HomeOfficeType = homeOfficeType != 0 ? ws.Cells[i, homeOfficeType].Value?.ToString()?.Trim() : null,
                                     EmployeeSupplierName = employeeSupplierName != 0 ? ws.Cells[i, employeeSupplierName].Value?.ToString()?.Trim() : null,
@@ -181,6 +189,19 @@ namespace eTimeTrack.Controllers
             string emailText = $"<p> Expenses upload completed for project: <em style=\"color:darkblue\"> {projectName} </em>. </p><ul><li>Total Rows in file: {rowsCount}</li><li style=\"color:darkred\">Invalid Rows: {invalidRowsEmpty}</li><li style=\"color:darkgreen\">Inserted Rows: {insertedRows}</li><li style=\"color:orangered\">Duplicate Rows: {duplicateRows}</li></ul>";
 
             EmailHelper.SendEmail(email, $"eTimeTrack Expenses uploads succeeded for {projectName}", emailText);
+        }
+
+        private bool CheckDate(string date)
+        {
+            try
+            {
+                DateTime dt = DateTime.Parse(date);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public static int ColumnNumber(string colAddress)
