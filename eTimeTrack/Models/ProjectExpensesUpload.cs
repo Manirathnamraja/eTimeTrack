@@ -12,11 +12,16 @@ namespace eTimeTrack.Models
         public int ExpenseUploadID { get; set; }
         [Display(Name = "Project")]
         public int ProjectId { get; set; }
+
+        public int CompanyId { get; set; }
+
+        public string InvoiceNumber { get; set; }
+
         [Display(Name = "Transaction ID")]
         public string TransactionID { get; set; }
         [Required]
         [Display(Name = "Expense Date")]
-        public DateTime ExpenseDate { get; set; }
+        public string ExpenseDate { get; set; }
         [Display(Name = "Costed In Week Ending")]
         public string CostedInWeekEnding { get; set; }
         [Required]

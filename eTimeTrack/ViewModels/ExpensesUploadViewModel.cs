@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using eTimeTrack.Extensions;
+using System;
 using System.ComponentModel.DataAnnotations;
-using eTimeTrack.Extensions;
+using System.Web;
 using System.Web.Mvc;
 
 namespace eTimeTrack.ViewModels
@@ -16,12 +14,18 @@ namespace eTimeTrack.ViewModels
         [Display(Name = "Project")]
         public int ProjectId { get; set; }
 
+        [Display(Name = "Company")]
+        public int CompanyId { get; set; }
+
+        [Display(Name = "Invoice Number")]
+        public string InvoiceNumber { get; set; }
+
         [Display(Name = "Transaction ID")]
         public string TransactionID { get; set; }
 
         [Required]
         [Display(Name = "Expense Item Date")]
-        public DateTime ExpenseDate { get; set; } = DateTime.Now;
+        public string ExpenseDate { get; set; } 
 
         [Display(Name = "Costed In Week Ending")]
         public string CostedInWeekEnding { get; set; }
@@ -36,6 +40,7 @@ namespace eTimeTrack.ViewModels
         [Display(Name = "Employee Supplier Name")]
         public string EmployeeSupplierName { get; set; }
 
+        [Display(Name = "Identifier")]
         public string UOM { get; set; }
 
         [Display(Name = "Expenditure Comment")]
@@ -52,5 +57,6 @@ namespace eTimeTrack.ViewModels
         public HttpPostedFileBase file { get; set; }
 
         public SelectList ProjectList { get; set; }
+        public SelectList CompanyList { get; set; }
     }
 }

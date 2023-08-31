@@ -14,13 +14,22 @@
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
+        <div class="alert alert-info">
+            <b>Note: </b>eTimeTrack will upload data from the first worksheet in the data source (XL) file and must include all inception to date data. Any previously uploaded data that is now not included in the import file for the company will be deleted. Please ensure there are no gap rows in the data as the process will stop at the first break in data.
+        </div>
         <div class="form-group">
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="form-group">
-                <label for="ProjectID">Project</label>
+                @Html.LabelFor(model => model.ProjectId, new { @class = "control-label col-md-2 required" })
                 @Html.DropDownListFor(model => model.ProjectId, Model.ProjectList, "Select", new { id = "ProjectSelector", @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.ProjectId, "", new { @class = "text-danger" })
             </div>
             <div class="form-group">
+                @Html.LabelFor(model => model.CompanyId, new { @class = "control-label col-md-2 required" })
+                @Html.DropDownListFor(model => model.CompanyId, Model.CompanyList, "Select", new { id = "CompanySelector", @class = "form-control", required = true })
+                @Html.ValidationMessageFor(m => m.CompanyId, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group" style="padding-left:100px">
                 <label class="control-label">
                     Select XLSX file
                 </label>
@@ -39,7 +48,7 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.ExpenseDate, new { @class = "control-label col-md-2 required" })
                     <div class="col-md-10">
-                        @Html.EditorFor(model => model.ExpenseDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                        @Html.EditorFor(model => model.ExpenseDate, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(m => m.ExpenseDate, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -68,6 +77,14 @@
                     </div>
                 </div>
 
+                <div class="form-group">
+                    @Html.LabelFor(model => model.InvoiceNumber, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10" style="margin-top: 15px">
+                        @Html.EditorFor(model => model.InvoiceNumber, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.InvoiceNumber, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
 
                 <div class="form-group">
                     @Html.LabelFor(model => model.EmployeeSupplierName, new { @class = "control-label col-md-2 required" })
@@ -77,24 +94,40 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(model => model.UOM, new { @class = "control-label col-md-2" })
-                    <div class="col-md-10" style="margin-top: 15px">
-                        @Html.EditorFor(model => model.UOM, new { htmlAttributes = new { @class = "form-control" } })
+                    <div class="col-md-2" style="text-align: right;">
+                        <label class="control-label custom-label-with-info">
+                            Identifier Column
+                            <a class='tool-tip tool-tip-indent' data-toggle="tooltip" data-placement="right" title="Optional column - used to filter out rows that are not actual Expenses from the import.">
+                                <i class='glyphicon glyphicon-info-sign'></i>
+                            </a>
+                        </label>
+                    </div>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.UOM, new { htmlAttributes = new { @class = "form-control", id = "type-identifier-column-input" } })
                         @Html.ValidationMessageFor(m => m.UOM, "", new { @class = "text-danger" })
                     </div>
                 </div>
+
+                <div class="form-group" id="identifier-text-group" style="@(string.IsNullOrWhiteSpace(Model.UOM) ? "display: none;" : null)">
+                    <div class="col-md-2" style="text-align: right;">
+                        <label class="control-label custom-label-with-info">
+                            Identifier Values
+                            <a class='tool-tip tool-tip-indent' data-toggle="tooltip" data-placement="right" title="This is a semi-colon separated list of identifier values that are used to determine which rows to include. For example, a text value entered of 'Normal hours;Overtime hours' will include all rows that have either 'Normal hours' or 'Overtime hours' in the Identifier column and exclude all else from importing. Note that the values require exact matches but will not be compared in a case sensitive manner.">
+                                <i class='glyphicon glyphicon-info-sign'></i>
+                            </a>
+                        </label>
+                    </div>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.UOM, new { htmlAttributes = new { @class = "form-control required" } })
+                        @Html.ValidationMessageFor(m => m.UOM, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
                 <div class="form-group">
                     @Html.LabelFor(model => model.ExpenditureComment, new { @class = "control-label col-md-2" })
                     <div class="col-md-10" style="margin-top: 15px">
                         @Html.EditorFor(model => model.ExpenditureComment, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(m => m.ExpenditureComment, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(model => model.ProjectComment, new { @class = "control-label col-md-2" })
-                    <div class="col-md-10" style="margin-top: 15px">
-                        @Html.EditorFor(model => model.ProjectComment, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(m => m.ProjectComment, "", new { @class = "text-danger" })
                     </div>
                 </div>
             </div>
@@ -118,6 +151,28 @@
             $('input[type=file]').change(function () {
                 $('#expensesupload-details-container').show();
 
+            });
+
+            function showIdentifierText() {
+                var identiferText = $('#identifier-text-group');
+                identiferText.show();
+            }
+
+            function hideIdentifierText() {
+                var identiferText = $('#identifier-text-group');
+                identiferText.hide();
+            }
+
+            //$('#type-identifier-column-input').change(function () {
+            $('#type-identifier-column-input').on('input', function () {
+
+                var val = $(this).val();
+                console.log('change', val);
+                if (val) {
+                    showIdentifierText();
+                } else {
+                    hideIdentifierText();
+                }
             });
 
         });

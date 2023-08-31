@@ -7,6 +7,13 @@ using eTimeTrack.Helpers;
 using eTimeTrack.Models;
 using eTimeTrack.ViewModels;
 using System.Data.Entity;
+using System.IO;
+using System.Web.Hosting;
+using System.Threading.Tasks;
+using Elmah.ContentSyndication;
+using OfficeOpenXml;
+using System.Globalization;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 
 namespace eTimeTrack.Controllers
 {
@@ -16,8 +23,195 @@ namespace eTimeTrack.Controllers
         [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
         public ActionResult Index()
         {
-            ExpensesUploadViewModel viewModel = new ExpensesUploadViewModel { ProjectList = GenerateDropdownUserProjects() };
+            ExpensesUploadViewModel viewModel = new ExpensesUploadViewModel
+            {
+                ProjectList = GenerateDropdownUserProjects(),
+                CompanyList = GetCompany()
+            };
+            ViewBag.InfoMessage = TempData["Infomessage"];
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult ImportExpensesTemplates(ExpensesUploadViewModel model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return InvokeHttp404(HttpContext);
+                }
+                model.ProjectList = GenerateDropdownUserProjects();
+                var projectName = Db.Projects.Find(model.ProjectId).Name;
+                ValidateExcelFileImportBasic(model.file);
+                string targetFolder = Server.MapPath("~/Content/Upload");
+                string targetPath = Path.Combine(targetFolder, model.file.FileName);
+                model.file.SaveAs(targetPath);
+                ProjectExpensesUpload projectExpensesUpload = new ProjectExpensesUpload()
+                {
+                    ProjectId = model.ProjectId,
+                    CompanyId = model.CompanyId,
+                    TransactionID = model.TransactionID,
+                    ExpenseDate = model.ExpenseDate,
+                    CostedInWeekEnding = model.CostedInWeekEnding,
+                    Cost = model.Cost,
+                    HomeOfficeType = model.HomeOfficeType,
+                    EmployeeSupplierName = model.EmployeeSupplierName,
+                    UOM = model.UOM,
+                    ExpenditureComment = model.ExpenditureComment,
+                    ProjectComment = model.ProjectComment,
+                    InvoiceNumber = model.InvoiceNumber,
+                    AddedBy = UserHelpers.GetCurrentUserId(),
+                    AddedDate = DateTime.UtcNow
+                };
+
+                Db.ProjectExpensesUploads.Add(projectExpensesUpload);
+                Db.SaveChanges();
+                Employee user = UserHelpers.GetCurrentUser();
+                HostingEnvironment.QueueBackgroundWorkItem(ct => ProcessXLSFile(model, user.Id, user.Email, projectName));
+                TempData["InfoMessage"] = new InfoMessage { MessageContent = "The upload process will run in the background. You will receive an email notification when complete.", MessageType = InfoMessageType.Success };
+                ViewBag.InfoMessage = TempData["Infomessage"];
+            }
+            catch (Exception ex)
+            {
+                TempData["InfoMessage"] = new InfoMessage
+                {
+                    MessageContent = "Error: could not import Expenses Upload data: " + ex.Message,
+                    MessageType = InfoMessageType.Failure
+                };
+                ViewBag.InfoMessage = TempData["InfoMessage"];
+            }
+            return RedirectToAction("Index");
+        }
+
+        private async Task ProcessXLSFile(ExpensesUploadViewModel model, int userId, string email, string projectName)
+        {
+            int invalidRowsEmpty = 0;
+            int insertedRows = 0;
+            int rowsCount = 0;
+            int duplicateRows = 0;
+            List<List<int>> invalidRowsNoLinkRowNumbers = new List<List<int>>();
+            ApplicationDbContext context = new ApplicationDbContext();
+            try
+            {
+                #region Column Number methods
+                int transactionID = ColumnNumber(model.TransactionID);
+                int expenseItemDate = ColumnNumber(model.ExpenseDate);
+                int costedInWeekEnding = ColumnNumber(model.CostedInWeekEnding);
+                int cost = ColumnNumber(model.Cost);
+                int homeOfficeType = ColumnNumber(model.HomeOfficeType);
+                int employeeSupplierName = ColumnNumber(model.EmployeeSupplierName);
+                int identifier = ColumnNumber(model.UOM);
+                int expenditureComment = ColumnNumber(model.ExpenditureComment);
+                int invoiceNumber = ColumnNumber(model.InvoiceNumber);
+                #endregion
+
+                byte[] fileData;
+                using (MemoryStream target = new MemoryStream())
+                {
+                    model.file.InputStream.CopyTo(target);
+                    fileData = target.ToArray();
+                }
+                List<ProjectExpensesUpload> expensesUpload = new List<ProjectExpensesUpload>();
+                List<ProjectExpensesUpload> duplicateexpensesUpload = new List<ProjectExpensesUpload>();
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    stream.Write(fileData, 0, fileData.Length);
+                    using (ExcelPackage package = new ExcelPackage(stream))
+                    {
+                        ExcelWorksheet ws = package.Workbook.Worksheets[1];
+                        rowsCount = ws.Dimension.Rows - 1;
+                        int colsCount = ws.Dimension.Columns;
+
+                        for (int i = 2; i < int.MaxValue; i++) // skip header row
+                        {
+                            if (string.IsNullOrWhiteSpace(ws.Cells[i, 1].Text))
+                            {
+                                if (!string.IsNullOrWhiteSpace(ws.Cells[i + 1, 1].Text) || !string.IsNullOrWhiteSpace(ws.Cells[i + 2, 1].Text))
+                                {
+                                    continue;
+                                }
+                                break;
+                            }
+                            var transactionIDdetails = ws.Cells[i, transactionID].Text?.Trim();
+
+                            bool existexpenses = context.ProjectExpensesUploads.Any(x => x.TransactionID == transactionIDdetails);
+                            if (!existexpenses)
+                            {
+                                ProjectExpensesUpload expenses = new ProjectExpensesUpload
+                                {
+                                    TransactionID = transactionIDdetails,
+                                    ProjectId = model.ProjectId,
+                                    CompanyId = model.CompanyId,
+                                    ExpenseDate = expenseItemDate != 0 ? ws.Cells[i, expenseItemDate].Value?.ToString()?.Trim() : null,
+                                    CostedInWeekEnding = costedInWeekEnding != 0 ? ws.Cells[i, costedInWeekEnding].Value?.ToString()?.Trim() : null,
+                                    Cost = cost != 0 ? ws.Cells[i, cost].Value?.ToString()?.Trim() : null,
+                                    HomeOfficeType = homeOfficeType != 0 ? ws.Cells[i, homeOfficeType].Value?.ToString()?.Trim() : null,
+                                    EmployeeSupplierName = employeeSupplierName != 0 ? ws.Cells[i, employeeSupplierName].Value?.ToString()?.Trim() : null,
+                                    UOM = identifier != 0 ? ws.Cells[i, identifier].Value?.ToString()?.Trim() : null,
+                                    ExpenditureComment = expenditureComment != 0 ? ws.Cells[i, expenditureComment].Value?.ToString()?.Trim() : null,
+                                    InvoiceNumber = invoiceNumber != 0 ? ws.Cells[i, invoiceNumber].Value?.ToString()?.Trim() : null,
+                                    AddedBy = userId,
+                                    AddedDate = DateTime.UtcNow
+                                };
+                                expensesUpload.Add(expenses);
+                                context.ProjectExpensesUploads.Add(expenses);
+                                await context.SaveChangesAsync();
+                                insertedRows++;
+                            }
+                            else
+                            {
+                                duplicateRows++;
+                            }
+
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                EmailHelper.SendEmail(email, $"eTimeTrack Expenses uploads failed for {projectName}", "Error: could not upload Expenses data: " + e.Message + ". Please contact an administrator for assistance.");
+                TempData["InfoMessage"] = new InfoMessage
+                {
+                    MessageContent = "Error: could not import user rates data: " + e.Message,
+                    MessageType = InfoMessageType.Failure
+                };
+            }
+            string emailText = $"<p> Expenses upload completed for project: <em style=\"color:darkblue\"> {projectName} </em>. </p><ul><li>Total Rows in file: {rowsCount}</li><li style=\"color:darkred\">Invalid Rows: {invalidRowsEmpty}</li><li style=\"color:darkgreen\">Inserted Rows: {insertedRows}</li><li style=\"color:orangered\">Duplicate Rows: {duplicateRows}</li></ul>";
+
+            EmailHelper.SendEmail(email, $"eTimeTrack Expenses uploads succeeded for {projectName}", emailText);
+        }
+
+        public static int ColumnNumber(string colAddress)
+        {
+            if (colAddress == null)
+            {
+                return 0;
+            }
+            string colAddressUpper = colAddress.ToUpper();
+            int[] digits = new int[colAddressUpper.Length];
+            for (int i = 0; i < colAddressUpper.Length; ++i)
+            {
+                digits[i] = Convert.ToInt32(colAddressUpper[i]) - 64;
+            }
+            int mul = 1; int res = 0;
+            for (int pos = digits.Length - 1; pos >= 0; --pos)
+            {
+                res += digits[pos] * mul;
+                mul *= 26;
+            }
+            return res;
+        }
+
+        private SelectList GetCompany()
+        {
+            return new SelectList(Getcompanydetails(), "Company_Id", "Company_Name", 1);
+        }
+        private List<Company> Getcompanydetails()
+        {
+            List<Company> company = Db.Companies.Join(Db.ProjectCompanies, c => c.Company_Id, p => p.CompanyId, (c, p) => c).Distinct().ToList();
+            return company;
         }
     }
 }
