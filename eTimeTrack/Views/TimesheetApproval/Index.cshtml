@@ -204,7 +204,7 @@
                 $('[data-toggle="tooltip"]').tooltip();
             });
 
-            $('#UpdateTable').on('draw.dt', function () {
+            $('#UpdateTable').off().on('draw.dt', function () {
                 setupChangeActions();
             });
 
@@ -213,7 +213,7 @@
         });
 
           function setupChangeActions() {
-            $('.tcomment-edit').click(function () {
+              $('.tcomment-edit').off().on('click', function () {
                 var editButton = $(this);
                 var tableCell = editButton.closest('td');
                 var editCommentContainer = tableCell.find('.tedit-comment-container');
@@ -226,7 +226,7 @@
                 editCommentContainer.show();
             });
 
-              $('.tcomment-save').click(function () {
+              $('.tcomment-save').off().on('click', function () {
                 var saveButton = $(this);
                 var tableCell = saveButton.closest('td');
                 var editCommentContainer = tableCell.find('.tedit-comment-container');
