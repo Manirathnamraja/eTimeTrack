@@ -15,6 +15,7 @@ using OfficeOpenXml;
 using System.Globalization;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using System.Text.RegularExpressions;
+using static Spire.Pdf.General.Render.Decode.Jpeg2000.j2k.codestream.HeaderInfo;
 
 namespace eTimeTrack.Controllers
 {
@@ -143,6 +144,29 @@ namespace eTimeTrack.Controllers
                             string costDate = ws.Cells[i, costedInWeekEnding].Value?.ToString()?.Trim();
                             var ischeckcostdate = CheckDate(costDate);
                             DateTime cdate = !ischeckcostdate ? DateTime.FromOADate(Convert.ToDouble(costDate)) : Convert.ToDateTime(costDate);
+                            var idevalues = string.Empty;
+                            var idet = identifier != 0 ? ws.Cells[i, identifier].Value?.ToString()?.Trim() : null;
+                            if (!string.IsNullOrEmpty(model.IdentifierValues) && !string.IsNullOrEmpty(idet))
+                            {
+                                if (model.IdentifierValues.Contains(";"))
+                                {
+                                    string[] values = model.IdentifierValues.Split(';');
+                                    foreach (var v in values)
+                                    {
+                                        if (idet.ToLower().Equals(v.ToLower()))
+                                        {
+                                            idevalues += idet;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (model.IdentifierValues.ToLower().Equals(idet.ToLower()))
+                                    {
+                                        idevalues += idet;
+                                    }
+                                }
+                            }
 
                             bool existexpenses = context.ProjectExpensesUploads.Any(x => x.TransactionID == transactionIDdetails);
                             if (!existexpenses)
@@ -152,12 +176,12 @@ namespace eTimeTrack.Controllers
                                     TransactionID = transactionIDdetails,
                                     ProjectId = model.ProjectId,
                                     CompanyId = model.CompanyId,
-                                    ExpenseDate = expenDate.ToString("yyyy-MM-dd"),
-                                    CostedInWeekEnding = cdate.ToString("yyyy-MM-dd"),
+                                    ExpenseDate = expenDate.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                                    CostedInWeekEnding = cdate.ToString("yyyy-MM-dd HH:mm:ss.fff"),
                                     Cost = cost != 0 ? ws.Cells[i, cost].Value?.ToString()?.Trim() : null,
                                     HomeOfficeType = homeOfficeType != 0 ? ws.Cells[i, homeOfficeType].Value?.ToString()?.Trim() : null,
                                     EmployeeSupplierName = employeeSupplierName != 0 ? ws.Cells[i, employeeSupplierName].Value?.ToString()?.Trim() : null,
-                                    UOM = identifier != 0 ? ws.Cells[i, identifier].Value?.ToString()?.Trim() : null,
+                                    UOM = idevalues,
                                     ExpenditureComment = expenditureComment != 0 ? ws.Cells[i, expenditureComment].Value?.ToString()?.Trim() : null,
                                     InvoiceNumber = invoiceNumber != 0 ? ws.Cells[i, invoiceNumber].Value?.ToString()?.Trim() : null,
                                     AddedBy = userId,

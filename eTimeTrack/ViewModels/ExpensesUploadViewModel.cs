@@ -43,6 +43,8 @@ namespace eTimeTrack.ViewModels
         [Display(Name = "Identifier")]
         public string UOM { get; set; }
 
+        public string IdentifierValues { get; set; }
+
         [Display(Name = "Expenditure Comment")]
         public string ExpenditureComment { get; set; }
 
