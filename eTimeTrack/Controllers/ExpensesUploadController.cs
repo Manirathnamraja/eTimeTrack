@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Elmah.ContentSyndication;
 using OfficeOpenXml;
 using System.Globalization;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 
 namespace eTimeTrack.Controllers
 {
@@ -133,24 +134,7 @@ namespace eTimeTrack.Controllers
                                 }
                                 break;
                             }
-                            CultureInfo provider = CultureInfo.InvariantCulture;
-                            //getting project user classificationId from Text.
-                            //var projectUserClassificationText = ws.Cells[i, projectUserClassificationColumn].Text?.Trim();
-                            //var projectUserClassificationID = context.ProjectUserClassifications.Where(r => r.ProjectClassificationText == projectUserClassificationText).Select(t => t.ProjectUserClassificationId).FirstOrDefault();
-                            ////getting employeeId from employee No.
-                            //var userIdText = ws.Cells[i, userIDColumn].Text?.Trim();
-                            //var employeeId = context.Users.Where(r => r.EmployeeNo == userIdText).Select(t => t.Id).FirstOrDefault();
-                            ////getting startDate and EndDate
-                            //string sDate = ws.Cells[i, startDateColumn].Value?.ToString()?.Trim();
-                            //double date = string.IsNullOrEmpty(sDate) ? 0 : double.Parse(sDate);
-                            //DateTime? startdate = (date == 0) ? (DateTime?)null : Convert.ToDateTime(DateTime.FromOADate(date).ToString("MMMM dd, yyyy"));
-
-                            //string eDate = ws.Cells[i, endDateColumn].Value?.ToString()?.Trim();
-                            //double date2 = string.IsNullOrEmpty(eDate) ? 0 : double.Parse(eDate);
-                            //DateTime? endDate = (date2 == 0) ? (DateTime?)null : Convert.ToDateTime(DateTime.FromOADate(date2).ToString("MMMM dd, yyyy"));
-
-                            //var IsRatesConfirmedBool = ParseBool(ws.Cells[i, ratesConfirmedColumn].Text?.Trim());
-                            var transactionIDdetails = ws.Cells[i, 123].Text?.Trim();
+                            var transactionIDdetails = ws.Cells[i, transactionID].Text?.Trim();
 
                             bool existexpenses = context.ProjectExpensesUploads.Any(x => x.TransactionID == transactionIDdetails);
                             if (!existexpenses)
@@ -168,10 +152,13 @@ namespace eTimeTrack.Controllers
                                     UOM = identifier != 0 ? ws.Cells[i, identifier].Value?.ToString()?.Trim() : null,
                                     ExpenditureComment = expenditureComment != 0 ? ws.Cells[i, expenditureComment].Value?.ToString()?.Trim() : null,
                                     InvoiceNumber = invoiceNumber != 0 ? ws.Cells[i, invoiceNumber].Value?.ToString()?.Trim() : null,
-                                    AddedBy = UserHelpers.GetCurrentUserId(),
+                                    AddedBy = userId,
                                     AddedDate = DateTime.UtcNow
                                 };
                                 expensesUpload.Add(expenses);
+                                context.ProjectExpensesUploads.Add(expenses);
+                                await context.SaveChangesAsync();
+                                insertedRows++;
                             }
                             else
                             {
@@ -184,12 +171,16 @@ namespace eTimeTrack.Controllers
             }
             catch (Exception e)
             {
+                EmailHelper.SendEmail(email, $"eTimeTrack Expenses uploads failed for {projectName}", "Error: could not upload Expenses data: " + e.Message + ". Please contact an administrator for assistance.");
                 TempData["InfoMessage"] = new InfoMessage
                 {
                     MessageContent = "Error: could not import user rates data: " + e.Message,
                     MessageType = InfoMessageType.Failure
                 };
             }
+            string emailText = $"<p> Expenses upload completed for project: <em style=\"color:darkblue\"> {projectName} </em>. </p><ul><li>Total Rows in file: {rowsCount}</li><li style=\"color:darkred\">Invalid Rows: {invalidRowsEmpty}</li><li style=\"color:darkgreen\">Inserted Rows: {insertedRows}</li><li style=\"color:orangered\">Duplicate Rows: {duplicateRows}</li></ul>";
+
+            EmailHelper.SendEmail(email, $"eTimeTrack Expenses uploads succeeded for {projectName}", emailText);
         }
 
         public static int ColumnNumber(string colAddress)
