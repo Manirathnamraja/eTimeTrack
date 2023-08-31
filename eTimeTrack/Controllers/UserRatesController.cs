@@ -207,11 +207,22 @@ namespace eTimeTrack.Controllers
                             var employeeId = context.Users.Where(r => r.EmployeeNo == userIdText).Select(t => t.Id).FirstOrDefault();
                             //getting startDate and EndDate
                             string sDate = ws.Cells[i, startDateColumn].Value?.ToString()?.Trim();
-                            double date = string.IsNullOrEmpty(sDate) ? 0 : double.Parse(sDate);
+                            double date = 0;
+                            if (!string.IsNullOrEmpty(sDate))
+                            {
+                               DateTime date3 =  Convert.ToDateTime(sDate);
+                               date = date3.ToOADate();
+                            }
+
                             DateTime? startdate = (date == 0) ? (DateTime?)null : Convert.ToDateTime(DateTime.FromOADate(date).ToString("MMMM dd, yyyy"));
 
                             string eDate = ws.Cells[i, endDateColumn].Value?.ToString()?.Trim();
-                            double date2 = string.IsNullOrEmpty(eDate) ? 0 : double.Parse(eDate);
+                            double date2 = 0;
+                            if (!string.IsNullOrEmpty(eDate))
+                            {
+                                DateTime datee = Convert.ToDateTime(eDate);
+                                date2 = datee.ToOADate();
+                            }
                             DateTime? endDate = (date2 == 0) ? (DateTime?)null : Convert.ToDateTime(DateTime.FromOADate(date2).ToString("MMMM dd, yyyy"));
 
                             var IsRatesConfirmedBool = ParseBool(ws.Cells[i, ratesConfirmedColumn].Text?.Trim());
