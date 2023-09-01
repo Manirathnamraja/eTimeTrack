@@ -47,6 +47,7 @@ namespace eTimeTrack.Controllers
                                  where t.ProjectID == selectedProject
                                  && e.IsTimeSheetApproval != true
                                  && (t.PM == taskid || g.PM == groupid || p.PM == partid)
+                                 && (e.Day1Hrs > 0 || e.Day2Hrs > 0 || e.Day3Hrs > 0 || e.Day4Hrs > 0 || e.Day5Hrs > 0 || e.Day6Hrs > 0 || e.Day7Hrs > 0)
                                  select new TimesheetApprovaldetails
                                  {
                                      Comments = e.Comments,
