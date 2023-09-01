@@ -148,6 +148,9 @@
                 <dd>
                     @Html.ActionLink("Edit Timesheets", "EditSelect", "EmployeeTimesheets")
                 </dd>
+                <dd>
+                    @Html.ActionLink("Delete Zero Timesheet Items", "Index", "DeleteZeroTimesheetItems")
+                </dd>
                 @if (User.IsUserPlusOrAbove())
                 {
                     <dd>
