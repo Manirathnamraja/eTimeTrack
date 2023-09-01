@@ -94,7 +94,7 @@ namespace eTimeTrack.Models
 
         public DbSet<ProjectExpenseType> ProjectExpenseTypes { get; set; }
         public DbSet<ProjectExpensesUpload> ProjectExpensesUploads { get; set; }
-
+        public DbSet<ProjectExpensesStdDetails> ProjectExpensesStdDetails { get; set; }
 
 
         internal int SaveChangesWithoutLogging()
