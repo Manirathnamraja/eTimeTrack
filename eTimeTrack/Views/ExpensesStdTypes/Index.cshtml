@@ -1,0 +1,69 @@
+﻿@using System.Globalization
+@model eTimeTrack.ViewModels.ExpensesStdTypesViewModel
+
+@{
+    ViewBag.Title = "Expenses Std Types";
+}
+
+@Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
+
+
+@Html.AntiForgeryToken()
+
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+@if (Model.Company != null)
+{
+    <div class="row form-group">
+        <div class="row form-group">
+            <div class="col-md-6">
+                @Html.LabelFor(model => model.Company)
+                @Html.DropDownListFor(model => model.Company,Model.Company, new { id = "SelectedCompanyId", @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Company, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+    </div>
+
+}
+
+<table class="table data-table" width="100%">
+    <thead>
+        <tr>
+            <th>Std Types</th>
+            <th>Company</th>
+            <th>IsActive</th>
+            <th data-orderable="false">Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.expensesStdTypesDetails)
+        {
+            <tr>
+                <td>@item.StdType</td>
+                <td>@item.CompanyName</td>
+                <td>@Html.CheckBox("active", item.IsActive, new { @class = "activeCheckbox" })</td>
+                <td><a href='@Url.Action("Edit", new { id = item.StdTypeID })' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Cancel</a>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/notify")
+    <script>
+        $(document).ready(function () {
+            $('#SelectedCompanyId').change(function () {
+                var selectedID = $('#SelectedCompanyId').val();
+                window.location.href = 'ExpensesStdTypes?Id=' + selectedID;
+           });
+        });
+    </script>
+
+}
+
