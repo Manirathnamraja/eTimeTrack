@@ -4,6 +4,7 @@ using eTimeTrack.Models;
 using eTimeTrack.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -28,23 +29,54 @@ namespace eTimeTrack.Controllers
                               IsActive = e.IsActive,
                               StdTypeID = e.StdTypeID,
                               CompanyName = c.Company_Name
-                          }).ToList();
-
+                          }).OrderByDescending(x => x.StdTypeID).ToList();
+            ViewBag.InfoMessage = TempData["InfoMessage"];
             return View(new ExpensesStdTypesViewModel
             {
                 expensesStdTypesDetails = results
             });
         }
 
-        [HttpPost]
-        public ActionResult ExpensesDetails(int id) 
+        public ActionResult Create()
         {
-            return View();
+            ProjectExpensesStdDetails Expense = new ProjectExpensesStdDetails();
+            ViewBag.CompanyID = GetCompany();
+            ViewBag.Source = Source.Create;
+            return View("CreateEdit", Expense);
         }
 
-        private SelectList GetCompany(string val)
+        public ActionResult edit(int? id)
         {
-            return new SelectList(Getcompanydetails(), "Company_Id", "Company_Name", val);
+            ProjectExpensesStdDetails Expense = Db.ProjectExpensesStdDetails.Find(id);
+            ViewBag.CompanyID = GetCompany();
+            ViewBag.Source = Source.Existing;
+            return View("CreateEdit", Expense);
+        }
+
+
+        [HttpPost]
+        public ActionResult CreateEdit(ProjectExpensesStdDetails projectExpensesStdDetails, Source source)
+        {
+            ProjectExpensesStdDetails existing = Db.ProjectExpensesStdDetails.Find(projectExpensesStdDetails.StdTypeID);
+            projectExpensesStdDetails.LastModifiedBy = UserHelpers.GetCurrentUserId();
+            projectExpensesStdDetails.LastModifiedDate = DateTime.UtcNow;
+            if (existing != null)
+            {
+                Db.Entry(existing).CurrentValues.SetValues(projectExpensesStdDetails);
+                Db.Entry(existing).State = EntityState.Modified;
+            }
+            else
+            {
+                Db.ProjectExpensesStdDetails.Add(projectExpensesStdDetails);
+            }
+            Db.SaveChanges();
+            TempData["InfoMessage"] = new InfoMessage { MessageContent = $"Project Expense Std Type {projectExpensesStdDetails.StdType}  Saved.", MessageType = InfoMessageType.Success };
+            return RedirectToAction("Index");
+        }
+
+        private SelectList GetCompany()
+        {
+            return new SelectList(Getcompanydetails(), "Company_Id", "Company_Name");
         }
 
         private List<Company> Getcompanydetails()
