@@ -10,22 +10,8 @@
 
 
 @Html.AntiForgeryToken()
-
 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-@if (Model.Company != null)
-{
-    <div class="row form-group">
-        <div class="row form-group">
-            <div class="col-md-6">
-                @Html.LabelFor(model => model.Company)
-                @Html.DropDownListFor(model => model.Company,Model.Company, new { id = "SelectedCompanyId", @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Company, "", new { @class = "text-danger" })
 
-            </div>
-        </div>
-    </div>
-
-}
 
 <table class="table data-table" width="100%">
     <thead>
@@ -58,10 +44,7 @@
     @Scripts.Render("~/bundles/notify")
     <script>
         $(document).ready(function () {
-            $('#SelectedCompanyId').change(function () {
-                var selectedID = $('#SelectedCompanyId').val();
-                window.location.href = 'ExpensesStdTypes?Id=' + selectedID;
-           });
+           
         });
     </script>
 

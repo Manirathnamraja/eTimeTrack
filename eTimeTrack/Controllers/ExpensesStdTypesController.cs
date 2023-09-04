@@ -14,46 +14,32 @@ namespace eTimeTrack.Controllers
     public class ExpensesStdTypesController : BaseController
     {
         [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
-        public ActionResult Index(int? id)
+        public ActionResult Index()
         {
             int selectedProject = (int?)Session?["SelectedProject"] ?? 0;
             if (selectedProject == 0) { return InvokeHttp404(HttpContext); }
-            int companyid = id ?? 1;
 
             var results = (from c in Db.Companies
                           join e in Db.ProjectExpensesStdDetails on c.Company_Id equals e.CompanyID
-                          where e.CompanyID == companyid
                           select new ExpensesStdTypesDetails
                           {
                               StdType = e.StdType,
                               CompanyID = e.CompanyID,
                               IsActive = e.IsActive,
-                              StdTypeID = e.StdTypeID
+                              StdTypeID = e.StdTypeID,
+                              CompanyName = c.Company_Name
                           }).ToList();
-
-            var Compvalue = Db.Companies.Where(x => x.Company_Id == companyid).Select(x => x.Company_Name).FirstOrDefault();
 
             return View(new ExpensesStdTypesViewModel
             {
-                Company = GetCompany(Compvalue),
-                expensesStdTypesDetails = results,
+                expensesStdTypesDetails = results
             });
         }
 
         [HttpPost]
         public ActionResult ExpensesDetails(int id) 
         {
-            var results = Db.ProjectExpensesStdDetails.Where(x => x.CompanyID == id).Select( x => new ExpensesStdTypesDetails
-            {
-                StdType = x.StdType,
-                CompanyID = x.CompanyID,
-                IsActive = x.IsActive,
-                StdTypeID = x.StdTypeID
-            }).ToList();
-            return View("Index", new ExpensesStdTypesViewModel
-            {
-                expensesStdTypesDetails = results
-            }); 
+            return View();
         }
 
         private SelectList GetCompany(string val)

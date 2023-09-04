@@ -9,8 +9,6 @@ namespace eTimeTrack.ViewModels
     public class ExpensesStdTypesViewModel
     {
         public List<ExpensesStdTypesDetails> expensesStdTypesDetails { get; set; }
-        public SelectList Company { get; set; }
-        public string CompanyName { get; set; }
     }
 
     public class ExpensesStdTypesDetails
