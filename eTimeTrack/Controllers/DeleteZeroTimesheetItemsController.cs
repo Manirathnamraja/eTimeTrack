@@ -94,16 +94,23 @@ namespace eTimeTrack.Controllers
             });
         }
 
-        public ActionResult DeleteConfirmed(int? id)
+        public ActionResult DeleteConfirmed(List<TimesheetApprovaldetails> timesheetApprovaldetails)
         {
-            var timeSheetItems = Db.EmployeeTimesheetItems.Where(x => x.TimesheetItemID == id).FirstOrDefault();
-            if(timeSheetItems != null)
+            foreach (var item in timesheetApprovaldetails)
             {
-                Db.EmployeeTimesheetItems.Attach(timeSheetItems);
-                Db.EmployeeTimesheetItems.Remove(timeSheetItems);
-                Db.SaveChanges();
+                if(item.IsDeleted == true)
+                {
+                    var timeSheetItems = Db.EmployeeTimesheetItems.Where(x => x.TimesheetItemID == item.TimesheetItemID).FirstOrDefault();
+                    if (timeSheetItems != null)
+                    {
+                        Db.EmployeeTimesheetItems.Attach(timeSheetItems);
+                        Db.EmployeeTimesheetItems.Remove(timeSheetItems);
+                        Db.SaveChanges();
+                    }
+                    TempData["InfoMessage"] = new InfoMessage(InfoMessageType.Success, "Succesfully deleted Zero Timesheet Items");
+                }
             }
-            TempData["InfoMessage"] = new InfoMessage(InfoMessageType.Success, "Succesfully deleted Zero Timesheet Items");
+            
             return RedirectToAction("Index");
         }
 

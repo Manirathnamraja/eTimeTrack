@@ -12,7 +12,6 @@ namespace eTimeTrack.ViewModels
     public class TimesheetApprovalViewModel
     {
         public List<TimesheetApprovaldetails> timesheetApprovaldetails { get; set; }
-
     }
     public class TimesheetApprovaldetails
     {
@@ -95,6 +94,8 @@ namespace eTimeTrack.ViewModels
         public int Timecodes { get; set; }
 
         public string TimecodesName { get; set; }
+
+        public bool IsDeleted { get; set; }
 
     }
 }
