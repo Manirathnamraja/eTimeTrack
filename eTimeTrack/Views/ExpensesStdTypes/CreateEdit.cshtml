@@ -1,17 +1,55 @@
-﻿
+﻿@using eTimeTrack.Controllers
+@using eTimeTrack.Helpers
+@model eTimeTrack.Models.ProjectExpensesStdDetails
+
 @{
-    Layout = null;
+    ViewBag.Title = ViewBag.Source + " Expense Std Type";
 }
 
-<!DOCTYPE html>
+@Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
+@using (Html.BeginForm("CreateEdit", "ExpensesStdTypes", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.StdTypeID)
+    @Html.Hidden("Source", (Source)ViewBag.Source)
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>CreateEdit</title>
-</head>
-<body>
-    <div> 
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.StdType, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.StdType, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.StdType, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Company</label>
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.CompanyID, null, "Select", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.CompanyID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsActive, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.IsActive)
+                    @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+
+        <div class="pull-right">
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
+
     </div>
-</body>
-</html>
+}
+
+<a href='@Url.Action("Index", "ExpensesStdTypes")' class="btn btn-primary" role="button">Back</a>
+
+
