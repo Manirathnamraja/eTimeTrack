@@ -394,6 +394,7 @@
     <Compile Include="Controllers\BaseEmployeesController.cs" />
     <Compile Include="Controllers\DeleteZeroTimesheetItemsController.cs" />
     <Compile Include="Controllers\ExpensesController.cs" />
+    <Compile Include="Controllers\ExpensesMappingController.cs" />
     <Compile Include="Controllers\ExpensesStdTypesController.cs" />
     <Compile Include="Controllers\ExpensesUploadController.cs" />
     <Compile Include="Controllers\TimesheetApprovalController.cs" />
@@ -660,6 +661,7 @@
     <Compile Include="Models\ProjectTimesheetPeriod.cs" />
     <Compile Include="Models\ProjectUserType.cs" />
     <Compile Include="Models\UserType.cs" />
+    <Compile Include="ViewModels\ExpensesMappingViewModel.cs" />
     <Compile Include="ViewModels\ExpensesStdTypesViewModel.cs" />
     <Compile Include="ViewModels\ExpensesTypesViewModel.cs" />
     <Compile Include="ViewModels\ExpensesUploadViewModel.cs" />
@@ -1172,6 +1174,7 @@
     <Content Include="Views\DeleteZeroTimesheetItems\Index.cshtml" />
     <Content Include="Views\ExpensesStdTypes\Index.cshtml" />
     <Content Include="Views\ExpensesStdTypes\CreateEdit.cshtml" />
+    <Content Include="Views\ExpensesMapping\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\ProjectTimesheetPeriods\Assign.cshtml" />
