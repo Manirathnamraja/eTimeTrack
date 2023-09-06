@@ -1,0 +1,33 @@
+﻿@using eTimeTrack.Helpers
+@using eTimeTrack.Models
+@model eTimeTrack.ViewModels.ExpensesMappingViewModel
+
+@{
+    ViewBag.Title = "Expenses Mapping";
+    ViewBag.BannerColour = AecomColour.Blue;
+}
+
+@Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
+
+<table class="table data-table" width="100%">
+    <thead>
+        <tr>
+            <th>Project Expense Type</th>
+            <th>Std Expense Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.projectExpenseTypes)
+        {
+            <tr>
+                <td>@item.ExpenseType</td>
+                <td>
+                    @Html.DropDownListFor(modelItem => item.ExpenseTypeID, new SelectList(Model.StdExpenseTypes, "Value", "Text", item.ExpenseTypeID), new { @class = "form-control select-StdExpense" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>

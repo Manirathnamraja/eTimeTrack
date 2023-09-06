@@ -14,5 +14,7 @@ namespace eTimeTrack.Models
         public bool IsClosed { get; set; }
         public int? LastModifiedBy { get; set; }
         public DateTime? LastModifiedDate { get; set; }
+        public bool IsFeeRecovery { get; set; }
+        public bool IsCostRecovery { get; set; }
     }
 }

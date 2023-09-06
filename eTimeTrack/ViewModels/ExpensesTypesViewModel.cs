@@ -22,6 +22,9 @@ namespace eTimeTrack.ViewModels
         public int VariationID { get; set; }
         public string Description { get; set; }
         public bool IsClosed { get; set; }
+        public bool IsFeeRecovery { get; set; }
+        public bool IsCostRecovery { get; set; }
+
 
     }
 }

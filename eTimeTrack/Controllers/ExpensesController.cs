@@ -33,7 +33,9 @@ namespace eTimeTrack.Controllers
                              Name = t.Name,
                              Description = v.Description,
                              ProjectId = t.ProjectID,
-                             IsClosed = e.IsClosed
+                             IsClosed = e.IsClosed,
+                             IsCostRecovery = e.IsCostRecovery,
+                             IsFeeRecovery = e.IsFeeRecovery
                          }).ToList();
 
             ViewBag.InfoMessage = TempData["InfoMessage"];

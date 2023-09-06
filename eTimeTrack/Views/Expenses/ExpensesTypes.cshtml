@@ -42,6 +42,8 @@
             <th>Default Task</th>
             <th>Default Variation</th>
             <th data-orderable="false">IsClosed</th>
+            <th data-orderable="false">IsFeeRecovery</th>
+            <th data-orderable="false">IsCostRecovery</th>
             <th data-orderable="false">Edit</th>
             <th data-orderable="false">Delete</th>
         </tr>
@@ -61,6 +63,12 @@
                 </td>
                 <td>
                     @Html.CheckBox("active", @Model.ExpensesTypesDetails[i].IsClosed, new { data_id = @Model.ExpensesTypesDetails[i].ExpenseTypeID, @class = "activeCheckbox" })
+                </td>
+                <td>
+                    @Html.CheckBox("active", @Model.ExpensesTypesDetails[i].IsFeeRecovery, new { data_id = @Model.ExpensesTypesDetails[i].ExpenseTypeID, @class = "activeCheckbox" })
+                </td>
+                <td>
+                    @Html.CheckBox("active", @Model.ExpensesTypesDetails[i].IsCostRecovery, new { data_id = @Model.ExpensesTypesDetails[i].ExpenseTypeID, @class = "activeCheckbox" })
                 </td>
                 <td>
                     <a href='@Url.Action("Edit", new {id = @Model.ExpensesTypesDetails[i].ExpenseTypeID})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
