@@ -8,10 +8,9 @@ using System.Web.Mvc;
 
 namespace eTimeTrack.Controllers
 {
-    [Authorize(Roles = UserHelpers.AuthTextUserAdministratorOrAboveExcludeTimesheetEditor)]
+    [Authorize]
     public class TimesheetApprovalController : BaseController
     {
-        [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
         public ActionResult Index()
         {
             int selectedProject = (int?)Session?["SelectedProject"] ?? 0;

@@ -9,10 +9,9 @@ using System.Web.Mvc;
 
 namespace eTimeTrack.Controllers
 {
-    [Authorize(Roles = UserHelpers.AuthTextUserAdministratorOrAboveExcludeTimesheetEditor)]
+    [Authorize]
     public class SearchWBSController : BaseController
     {
-        [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
         public ActionResult Index(bool hideClosed = true)
         {
             int selectedProject = (int?)Session?["SelectedProject"] ?? 0;
