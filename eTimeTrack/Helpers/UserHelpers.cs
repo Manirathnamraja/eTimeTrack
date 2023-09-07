@@ -13,6 +13,7 @@ namespace eTimeTrack.Helpers
         public const string RoleUserPlus = "UserPlus";
         public const string RoleAdmin = "Admin";
         public const string RoleSuperUser = "SuperUser";
+        public const string RoleTimesheetApproval = "TimesheetApproval";
         public const int Invalid = 0;
 
         public const string AuthTextAdminOrAbove = "SuperUser, Admin";
@@ -56,6 +57,7 @@ namespace eTimeTrack.Helpers
         RoleSuperUser = 3,
         RoleUserPlus = 4,
         RoleTimesheetEditor = 5,
-        RoleUserAdministrator = 6
+        RoleUserAdministrator = 6,
+        RoleTimesheetApproval = 7
     }
 }
