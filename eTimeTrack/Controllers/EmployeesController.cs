@@ -66,6 +66,10 @@ namespace eTimeTrack.Controllers
             if (UserIsInRole(employee.Id, UserHelpers.RoleSuperUser))
                 applicationUserViewModel.RoleType = RoleType.RoleSuperUser;
 
+            //Users Role
+            if (UserIsInRole(employee.Id, UserHelpers.RoleUser))
+                applicationUserViewModel.RoleType = RoleType.RoleUser;
+
             ViewBag.InfoMessage = TempData["InfoMessage"];
             PopulateEditViewDropdowns(applicationUserViewModel.Employee);
 
@@ -161,6 +165,10 @@ namespace eTimeTrack.Controllers
 
                             case RoleType.RoleSuperUser:
                                 AddUserToRole(foundUser, UserHelpers.RoleSuperUser);
+                                break;
+
+                            case RoleType.RoleUser:
+                                AddUserToRole(foundUser, UserHelpers.RoleUser);
                                 break;
                         }
                         _account.Value.UserManager.Update(foundUser);

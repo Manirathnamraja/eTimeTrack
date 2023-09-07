@@ -36,7 +36,7 @@ namespace eTimeTrack
         {
             IPrincipal user = HttpContext.Current.User;
 
-            if (user.IsInAnyAdminRole())
+            if (user.IsInAnyAdminRole() || user.IsUser())
             {
                 filterContext.Result = new RedirectToRouteResult(
                     new RouteValueDictionary{{ "controller", "Manage" },

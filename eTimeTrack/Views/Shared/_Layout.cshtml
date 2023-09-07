@@ -29,7 +29,7 @@
                     </div>
                     <div class="navbar-collapse collapse">
                         @*<div class="col-md-4" style="margin-top: 8px;">@Html.Action("Index", "ProjectSelector")</div>*@
-                        @if (User.IsInAnyAdminRole())
+                        @if ((User.IsInAnyAdminRole() || User.IsUser()))
                         {
                             <div class="col-md-4" style="margin-top: 8px;">@Html.Action("Index", "ProjectSelector")</div>
                         }
