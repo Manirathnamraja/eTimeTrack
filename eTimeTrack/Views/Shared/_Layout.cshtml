@@ -28,11 +28,11 @@
                         </a>
                     </div>
                     <div class="navbar-collapse collapse">
-                        <div class="col-md-4" style="margin-top: 8px;">@Html.Action("Index", "ProjectSelector")</div>
-                        @*@if (User.IsInAnyAdminRole() || User.IsUser())
-                            {
-                                <div class="col-md-4" style="margin-top: 8px;">@Html.Action("Index", "ProjectSelector")</div>
-                            }*@
+                        @*<div class="col-md-4" style="margin-top: 8px;">@Html.Action("Index", "ProjectSelector")</div>*@
+                        @if (User.IsInAnyAdminRole())
+                        {
+                            <div class="col-md-4" style="margin-top: 8px;">@Html.Action("Index", "ProjectSelector")</div>
+                        }
 
                         @Html.Partial("_LoginPartial")
                     </div>
