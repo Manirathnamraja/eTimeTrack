@@ -26,7 +26,7 @@ namespace eTimeTrack.Extensions
 
         public static bool IsTimesheetApproval(this IPrincipal user)
         {
-            return user.IsInRole(UserHelpers.RoleTimesheetApproval);
+            return user.IsInRole(UserHelpers.RoleTimesheetApproval) || user.IsInRole(UserHelpers.RoleSuperUser);
         }
 
         public static bool IsAdmin(this IPrincipal user)
