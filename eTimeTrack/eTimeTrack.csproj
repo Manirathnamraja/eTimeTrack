@@ -634,10 +634,19 @@
     <Compile Include="Migrations\202309050551136_ProjectExpenseType4.designer.cs">
       <DependentUpon>202309050551136_ProjectExpenseType4.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202309081316370_ProjectExpensesMapping.cs" />
+    <Compile Include="Migrations\202309081316370_ProjectExpensesMapping.designer.cs">
+      <DependentUpon>202309081316370_ProjectExpensesMapping.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202309081320384_ProjectExpensesUpload5.cs" />
+    <Compile Include="Migrations\202309081320384_ProjectExpensesUpload5.designer.cs">
+      <DependentUpon>202309081320384_ProjectExpensesUpload5.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BulkImportStatus.cs" />
     <Compile Include="Models\AECOMUserClassification.cs" />
+    <Compile Include="Models\ProjectExpensesMapping.cs" />
     <Compile Include="Models\ProjectExpensesStdDetails.cs" />
     <Compile Include="Models\ProjectExpensesUpload.cs" />
     <Compile Include="Models\ProjectExpenseType.cs" />
@@ -1349,6 +1358,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202309050551136_ProjectExpenseType4.resx">
       <DependentUpon>202309050551136_ProjectExpenseType4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202309081316370_ProjectExpensesMapping.resx">
+      <DependentUpon>202309081316370_ProjectExpensesMapping.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202309081320384_ProjectExpensesUpload5.resx">
+      <DependentUpon>202309081320384_ProjectExpensesUpload5.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

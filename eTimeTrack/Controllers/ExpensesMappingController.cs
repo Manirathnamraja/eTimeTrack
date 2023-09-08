@@ -18,12 +18,23 @@ namespace eTimeTrack.Controllers
             int selectedProject = (int?)Session?["SelectedProject"] ?? 0;
             if (selectedProject == 0) { return InvokeHttp404(HttpContext); }
 
-            List<ProjectExpenseType> ProjectExpenseType = Db.ProjectExpenseTypes.Where(x => x.ProjectID == selectedProject).ToList();
-            List<SelectListItem> SelectStdExpense = GetStdExpenseTypesSelectItems();
+            var results = (from m in Db.ProjectExpensesMappings
+                          join t in Db.ProjectExpenseTypes on m.ProjectTypeID equals t.ExpenseTypeID
+                          join s in Db.ProjectExpensesStdDetails on m.StdExpTypeID equals s.StdTypeID
+                          where m.ProjectID == selectedProject
+                          select new ExpensesMappingDetails
+                          {
+                              ExpenseType = t.ExpenseType,
+                              StdExpTypeID = m.StdExpTypeID,
+                              ProjectID = m.ProjectID,
+                              CompanyID = m.CompanyID
+                          }).ToList();
+
+            List <SelectListItem> SelectStdExpense = GetStdExpenseTypesSelectItems();
 
             return View(new ExpensesMappingViewModel
             {
-                projectExpenseTypes = ProjectExpenseType,
+                ExpensesMappingDetails = results,
                 StdExpenseTypes = SelectStdExpense,
             });
         }

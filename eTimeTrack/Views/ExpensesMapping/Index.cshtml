@@ -18,12 +18,12 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.projectExpenseTypes)
+        @foreach (var item in Model.ExpensesMappingDetails)
         {
             <tr>
                 <td>@item.ExpenseType</td>
                 <td>
-                    @Html.DropDownListFor(modelItem => item.ExpenseTypeID, new SelectList(Model.StdExpenseTypes, "Value", "Text", item.ExpenseTypeID), new { @class = "form-control select-StdExpense" })
+                    @Html.DropDownListFor(modelItem => item.StdExpTypeID, new SelectList(Model.StdExpenseTypes, "Value", "Text", item.StdExpTypeID), new { @class = "form-control select-StdExpense" })
                 </td>
             </tr>
         }
@@ -31,3 +31,19 @@
 </table>
 
 <a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>
+
+@section Scripts {
+
+    @Scripts.Render("~/bundles/notify")
+
+    <script>
+        $(document).ready(function () {
+            $('body').on('change', '.select-StdExpense', function () {
+                var dropdown = $(this);
+                dropdown.notify("Please don't change the value", { position: "right bottom", className: "success", autoHideDelay: 3000 });
+            });
+        });
+
+    </script>
+
+}

@@ -38,5 +38,7 @@ namespace eTimeTrack.Models
         public string ProjectComment { get; set; }
         public int? AddedBy { get; set; }
         public DateTime? AddedDate { get; set; }
+        public int ProjectExpTypeID { get; set; }
+
     }
 }
