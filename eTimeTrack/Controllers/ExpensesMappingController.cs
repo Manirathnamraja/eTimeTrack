@@ -20,8 +20,7 @@ namespace eTimeTrack.Controllers
 
             var results = (from m in Db.ProjectExpensesMappings
                           join t in Db.ProjectExpenseTypes on m.ProjectTypeID equals t.ExpenseTypeID
-                          join s in Db.ProjectExpensesStdDetails on m.StdExpTypeID equals s.StdTypeID
-                          join u in Db.ProjectExpensesUploads on m.ProjectTypeID equals u.ProjectExpTypeID
+                          join u in Db.ProjectExpensesUploads on m.StdExpTypeID equals u.ProjectExpTypeID
                           where m.ProjectID == selectedProject
                           group new {t, m} by new {t.ExpenseType, m.StdExpTypeID, m.ProjectID, m.CompanyID} into grp
                           select new ExpensesMappingDetails

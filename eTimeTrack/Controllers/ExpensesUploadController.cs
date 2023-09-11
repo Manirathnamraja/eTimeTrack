@@ -167,6 +167,12 @@ namespace eTimeTrack.Controllers
                                     }
                                 }
                             }
+                            int stdtypeid = 0;
+                            var homeoffics = homeOfficeType != 0 ? ws.Cells[i, homeOfficeType].Value?.ToString()?.Trim() : null;
+                            if (!string.IsNullOrEmpty(homeoffics))
+                            {
+                                stdtypeid = context.ProjectExpensesStdDetails.Where(x => x.StdType.ToLower().Equals(homeoffics.ToLower())).Select(x => x.StdTypeID).FirstOrDefault();
+                            }
 
                             bool existexpenses = context.ProjectExpensesUploads.Any(x => x.TransactionID == transactionIDdetails);
                             if (!existexpenses)
@@ -179,13 +185,14 @@ namespace eTimeTrack.Controllers
                                     ExpenseDate = expenDate.ToString("yyyy-MM-dd HH:mm:ss.fff"),
                                     CostedInWeekEnding = cdate.ToString("yyyy-MM-dd HH:mm:ss.fff"),
                                     Cost = cost != 0 ? ws.Cells[i, cost].Value?.ToString()?.Trim() : null,
-                                    HomeOfficeType = homeOfficeType != 0 ? ws.Cells[i, homeOfficeType].Value?.ToString()?.Trim() : null,
+                                    HomeOfficeType = homeoffics,
                                     EmployeeSupplierName = employeeSupplierName != 0 ? ws.Cells[i, employeeSupplierName].Value?.ToString()?.Trim() : null,
                                     UOM = idevalues,
                                     ExpenditureComment = expenditureComment != 0 ? ws.Cells[i, expenditureComment].Value?.ToString()?.Trim() : null,
                                     InvoiceNumber = invoiceNumber != 0 ? ws.Cells[i, invoiceNumber].Value?.ToString()?.Trim() : null,
                                     AddedBy = userId,
-                                    AddedDate = DateTime.UtcNow
+                                    AddedDate = DateTime.UtcNow,
+                                    ProjectExpTypeID = stdtypeid
                                 };
                                 expensesUpload.Add(expenses);
                                 context.ProjectExpensesUploads.Add(expenses);
