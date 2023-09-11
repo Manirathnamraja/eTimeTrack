@@ -21,13 +21,15 @@ namespace eTimeTrack.Controllers
             var results = (from m in Db.ProjectExpensesMappings
                           join t in Db.ProjectExpenseTypes on m.ProjectTypeID equals t.ExpenseTypeID
                           join s in Db.ProjectExpensesStdDetails on m.StdExpTypeID equals s.StdTypeID
+                          join u in Db.ProjectExpensesUploads on m.ProjectTypeID equals u.ProjectExpTypeID
                           where m.ProjectID == selectedProject
+                          group new {t, m} by new {t.ExpenseType, m.StdExpTypeID, m.ProjectID, m.CompanyID} into grp
                           select new ExpensesMappingDetails
                           {
-                              ExpenseType = t.ExpenseType,
-                              StdExpTypeID = m.StdExpTypeID,
-                              ProjectID = m.ProjectID,
-                              CompanyID = m.CompanyID
+                              ExpenseType = grp.Key.ExpenseType,
+                              StdExpTypeID = grp.Key.StdExpTypeID,
+                              ProjectID = grp.Key.ProjectID,
+                              CompanyID = grp.Key.CompanyID
                           }).ToList();
 
             List <SelectListItem> SelectStdExpense = GetStdExpenseTypesSelectItems();
@@ -35,7 +37,7 @@ namespace eTimeTrack.Controllers
             return View(new ExpensesMappingViewModel
             {
                 ExpensesMappingDetails = results,
-                StdExpenseTypes = SelectStdExpense,
+                StdExpenseTypes = SelectStdExpense
             });
         }
 
