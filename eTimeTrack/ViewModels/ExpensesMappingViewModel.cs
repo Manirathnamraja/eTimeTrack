@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 using eTimeTrack.Models;
 
@@ -17,5 +18,7 @@ namespace eTimeTrack.ViewModels
         public int ProjectID { get; set; }
         public int CompanyID { get; set; }
         public int StdExpTypeID { get; set; }
+        public DateTime? LastModifiedDate { get; set; }
+        public int MapID { get; set; }
     }
 }
