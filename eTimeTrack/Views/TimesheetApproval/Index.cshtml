@@ -46,7 +46,7 @@
             @for (int i = 0; i < Model.timesheetApprovaldetails.Count; i++)
             {
                 <tr id="@Model.timesheetApprovaldetails[i].TimesheetItemID">
-                    <td style="text-wrap: nowrap;">
+                    <td style="text-wrap: nowrap;" data-sort="@Model.timesheetApprovaldetails[i].EndDate.Ticks">
                         @Model.timesheetApprovaldetails[i].EndDate.ToShortDateString()
                         @if (Model.timesheetApprovaldetails[i].Comments != null)
                         {
@@ -200,11 +200,13 @@
                 var firstChecked = $('input:checkbox').first().is(':checked');
                 $('input:checkbox').prop('checked', !firstChecked);
             });
+
             $('#UpdateTable').DataTable().on("draw", function () {
                 $('[data-toggle="tooltip"]').tooltip();
             });
 
             $('#UpdateTable').off().on('draw.dt', function () {
+                $('[data-toggle="tooltip"]').tooltip();
                 setupChangeActions();
             });
 
