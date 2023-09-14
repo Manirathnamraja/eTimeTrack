@@ -38,9 +38,13 @@
         <dd>
             @Html.ActionLink("Search WBS", "Index", "SearchWBS")
         </dd>
-        <dd>
-            @Html.ActionLink("Timesheet Approval", "Index", "TimesheetApproval")
-        </dd>
+        @if (User.IsTimesheetApproval())
+        {
+            <dd>
+                @Html.ActionLink("Timesheet Approval", "Index", "TimesheetApproval")
+            </dd>
+        }
+
     </dl>
 
     @if (User.IsInAnyAdminRole())

@@ -11,7 +11,7 @@ namespace eTimeTrack.Extensions
     {
         public static bool IsInAnyAdminRole(this IPrincipal user)
         {
-            return user.IsInRole(UserHelpers.RoleSuperUser) || user.IsInRole(UserHelpers.RoleAdmin) || user.IsInRole(UserHelpers.RoleUserPlus) || user.IsInRole(UserHelpers.RoleTimesheetEditor) || user.IsInRole(UserHelpers.RoleUserAdministrator);
+            return user.IsInRole(UserHelpers.RoleTimesheetApproval) || user.IsInRole(UserHelpers.RoleUser) || user.IsInRole(UserHelpers.RoleSuperUser) || user.IsInRole(UserHelpers.RoleAdmin) || user.IsInRole(UserHelpers.RoleUserPlus) || user.IsInRole(UserHelpers.RoleTimesheetEditor) || user.IsInRole(UserHelpers.RoleUserAdministrator);
         }
 
         public static bool IsSuperUser(this IPrincipal user)
@@ -22,6 +22,11 @@ namespace eTimeTrack.Extensions
         public static bool IsUser(this IPrincipal user)
         {
             return user.IsInRole(UserHelpers.RoleUser);
+        }
+
+        public static bool IsTimesheetApproval(this IPrincipal user)
+        {
+            return user.IsInRole(UserHelpers.RoleTimesheetApproval) || user.IsInRole(UserHelpers.RoleSuperUser);
         }
 
         public static bool IsAdmin(this IPrincipal user)
