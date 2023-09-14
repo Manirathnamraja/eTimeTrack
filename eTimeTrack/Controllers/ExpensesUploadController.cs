@@ -174,6 +174,8 @@ namespace eTimeTrack.Controllers
                                 stdtypeid = context.ProjectExpensesStdDetails.Where(x => x.StdType.ToLower().Equals(homeoffics.ToLower())).Select(x => x.StdTypeID).FirstOrDefault();
                             }
 
+                            var expensestypes = context.ProjectExpenseTypes.Where(x => x.ProjectID == model.ProjectId).FirstOrDefault();
+
                             bool existexpenses = context.ProjectExpensesUploads.Any(x => x.TransactionID == transactionIDdetails);
                             if (!existexpenses)
                             {
@@ -192,7 +194,11 @@ namespace eTimeTrack.Controllers
                                     InvoiceNumber = invoiceNumber != 0 ? ws.Cells[i, invoiceNumber].Value?.ToString()?.Trim() : null,
                                     AddedBy = userId,
                                     AddedDate = DateTime.UtcNow,
-                                    ProjectExpTypeID = stdtypeid
+                                    ProjectExpTypeID = stdtypeid,
+                                    TaskID = expensestypes.TaskID,
+                                    VariationID = expensestypes.VariationID,
+                                    IsCostRecovery = expensestypes.IsCostRecovery,
+                                    IsFeeRecovery = expensestypes.IsFeeRecovery
                                 };
                                 expensesUpload.Add(expenses);
                                 context.ProjectExpensesUploads.Add(expenses);

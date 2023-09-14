@@ -39,6 +39,11 @@ namespace eTimeTrack.Models
         public int? AddedBy { get; set; }
         public DateTime? AddedDate { get; set; }
         public int ProjectExpTypeID { get; set; }
+        public int VariationID { get; set; }
+        public int TaskID { get; set; }
+        public bool IsFeeRecovery { get; set; }
+        public bool IsCostRecovery { get; set; }
+        public bool Completed { get; set; }
 
     }
 }
