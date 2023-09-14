@@ -47,7 +47,7 @@
             {
                 <tr id="@Model.timesheetApprovaldetails[i].TimesheetItemID">
                     <td style="text-wrap: nowrap;">
-                        @Model.timesheetApprovaldetails[i].EndDate.ToString("dd-MM-yyyy")
+                        @Model.timesheetApprovaldetails[i].EndDate.ToShortDateString()
                         @if (Model.timesheetApprovaldetails[i].Comments != null)
                         {
                             <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="@Model.timesheetApprovaldetails[i].Comments">
