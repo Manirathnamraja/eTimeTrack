@@ -1,0 +1,87 @@
+﻿@using eTimeTrack.Controllers
+@using eTimeTrack.Helpers
+@model eTimeTrack.Models.ProjectExpensesUpload
+
+@{
+    ViewBag.Title = ViewBag.Source + " Expenses Allocations";
+}
+
+@Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
+@using (Html.BeginForm("CreateEdit", "ExpensesAllocations", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.ExpenseUploadID)
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Project Expenses Type</label>
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.ProjectExpTypeID, null, "Select", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.ProjectExpTypeID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Task</label>
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.TaskID, null, "Select", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.TaskID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Variation</label>
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.VariationID, null, "Select", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.VariationID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Comments</label>
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.ExpenditureComment, new { @class = "form-control fullWidth", rows = 3 })
+                @Html.ValidationMessageFor(model => model.ExpenditureComment, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Fee Recovery</label>
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.IsFeeRecovery)
+                    @Html.ValidationMessageFor(model => model.IsFeeRecovery, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Cost Recovery</label>
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.IsCostRecovery)
+                    @Html.ValidationMessageFor(model => model.IsCostRecovery, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2">Completed</label>
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.Completed)
+                    @Html.ValidationMessageFor(model => model.Completed, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="pull-right">
+            <input type="submit" value="Edit" class="btn btn-primary" />
+        </div>
+
+    </div>
+}
+
+<a href='@Url.Action("Allocation", "ExpensesAllocations")' class="btn btn-primary" role="button">Back</a>
+
+

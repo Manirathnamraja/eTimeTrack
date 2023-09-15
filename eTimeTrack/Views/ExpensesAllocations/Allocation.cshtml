@@ -1,0 +1,69 @@
+﻿@using eTimeTrack.Helpers
+@using eTimeTrack.Models
+@model eTimeTrack.ViewModels.ExpensesAllocationsViewModel
+
+@{
+    ViewBag.Title = "Expenses Allocations";
+    ViewBag.BannerColour = AecomColour.Blue;
+}
+
+@Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
+
+
+<div class="col-md-6">
+    <label>Hide Completed</label>
+    @Html.CheckBoxFor(model => Model.HideCompleted, new { id = "filter-closed", style = "width: 40px" })
+</div>
+
+<table class="table data-table" width="100%">
+    <thead>
+        <tr>
+            <th>Company</th>
+            <th>Transaction ID</th>
+            <th>Expenses Type</th>
+            <th>Supplier</th>
+            <th>Inv Date</th>
+            <th>Amount</th>
+            <th>Comments</th>
+            <th data-orderable="false">Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ProjectExpensesUploadDetails)
+        {
+            <tr>
+                <td>@item.CompanyName</td>
+                <td>@item.TransactionID</td>
+                <td>@item.ExpensesTypes</td>
+                <td>@item.EmployeeSupplierName</td>
+                <td>@item.ExpenseDate</td>
+                <td>@item.Cost</td>
+                <td>@item.ExpenditureComment</td>
+                <td>
+                    <a href='@Url.Action("Edit", new {id = item.ExpenseUploadID})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/notify")
+    <script>
+        $(document).ready(function () {
+
+            $('#filter-closed').change(function () {
+                updatePage();
+            });
+
+        });
+
+        function updatePage() {
+            var completeFilter = $('#filter-closed').is(":checked");
+            window.location = 'Allocation?hideCompleted=' + completeFilter;
+        }
+    </script>
+}
