@@ -162,7 +162,7 @@
             </dl>
         }
 
-        @*if (User.IsUserPlusOrAbove())
+        if (User.IsUserPlusOrAbove())
         {
             <dl class="dl-horizontal">
                 <dt>Expenses:</dt>
@@ -180,7 +180,7 @@
                 </dd>
             </dl>
 
-        }*@
+        }
 
         if (User.IsUserPlusOrAbove())
         {
@@ -314,7 +314,7 @@
                         </dd>
                     }
                 </dl>
-                @*<dl class="dl-horizontal">
+                <dl class="dl-horizontal">
                     <dt>Expenses:</dt>
 
                     @if (User.IsSuperUser())
@@ -323,7 +323,7 @@
                             @Html.ActionLink("Expenses", "Index", "ExpensesStdTypes")
                         </dd>
                     }
-                </dl>*@
+                </dl>
             }
         }
 
