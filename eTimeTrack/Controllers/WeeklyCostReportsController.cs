@@ -82,6 +82,7 @@ namespace eTimeTrack.Controllers
         {
             var allData = TempData["reportdetails"] as List<WeeklyCostReportDetails>;
             var projectName = "";
+            ApplicationDbContext context = new ApplicationDbContext();
 
             FileInfo filePath = GetGuidFilePath("xlsx");
 
@@ -121,6 +122,9 @@ namespace eTimeTrack.Controllers
                 ws.Cells[row, col++].Value = "Variation Approved";
                 ws.Cells[row, col++].Value = "Rate Confirmed";
                 ws.Cells[row, col++].Value = "Office Name";
+                ws.Cells[row, col++].Value = "Approver";
+                ws.Cells[row, col++].Value = "Approved Date";
+                ws.Cells[row, col++].Value = "Reviewer Comments";
                 ws.Cells[row, 1, row, col].Style.Font.Bold = true;
                 ws.Cells[row, 1, row, col].Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
 
@@ -129,6 +133,7 @@ namespace eTimeTrack.Controllers
                 foreach (WeeklyCostReportDetails dailycostRate in allData)
                 {
                    // projectName = dailycostRate.Project.Name;
+                   var approverName = context.Users.Where(x => x.Id == dailycostRate.Approver).FirstOrDefault();
 
                     col = 1;
                     ws.Cells[row, col++].Value = dailycostRate.ProjectName;
@@ -159,6 +164,9 @@ namespace eTimeTrack.Controllers
                     ws.Cells[row, col++].Value = dailycostRate.VariationApproved ? "Y" : "N";
                     ws.Cells[row, col++].Value = dailycostRate.RateConfirmed ? "Y" : "N";
                     ws.Cells[row, col++].Value = dailycostRate.OfficeName;
+                    ws.Cells[row, col++].Value = approverName;
+                    ws.Cells[row, col++].Value = dailycostRate.ApprovedDate;
+                    ws.Cells[row, col++].Value = dailycostRate.ReviewerComments;
                     row++;
                 }
 
@@ -205,6 +213,9 @@ namespace eTimeTrack.Controllers
             public string GeneralComments { get; set; }
             public bool RateConfirmed { get; set; }
             public string OfficeName { get; set; }
+            public string ReviewerComments { get; set; }
+            public int? Approver { get; set; }
+            public DateTime? ApprovedDate { get; set; }
 
             public virtual Project Project { get; set; }
         }
