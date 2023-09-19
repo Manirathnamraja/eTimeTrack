@@ -10,7 +10,7 @@ using eTimeTrack.ViewModels;
 
 namespace eTimeTrack.Controllers
 {
-    [Authorize(Roles = UserHelpers.RoleSuperUser)]
+    [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
     public class ProjectUserClassificationsController : BaseController
     {
 

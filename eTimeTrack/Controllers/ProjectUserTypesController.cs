@@ -8,7 +8,7 @@ using eTimeTrack.ViewModels;
 
 namespace eTimeTrack.Controllers
 {
-    [Authorize(Roles = UserHelpers.RoleSuperUser)]
+    [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
     public class ProjectUserTypesController : BaseController
     {
         public ActionResult Index()
