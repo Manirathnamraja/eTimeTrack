@@ -167,11 +167,16 @@ namespace eTimeTrack.Controllers
                                     }
                                 }
                             }
-                            int stdtypeid = 0;
+                            int stdtypeid = 0; int exptypeid = 0;
                             var homeoffics = homeOfficeType != 0 ? ws.Cells[i, homeOfficeType].Value?.ToString()?.Trim() : null;
                             if (!string.IsNullOrEmpty(homeoffics))
                             {
                                 stdtypeid = context.ProjectExpensesStdDetails.Where(x => x.StdType.ToLower().Equals(homeoffics.ToLower())).Select(x => x.StdTypeID).FirstOrDefault();
+                            }
+
+                            if(stdtypeid != 0)
+                            {
+                                exptypeid = context.ProjectExpensesMappings.Where(x => x.StdExpTypeID == stdtypeid && x.ProjectID == model.ProjectId).Select(x => x.ProjectTypeID).FirstOrDefault();
                             }
 
                             var expensestypes = context.ProjectExpenseTypes.Where(x => x.ProjectID == model.ProjectId).FirstOrDefault();
@@ -194,7 +199,7 @@ namespace eTimeTrack.Controllers
                                     InvoiceNumber = invoiceNumber != 0 ? ws.Cells[i, invoiceNumber].Value?.ToString()?.Trim() : null,
                                     AddedBy = userId,
                                     AddedDate = DateTime.UtcNow,
-                                    ProjectExpTypeID = stdtypeid,
+                                    ProjectExpTypeID = exptypeid,
                                     TaskID = expensestypes != null ? expensestypes.TaskID : 0,
                                     VariationID = expensestypes != null ? expensestypes.VariationID : 0,
                                     IsCostRecovery = expensestypes != null ? expensestypes.IsCostRecovery : false,
