@@ -24,7 +24,7 @@ namespace eTimeTrack.Controllers
             ExpensesAllocationsViewModel viewModel = new ExpensesAllocationsViewModel();
             var results = (from u in Db.ProjectExpensesUploads
                           join c in Db.Companies on u.CompanyId equals c.Company_Id
-                          where u.ProjectId == selectedProject
+                          where u.ProjectId == selectedProject && u.IsUpload == true
                           select new ProjectExpensesUploadDetails
                           {
                               CompanyName = c.Company_Name,

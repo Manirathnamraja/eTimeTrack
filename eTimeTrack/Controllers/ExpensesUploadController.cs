@@ -203,7 +203,8 @@ namespace eTimeTrack.Controllers
                                     TaskID = expensestypes != null ? expensestypes.TaskID : 0,
                                     VariationID = expensestypes != null ? expensestypes.VariationID : 0,
                                     IsCostRecovery = expensestypes != null ? expensestypes.IsCostRecovery : false,
-                                    IsFeeRecovery = expensestypes != null ? expensestypes.IsFeeRecovery : false
+                                    IsFeeRecovery = expensestypes != null ? expensestypes.IsFeeRecovery : false,
+                                    IsUpload = true
                                 };
                                 expensesUpload.Add(expenses);
                                 context.ProjectExpensesUploads.Add(expenses);
