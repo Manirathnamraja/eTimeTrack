@@ -69,7 +69,11 @@ namespace eTimeTrack.Controllers
         }
         private List<Company> Getcompanydetails()
         {
-            List<Company> company = Db.Companies.Join(Db.ProjectCompanies, c => c.Company_Id, p => p.CompanyId, (c, p) => c).Distinct().ToList();
+            int projectId = (int?)Session["SelectedProject"] ?? 0;
+            List<Company> company = (from c in Db.Companies
+                                     join p in Db.ProjectCompanies on c.Company_Id equals p.CompanyId
+                                     where p.ProjectId == projectId
+                                     select c).OrderBy(x => x.Company_Name).ToList();
             return company;
         }
     }

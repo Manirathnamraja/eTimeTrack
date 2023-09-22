@@ -41,7 +41,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.ExpenseDate, new { @class = "control-label col-md-2 required" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.ExpenseDate, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.ExpenseDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
                     @Html.ValidationMessageFor(m => m.ExpenseDate, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -49,7 +49,7 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.CostedInWeekEnding, new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.CostedInWeekEnding, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.CostedInWeekEnding, new { htmlAttributes = new { @class = "form-control datepicker" } })
                     @Html.ValidationMessageFor(m => m.CostedInWeekEnding, "", new { @class = "text-danger" })
                 </div>
             </div>
