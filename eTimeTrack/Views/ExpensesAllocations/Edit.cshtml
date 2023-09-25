@@ -79,6 +79,13 @@
                 @Html.ValidationMessageFor(model => model.VariationID, "", new { @class = "text-danger" })
             </div>
         </div>
+         <div class="form-group">
+            <label class="control-label col-md-2">Project User</label>
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.Traveller, null, "Select", new { style = "max-width:100%;width:60%", @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Traveller, "", new { @class = "text-danger" })
+            </div>
+        </div>
 
         <div class="form-group">
             <label class="control-label col-md-2">Review Comments</label>

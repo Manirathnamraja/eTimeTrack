@@ -80,6 +80,7 @@ namespace eTimeTrack.Controllers
                 existing.Completed = projectExpensesUpload.Completed;
                 existing.AddedBy = UserHelpers.GetCurrentUserId();
                 existing.AddedDate = DateTime.UtcNow;
+                existing.Traveller = projectExpensesUpload.Traveller;
                 Db.ProjectExpensesUploads.AddOrUpdate(existing);
                 Db.Entry(existing).State = EntityState.Modified;
             }
@@ -94,6 +95,17 @@ namespace eTimeTrack.Controllers
             ViewBag.TaskID = new SelectList(GetProjectTaskdetails(projectId), "TaskID", "Name");
             ViewBag.VariationID = new SelectList(GetProjectVariationdetails(projectId), "VariationID", "Description");
             ViewBag.ProjectExpTypeID = new SelectList(GetProjectExpensesTypesdetails(projectId), "ExpenseTypeID", "ExpenseType");
+            ViewBag.Traveller = new SelectList(GetProjectUserdetails(projectId), "Id", "Names");
+        }
+        private List<Employee> GetProjectUserdetails(int projectId)
+        {
+            var result = from p in Db.EmployeeProjects
+                         join e in Db.Users on p.EmployeeId equals e.Id
+                         where p.ProjectId == projectId
+                         select e;
+
+            var data = result.ToList();
+            return data;
         }
 
         private List<ProjectTask> GetProjectTaskdetails(int projectId)
