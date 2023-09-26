@@ -104,7 +104,7 @@ namespace eTimeTrack.Controllers
                          where p.ProjectId == projectId
                          select e;
 
-            var data = result.ToList();
+            var data = result.OrderBy(x => x.Names).ToList();
             return data;
         }
 
