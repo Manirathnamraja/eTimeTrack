@@ -20,7 +20,7 @@ namespace eTimeTrack.Controllers
             if (selectedProject == 0) { return InvokeHttp404(HttpContext); }
 
             var results = (from m in Db.ProjectExpensesMappings
-                           join u in Db.ProjectExpensesUploads on m.StdExpTypeID equals u.ProjectExpTypeID
+                           join u in Db.ProjectExpensesUploads on m.ProjectTypeID equals u.ProjectExpTypeID
                            where m.ProjectID == selectedProject
                            group m by new { m.ProjectMapTable, m.StdExpTypeID, m.ProjectID, m.CompanyID, m.LastModifiedDate, m.MapID } into grp
                            select new ExpensesMappingDetails

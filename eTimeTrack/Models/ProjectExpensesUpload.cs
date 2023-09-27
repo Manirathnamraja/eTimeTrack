@@ -44,6 +44,7 @@ namespace eTimeTrack.Models
         public bool IsFeeRecovery { get; set; }
         public bool IsCostRecovery { get; set; }
         public bool Completed { get; set; }
-
+        public bool IsUpload { get; set; }
+        public int Traveller { get; set; }
     }
 }

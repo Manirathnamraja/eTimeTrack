@@ -167,11 +167,16 @@ namespace eTimeTrack.Controllers
                                     }
                                 }
                             }
-                            int stdtypeid = 0;
+                            int stdtypeid = 0; int exptypeid = 0;
                             var homeoffics = homeOfficeType != 0 ? ws.Cells[i, homeOfficeType].Value?.ToString()?.Trim() : null;
                             if (!string.IsNullOrEmpty(homeoffics))
                             {
                                 stdtypeid = context.ProjectExpensesStdDetails.Where(x => x.StdType.ToLower().Equals(homeoffics.ToLower())).Select(x => x.StdTypeID).FirstOrDefault();
+                            }
+
+                            if(stdtypeid != 0)
+                            {
+                                exptypeid = context.ProjectExpensesMappings.Where(x => x.StdExpTypeID == stdtypeid && x.ProjectID == model.ProjectId).Select(x => x.ProjectTypeID).FirstOrDefault();
                             }
 
                             var expensestypes = context.ProjectExpenseTypes.Where(x => x.ProjectID == model.ProjectId).FirstOrDefault();
@@ -194,11 +199,12 @@ namespace eTimeTrack.Controllers
                                     InvoiceNumber = invoiceNumber != 0 ? ws.Cells[i, invoiceNumber].Value?.ToString()?.Trim() : null,
                                     AddedBy = userId,
                                     AddedDate = DateTime.UtcNow,
-                                    ProjectExpTypeID = stdtypeid,
+                                    ProjectExpTypeID = exptypeid,
                                     TaskID = expensestypes != null ? expensestypes.TaskID : 0,
                                     VariationID = expensestypes != null ? expensestypes.VariationID : 0,
                                     IsCostRecovery = expensestypes != null ? expensestypes.IsCostRecovery : false,
-                                    IsFeeRecovery = expensestypes != null ? expensestypes.IsFeeRecovery : false
+                                    IsFeeRecovery = expensestypes != null ? expensestypes.IsFeeRecovery : false,
+                                    IsUpload = true
                                 };
                                 expensesUpload.Add(expenses);
                                 context.ProjectExpensesUploads.Add(expenses);
@@ -266,9 +272,14 @@ namespace eTimeTrack.Controllers
         {
             return new SelectList(Getcompanydetails(), "Company_Id", "Company_Name", 1);
         }
+
         private List<Company> Getcompanydetails()
         {
-            List<Company> company = Db.Companies.Join(Db.ProjectCompanies, c => c.Company_Id, p => p.CompanyId, (c, p) => c).Distinct().ToList();
+            int projectId = (int?)Session["SelectedProject"] ?? 0;
+            List<Company> company = (from c in Db.Companies
+                                    join p in Db.ProjectCompanies on c.Company_Id equals p.CompanyId
+                                    where p.ProjectId == projectId
+                                    select c).OrderBy(x => x.Company_Name).ToList();
             return company;
         }
     }

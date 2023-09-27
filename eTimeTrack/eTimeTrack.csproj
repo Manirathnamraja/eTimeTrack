@@ -395,6 +395,7 @@
     <Compile Include="Controllers\DeleteZeroTimesheetItemsController.cs" />
     <Compile Include="Controllers\ExpensesAllocationsController.cs" />
     <Compile Include="Controllers\ExpensesController.cs" />
+    <Compile Include="Controllers\ExpensesManualEntryController.cs" />
     <Compile Include="Controllers\ExpensesMappingController.cs" />
     <Compile Include="Controllers\ExpensesStdTypesController.cs" />
     <Compile Include="Controllers\ExpensesUploadController.cs" />
@@ -646,6 +647,14 @@
     <Compile Include="Migrations\202309140600160_ProjectExpensesUpload6.cs" />
     <Compile Include="Migrations\202309140600160_ProjectExpensesUpload6.designer.cs">
       <DependentUpon>202309140600160_ProjectExpensesUpload6.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202309210244226_ProjectExpensesUpload7.cs" />
+    <Compile Include="Migrations\202309210244226_ProjectExpensesUpload7.designer.cs">
+      <DependentUpon>202309210244226_ProjectExpensesUpload7.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202309250315163_ProjectExpensesUpload8.cs" />
+    <Compile Include="Migrations\202309250315163_ProjectExpensesUpload8.designer.cs">
+      <DependentUpon>202309250315163_ProjectExpensesUpload8.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -1193,6 +1202,7 @@
     <Content Include="Views\ExpensesMapping\Create.cshtml" />
     <Content Include="Views\ExpensesAllocations\Allocation.cshtml" />
     <Content Include="Views\ExpensesAllocations\Edit.cshtml" />
+    <Content Include="Views\ExpensesManualEntry\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\ProjectTimesheetPeriods\Assign.cshtml" />
@@ -1376,6 +1386,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202309140600160_ProjectExpensesUpload6.resx">
       <DependentUpon>202309140600160_ProjectExpensesUpload6.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202309210244226_ProjectExpensesUpload7.resx">
+      <DependentUpon>202309210244226_ProjectExpensesUpload7.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202309250315163_ProjectExpensesUpload8.resx">
+      <DependentUpon>202309250315163_ProjectExpensesUpload8.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

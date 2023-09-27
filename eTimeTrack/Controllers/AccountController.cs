@@ -326,6 +326,8 @@ namespace eTimeTrack.Controllers
                         {
                             user = await UserManager.FindByEmailAsync(user.Email);
 
+                            UserManager.AddToRole(user.Id, UserHelpers.RoleUser);
+
                             string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
                             code = HttpUtility.UrlEncode(code);
                             string callbackUrl = Url.Action("ResetPassword", "Account",

@@ -162,7 +162,7 @@
             </dl>
         }
 
-        @*if (User.IsUserPlusOrAbove())
+        if (User.IsUserPlusOrAbove())
         {
             <dl class="dl-horizontal">
                 <dt>Expenses:</dt>
@@ -175,12 +175,15 @@
                 <dd>
                     @Html.ActionLink("Expenses Upload", "Index", "ExpensesUpload")
                 </dd>
+                 <dd>
+                    @Html.ActionLink("Expenses Manual Entry", "Index", "ExpensesManualEntry")
+                </dd>
                 <dd>
                     @Html.ActionLink("Expenses Allocations", "Allocation", "ExpensesAllocations")
                 </dd>
             </dl>
 
-        }*@
+        }
 
         if (User.IsUserPlusOrAbove())
         {
@@ -314,7 +317,7 @@
                         </dd>
                     }
                 </dl>
-                @*<dl class="dl-horizontal">
+                <dl class="dl-horizontal">
                     <dt>Expenses:</dt>
 
                     @if (User.IsSuperUser())
@@ -323,7 +326,7 @@
                             @Html.ActionLink("Expenses", "Index", "ExpensesStdTypes")
                         </dd>
                     }
-                </dl>*@
+                </dl>
             }
         }
 
