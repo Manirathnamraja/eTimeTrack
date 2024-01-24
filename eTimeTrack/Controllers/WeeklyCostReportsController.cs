@@ -101,16 +101,17 @@ namespace eTimeTrack.Controllers
                 ws.Cells[row, col++].Value = "Project Role";
                 ws.Cells[row, col++].Value = "Classification";
                 ws.Cells[row, col++].Value = "Discipline";
+                ws.Cells[row, col++].Value = "TimesheetItemID";
                 ws.Cells[row, col++].Value = "Weekending Date";
                 ws.Cells[row, col++].Value = "Work Date";
                 ws.Cells[row, col++].Value = "Task No";
                 ws.Cells[row, col++].Value = "Alias Code";
                 ws.Cells[row, col++].Value = "Task Name";
-                ws.Cells[row, col++].Value = "Variation No";
-                ws.Cells[row, col++].Value = "Variation Name";
                 ws.Cells[row, col++].Value = "Daily Hrs";
                 ws.Cells[row, col++].Value = "Daily Comments";
                 ws.Cells[row, col++].Value = "General Comments";
+                ws.Cells[row, col++].Value = "Variation No";
+                ws.Cells[row, col++].Value = "Variation Name";
                 ws.Cells[row, col++].Value = "Part No";
                 ws.Cells[row, col++].Value = "Part Name";
                 ws.Cells[row, col++].Value = "Time Code";                
@@ -143,16 +144,17 @@ namespace eTimeTrack.Controllers
                     ws.Cells[row, col++].Value = dailycostRate.ProjectRole;
                     ws.Cells[row, col++].Value = dailycostRate.Classifications;
                     ws.Cells[row, col++].Value = dailycostRate.Disciplines;
+                    ws.Cells[row, col++].Value = dailycostRate.TimesheetItemID;
                     ws.Cells[row, col++].Value = dailycostRate.WeekendingDate;
                     ws.Cells[row, col++].Value = dailycostRate.WorkDate;
                     ws.Cells[row, col++].Value = dailycostRate.TaskNo;
                     ws.Cells[row, col++].Value = dailycostRate.AliasCode;
                     ws.Cells[row, col++].Value = dailycostRate.TaskName;
-                    ws.Cells[row, col++].Value = dailycostRate.VariationNo;
-                    ws.Cells[row, col++].Value = dailycostRate.VariationName;
                     ws.Cells[row, col++].Value = dailycostRate.DailyHrs;
                     ws.Cells[row, col++].Value = dailycostRate.DailyComments;
                     ws.Cells[row, col++].Value = dailycostRate.GeneralComments;
+                    ws.Cells[row, col++].Value = dailycostRate.VariationNo;
+                    ws.Cells[row, col++].Value = dailycostRate.VariationName;
                     ws.Cells[row, col++].Value = dailycostRate.PartNo;
                     ws.Cells[row, col++].Value = dailycostRate.PartName;
                     ws.Cells[row, col++].Value = dailycostRate.TimeCode;                    
@@ -216,7 +218,7 @@ namespace eTimeTrack.Controllers
             public string ReviewerComments { get; set; }
             public int? Approver { get; set; }
             public DateTime? ApprovedDate { get; set; }
-
+            public int TimesheetItemID { get; set; }
             public virtual Project Project { get; set; }
         }
 
