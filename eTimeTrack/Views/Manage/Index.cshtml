@@ -167,19 +167,19 @@
             <dl class="dl-horizontal">
                 <dt>Expenses:</dt>
                 <dd>
-                    @Html.ActionLink("Expenses Types", "ExpensesTypes", "Expenses")
+                    @Html.ActionLink("Expense Types", "ExpensesTypes", "Expenses")
                 </dd>
                 <dd>
-                    @Html.ActionLink("Expenses Mapping", "Index", "ExpensesMapping")
+                    @Html.ActionLink("Expense Mapping", "Index", "ExpensesMapping")
                 </dd>
                 <dd>
-                    @Html.ActionLink("Expenses Upload", "Index", "ExpensesUpload")
+                    @Html.ActionLink("Expense Upload", "Index", "ExpensesUpload")
                 </dd>
                  <dd>
-                    @Html.ActionLink("Expenses Manual Entry", "Index", "ExpensesManualEntry")
+                    @Html.ActionLink("Expense Manual Entry", "Index", "ExpensesManualEntry")
                 </dd>
                 <dd>
-                    @Html.ActionLink("Expenses Allocations", "Allocation", "ExpensesAllocations")
+                    @Html.ActionLink("Expense Allocations", "Allocation", "ExpensesAllocations")
                 </dd>
             </dl>
 
@@ -323,7 +323,7 @@
                     @if (User.IsSuperUser())
                     {
                         <dd>
-                            @Html.ActionLink("Expenses", "Index", "ExpensesStdTypes")
+                            @Html.ActionLink("Standard Expense Types", "Index", "ExpensesStdTypes")
                         </dd>
                     }
                 </dl>
