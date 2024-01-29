@@ -20,17 +20,15 @@ namespace eTimeTrack.Controllers
             if (selectedProject == 0) { return InvokeHttp404(HttpContext); }
 
             var results = (from m in Db.ProjectExpensesMappings
-                           join u in Db.ProjectExpensesUploads on m.ProjectTypeID equals u.ProjectExpTypeID
                            where m.ProjectID == selectedProject
-                           group m by new { m.ProjectMapTable, m.StdExpTypeID, m.ProjectID, m.CompanyID, m.LastModifiedDate, m.MapID } into grp
                            select new ExpensesMappingDetails
                            {
-                               ExpenseType = grp.Key.ProjectMapTable,
-                               StdExpTypeID = grp.Key.StdExpTypeID,
-                               ProjectID = grp.Key.ProjectID,
-                               CompanyID = grp.Key.CompanyID,
-                               LastModifiedDate = grp.Key.LastModifiedDate,
-                               MapID = grp.Key.MapID
+                               ExpenseType = m.ProjectMapTable,
+                               StdExpTypeID = m.StdExpTypeID,
+                               ProjectID = m.ProjectID,
+                               CompanyID = m.CompanyID,
+                               LastModifiedDate = m.LastModifiedDate,
+                               MapID = m.MapID
                            }).OrderByDescending(x => x.LastModifiedDate).ToList();
 
             List<SelectListItem> SelectStdExpense = GetStdExpenseTypesSelectItems();

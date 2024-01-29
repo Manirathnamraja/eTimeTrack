@@ -1,7 +1,7 @@
 ﻿@using eTimeTrack.Helpers
 @model eTimeTrack.ViewModels.WeeklyCostReportsIndexUserVm
 @{
-    ViewBag.Title = "Daily Cost Rates";
+    ViewBag.Title = "Cost Report";
     ViewBag.BannerColour = AecomColour.Blue;
 }
 
@@ -44,7 +44,7 @@
             @Html.Hidden("projectId", Model.ProjectID)
             @Html.Hidden("fromDate", Model.FromDate)
             @Html.Hidden("toDate", Model.ToDate)
-            <input type="submit" value="Daily Cost Rates" id="submit" class="btn btn-primary" />
+            <input type="submit" value="Run Cost Report" id="submit" class="btn btn-primary" />
         </div>
         <a href="@Url.Action("Index")" class="btn btn-primary">Back</a>
     </div>
