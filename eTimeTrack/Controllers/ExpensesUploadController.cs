@@ -28,10 +28,29 @@ namespace eTimeTrack.Controllers
             ExpensesUploadViewModel viewModel = new ExpensesUploadViewModel
             {
                 ProjectList = GenerateDropdownUserProjects(),
-                CompanyList = GetCompany()
             };
+            ViewBag.CompanyId = new SelectList(Getcompanydetails(), "Company_Id", "Company_Name");
             ViewBag.InfoMessage = TempData["Infomessage"];
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public JsonResult GetCompanyList(int? projectid)
+        {
+            if (projectid != null)
+            {
+                List<Company> company = (from c in Db.Companies
+                                         join p in Db.ProjectCompanies on c.Company_Id equals p.CompanyId
+                                         where p.ProjectId == projectid
+                                         select c).OrderBy(x => x.Company_Name).ToList();
+
+                return Json(company.Select(x => new
+                {
+                    CompanyId = x.Company_Id,
+                    Name = x.Company_Name
+                }));
+            }
+            return null;
         }
 
         [HttpPost]

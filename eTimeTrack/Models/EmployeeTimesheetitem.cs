@@ -19,37 +19,37 @@ namespace eTimeTrack.Models
         public int OTCode { get; set; }
         public int PayTypeID { get; set; }
         public int? ItemNo { get; set; }
-        [Range(0.0, 24.0)]
+        [Range(-24.0, 24.0)]
         [Display(Name = "Saturday Hours")]
         public decimal? Day1Hrs { get; set; }
         [StringLength(255, ErrorMessage = "Maximum length is 255")]
         public string Day1Comments { get; set; }
-        [Range(0.0, 24.0)]
+        [Range(-24.0, 24.0)]
         [Display(Name = "Sunday Hours")]
         public decimal? Day2Hrs { get; set; }
         [StringLength(255, ErrorMessage = "Maximum length is 255")]
         public string Day2Comments { get; set; }
-        [Range(0.0, 24.0)]
+        [Range(-24.0, 24.0)]
         [Display(Name = "Monday Hours")]
         public decimal? Day3Hrs { get; set; }
         [StringLength(255, ErrorMessage = "Maximum length is 255")]
         public string Day3Comments { get; set; }
-        [Range(0.0, 24.0)]
+        [Range(-24.0, 24.0)]
         [Display(Name = "Tuesday Hours")]
         public decimal? Day4Hrs { get; set; }
         [StringLength(255, ErrorMessage = "Maximum length is 255")]
         public string Day4Comments { get; set; }
-        [Range(0.0, 24.0)]
+        [Range(-24.0, 24.0)]
         [Display(Name = "Wednesday Hours")]
         public decimal? Day5Hrs { get; set; }
         [StringLength(255, ErrorMessage = "Maximum length is 255")]
         public string Day5Comments { get; set; }
-        [Range(0.0, 24.0)]
+        [Range(-24.0, 24.0)]
         [Display(Name = "Thursday Hours")]
         public decimal? Day6Hrs { get; set; }
         [StringLength(255, ErrorMessage = "Maximum length is 255")]
         public string Day6Comments { get; set; }
-        [Range(0.0, 24.0)]
+        [Range(-24.0, 24.0)]
         [Display(Name = "Friday Hours")]
         public decimal? Day7Hrs { get; set; }
         [StringLength(255, ErrorMessage = "Maximum length is 255")]
