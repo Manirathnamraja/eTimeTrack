@@ -21,15 +21,14 @@ namespace eTimeTrack.Controllers
                 {
                     TimesheetPeriod = x.TimesheetPeriod
                 }).Distinct().OrderByDescending(x => x.TimesheetPeriod.StartDate).ToList();
+            List<SelectListItem> companies = GetCompanyDropdown();
+            ViewBag.Companies = companies;
             return View(vm);
         }
 
         public ActionResult Details(int timesheetPeriodId, int? companyId)
         {
             ReconciliationSummaryDetailsViewModel vm = GetSummaryViewModel(timesheetPeriodId, companyId);
-
-            List<SelectListItem> companies = GetCompanyDropdown();
-            ViewBag.Companies = companies;
 
             return View(vm);
         }

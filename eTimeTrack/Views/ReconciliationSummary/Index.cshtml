@@ -11,6 +11,15 @@
 @Html.Partial("_Banner")
 @Html.Partial("_InfoMessageRender")
 
+
+<div class="row">
+    <div class="col-md-4 form-group">
+        <label>Company Filter</label>
+        @Html.DropDownList("companyId", new SelectList(ViewBag.Companies, "Value", "Text"), "All", new { @class = "form-control", id = "companyDropdown" })
+    </div>
+    <div class="col-md-4"></div>
+    <div class="col-md-4"></div>
+</div>
 <table class="table data-table" width="100%">
     <thead>
     <tr>
@@ -32,3 +41,4 @@
 </table>
 
 <a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>
+
