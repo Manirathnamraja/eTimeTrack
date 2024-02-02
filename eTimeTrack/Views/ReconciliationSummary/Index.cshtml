@@ -22,10 +22,10 @@
 </div>
 <table class="table data-table" width="100%">
     <thead>
-    <tr>
-        <th>Date Range</th>
-        <th>View</th>
-    </tr>
+        <tr>
+            <th>Date Range</th>
+            <th>View</th>
+        </tr>
     </thead>
     <tbody>
         @foreach (ReconciliationSummaryIndexViewModel item in Model)
@@ -33,7 +33,7 @@
             <tr>
                 <td>@(item.TimesheetPeriod.GetStartEndDates())</td>
                 <td>
-                    <a href='@Url.Action("Details", "ReconciliationSummary", new {timesheetPeriodId = item.TimesheetPeriod.TimesheetPeriodID})' class="btn btn-primary" role="button"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
+                    <button type="button" class="btn btn-primary" onclick="GotoDetails(@item.TimesheetPeriod.TimesheetPeriodID)"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> </button>
                 </td>
             </tr>
         }
@@ -42,3 +42,12 @@
 
 <a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>
 
+@section Scripts {
+    @Scripts.Render("~/bundles/notify")
+    <script>
+        function GotoDetails(TimesheetPeriodID) {
+            var companyId = $('#companyDropdown').val();
+            window.location = '/ReconciliationSummary/Details?timesheetPeriodId=' + TimesheetPeriodID + '&companyId=' + companyId;
+        }
+    </script>
+}

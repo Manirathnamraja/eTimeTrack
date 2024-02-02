@@ -62,21 +62,3 @@
     <button type="submit" id="export" class="btn btn-primary">Export Excel Data</button>
 }
 
-@section Scripts {
-    @Scripts.Render("~/bundles/notify")
-    <script>
-
-        $(document).ready(function () {
-
-            $('#companyDropdown').change(function () {
-                //window.location = 'ReconciliationEntries?reconciliationTypeId=' + $(this).val();
-                updatePage();
-            });
-        });
-
-        function updatePage() {
-            var companyId = $('#companyDropdown').val();
-            window.location = 'Details?timesheetPeriodId=@(Model.TimesheetPeriod.TimesheetPeriodID)&companyId=' + companyId;
-        }
-    </script>
-}
