@@ -27,10 +27,11 @@
                 <td>@emp.Employee.EmployeeNo</td>
                 <td>@emp.Employee.Email</td>
                 <td>
-                    @if (emp.IsAdmin)
+                    @emp.RoleName
+                    @*@if (emp.IsAdmin)
                     {
                         <span style="color: red;">Administrator</span>
-                    }
+                    }*@
                 </td>
                 <td>
                     @Html.CheckBox("Assigned", assignedProject != null, new {data_employeeid = emp.Employee.Id, @class = "assignCheckbox", data_isadmin = emp.IsAdmin.ToString().ToLower()})

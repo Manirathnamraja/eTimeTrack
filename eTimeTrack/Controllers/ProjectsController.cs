@@ -99,11 +99,10 @@ namespace eTimeTrack.Controllers
             }
 
             List<Employee> employees = GetAllEmployeesOrdered();
-            List<Employee> admins = employees.Where(x => x.Roles.Any(r => r.RoleId == (int)RoleType.RoleAdmin || r.RoleId == (int)RoleType.RoleSuperUser)).ToList();
+            List<Employee> admins = employees.Where(x => x.Roles.Any(r => r.RoleId == (int)RoleType.RoleAdmin || r.RoleId == (int)RoleType.RoleSuperUser || r.RoleId == (int)RoleType.RoleUserPlus || r.RoleId == (int)RoleType.RoleTimesheetEditor || r.RoleId == (int)RoleType.RoleUserAdministrator || r.RoleId == (int)RoleType.RoleTimesheetApproval)).ToList();
 
             List<ProjectEmployeesViewModel> employeesVm = new List<ProjectEmployeesViewModel>();
-
-            employees.ForEach(x => employeesVm.Add(new ProjectEmployeesViewModel { Employee = x, IsAdmin = admins.FirstOrDefault(y => y.Id == x.Id) != null }));
+            employees.ForEach(x => employeesVm.Add(new ProjectEmployeesViewModel { Employee = x, IsAdmin = admins.FirstOrDefault(y => y.Id == x.Id) != null, RoleName = GetRoleDetails(x.Roles.Select(y => y.RoleId).FirstOrDefault()) }));
 
 
             List<EmployeeProject> assignedProjects = Db.EmployeeProjects.Where(x => x.ProjectId == project.ProjectID).ToList();
@@ -111,6 +110,37 @@ namespace eTimeTrack.Controllers
             var model = new GenericAssignmentModel<Project, ProjectEmployeesViewModel, EmployeeProject> { AssignmentRecipient = project, AvailableList = employeesVm, AssignedList = assignedProjects };
 
             return View(model);
+        }
+
+        private string GetRoleDetails(int roleid)
+        {
+            var result = string.Empty;
+            switch (roleid)
+            {
+                case 1:
+                    result = string.Empty;
+                    break;
+                case 2:
+                    result = "Administrator";
+                    break;
+                case 3:
+                    result = "SuperUser";
+                    break;
+                case 4:
+                    result = "UserPlus";
+                    break;
+                case 5:
+                    result = "TimesheetEditor";
+                    break;
+                case 6:
+                    result = "UserAdministrator";
+                    break;
+                case 7:
+                    result = "TimesheetApproval";
+                    break;
+                
+            }
+            return result;
         }
 
         [HttpPost]

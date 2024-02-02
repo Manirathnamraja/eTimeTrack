@@ -10,5 +10,6 @@ namespace eTimeTrack.ViewModels
     {
         public Employee Employee { get; set; }
         public bool IsAdmin { get; set; }
+        public string RoleName { get; set; }
     }
 }
