@@ -34,9 +34,9 @@ namespace eTimeTrack.Controllers
             {
                 return InvokeHttp404(HttpContext);
             }
-            List<UserRate> userRates = GetAllUserRatesOrdered(projectId).Where(x => !x.Employee.LockoutEndDateUtc.HasValue && x.Employee.IsActive).ToList();
+            List<UserRate> userRates = GetAllUserRatesOrdered(projectId).Where(x => x.Employee.IsActive).ToList();
 
-            List<EmployeeProject> employeeProjects = GetAllProjectEmployeesOrdered(projectId).Where(x => !x.Employee.LockoutEndDateUtc.HasValue && x.Employee.IsActive).ToList();
+            List<EmployeeProject> employeeProjects = GetAllProjectEmployeesOrdered(projectId).Where(x => x.Employee.IsActive).ToList();
 
             ViewBag.ProjectId = projectId;
 

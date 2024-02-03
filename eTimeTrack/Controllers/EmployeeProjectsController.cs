@@ -22,7 +22,7 @@ namespace eTimeTrack.Controllers
                 return InvokeHttp404(HttpContext);
             }
 
-            List<EmployeeProject> employees = GetAllProjectEmployeesOrdered(projectId, projectUserTypeId, projectDisciplineId,officeId).Where(x => !x.Employee.LockoutEndDateUtc.HasValue && x.Employee.IsActive).ToList();
+            List<EmployeeProject> employees = GetAllProjectEmployeesOrdered(projectId, projectUserTypeId, projectDisciplineId,officeId).Where(x => x.Employee.IsActive).ToList();
             
             List<SelectListItem> selectItems = GetProjectUserTypeSelectItems(projectId);
 
