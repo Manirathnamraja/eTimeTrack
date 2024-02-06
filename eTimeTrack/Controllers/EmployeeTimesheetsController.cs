@@ -883,7 +883,7 @@ namespace eTimeTrack.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
+        [Authorize(Roles = UserHelpers.AuthTextAnyAdminRole)]
         public ActionResult ImportUserTimes(HttpPostedFileBase file)
         {
             try
