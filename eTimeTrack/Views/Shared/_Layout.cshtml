@@ -28,7 +28,7 @@
                         </a>
                     </div>
                     <div class="navbar-collapse collapse">
-                        @if ((User.IsInAnyAdminRole() || User.IsUser()))
+                        @if ((User.IsInAnyAdminRole() || User.IsUser() || User.IsTimesheetApproval()))
                         {
                             <div class="col-md-4" style="margin-top: 8px;">@Html.Action("Index", "ProjectSelector")</div>
                         }
@@ -64,7 +64,7 @@
 </html>
 
 
-@if (User.IsUserPlusOrAbove() || User.IsUser())
+@if (User.IsUserPlusOrAbove() || User.IsUser() || User.IsTimesheetApproval())
 {
     <script>
 
