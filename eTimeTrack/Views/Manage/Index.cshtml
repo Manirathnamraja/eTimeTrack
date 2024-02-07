@@ -159,6 +159,12 @@
                         @Html.ActionLink("Transfer Tasks / Variations", "TaskSelect", "TaskTransfer")
                     </dd>
                 }
+                @if (User.IsAdminOrAbove())
+                {
+                    <dd>
+                        @Html.ActionLink("Import Timesheet Data", "ImportUserTimes", "EmployeeTimesheets")
+                    </dd>
+                }
             </dl>
         }
 
@@ -175,7 +181,7 @@
                 <dd>
                     @Html.ActionLink("Expense Upload", "Index", "ExpensesUpload")
                 </dd>
-                 <dd>
+                <dd>
                     @Html.ActionLink("Expense Manual Entry", "Index", "ExpensesManualEntry")
                 </dd>
                 <dd>
@@ -331,14 +337,14 @@
         }
 
         if (User.IsAdminOrAbove())
-            {
-                <dl class="dl-horizontal">
-                    <dt>Import Timesheets:</dt>
-                    <dd>
-                        @Html.ActionLink("Import Timesheet Data", "ImportUserTimes", "EmployeeTimesheets")
-                    </dd>
-                </dl>
-            }
+        {
+            <dl class="dl-horizontal">
+                <dt>Import Timesheets:</dt>
+                <dd>
+                    @Html.ActionLink("Import Timesheet Data", "ImportUserTimes", "EmployeeTimesheets")
+                </dd>
+            </dl>
+        }
 
     }
 </div>
