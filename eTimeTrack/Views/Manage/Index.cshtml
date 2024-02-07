@@ -330,7 +330,7 @@
             }
         }
 
-        @*if (User.IsAdminOrAbove())
+        if (User.IsAdminOrAbove())
             {
                 <dl class="dl-horizontal">
                     <dt>Import Timesheets:</dt>
@@ -338,7 +338,7 @@
                         @Html.ActionLink("Import Timesheet Data", "ImportUserTimes", "EmployeeTimesheets")
                     </dd>
                 </dl>
-            }*@
+            }
 
     }
 </div>
