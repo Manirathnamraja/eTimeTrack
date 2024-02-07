@@ -22,6 +22,9 @@
         <span style="display: none;">@(Model.HideComplete)</span>
         @Html.CheckBoxFor(model => Model.HideComplete, new { @class = "form-control", id = "filter-complete", style = "width: max-content;" })
     </div>
+    <div class="col-md-4">
+        <button id="refresh-btn" class="btn btn-primary">Refresh</button>
+    </div>
     <div class="col-md-4"></div>
 </div>
 
@@ -112,6 +115,10 @@
 
             $('#resultsTable').on('draw.dt', function () {
                 setupChangeActions();
+            });
+
+            $('#refresh-btn').click(function () {
+                updatePage();
             });
 
             setupChangeActions();
