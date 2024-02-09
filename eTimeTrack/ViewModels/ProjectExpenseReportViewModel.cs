@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace eTimeTrack.ViewModels
+﻿namespace eTimeTrack.ViewModels
 {
     public class ProjectExpenseReportViewModel
     {
-
-        public string InvoiceNumber { get; set; }
 
         public string TransactionID { get; set; }
 
@@ -25,6 +18,7 @@ namespace eTimeTrack.ViewModels
         public string ExpenditureComment { get; set; }
 
         public string ProjectComment { get; set; }
+        public string InvoiceNumber { get; set; }
 
         public string IsFeeRecovery { get; set; }
 
