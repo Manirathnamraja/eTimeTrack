@@ -190,7 +190,7 @@ namespace eTimeTrack.Controllers
         {
 
             List<SelectListItem> selectItems = Db.ProjectOffices.Select(x => new SelectListItem { Value = x.OfficeId.ToString(), Text = x.OfficeName }).ToList();
-            return selectItems;
+            return selectItems.OrderBy(x => x.Text).ToList();
 
         }
 

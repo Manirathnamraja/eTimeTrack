@@ -101,27 +101,19 @@ namespace eTimeTrack.Controllers
         private void SetViewbag(int? projectId)
         {
             ViewBag.ProjectID = new SelectList(Db.Projects, "ProjectID", "Name");
-            ViewBag.TaskID = new SelectList(GetProjectTaskdetails(projectId), "TaskID", "Name");
-            ViewBag.VariationID = new SelectList(GetProjectVariationdetails(projectId), "VariationID", "Description");
+            ViewBag.TaskID = new SelectList(GetProjectTaskdetails(projectId), "TaskID", "DisplayName");
+            ViewBag.VariationID = new SelectList(GetProjectVariationdetails(projectId), "VariationID", "DisplayName");
         }
 
-        private SelectList Gettask(int projectId, string name)
-        {
-            return new SelectList(GetProjectTaskdetails(projectId), "TaskID", "Name", name);
-        }
-        private SelectList Getvariations(int projectId, string name)
-        {
-            return new SelectList(GetProjectVariationdetails(projectId), "VariationID", "Description", name);
-        }
         private List<ProjectTask> GetProjectTaskdetails(int? projectId)
         {
-            var deta =  Db.ProjectTasks.Where(x => x.ProjectID == projectId).ToList();
+            var deta =  Db.ProjectTasks.Where(x => x.ProjectID == projectId && !x.IsClosed).ToList();
             return deta;
         }
        
         private List<ProjectVariation> GetProjectVariationdetails(int? projectId)
         {
-            return Db.ProjectVariations.Where(x => x.ProjectID == projectId).ToList();
+            return Db.ProjectVariations.Where(x => x.ProjectID == projectId && !x.IsClosed).ToList();
         }
     }
 }
