@@ -107,13 +107,13 @@ namespace eTimeTrack.Controllers
 
         private List<ProjectTask> GetProjectTaskdetails(int? projectId)
         {
-            var deta =  Db.ProjectTasks.Where(x => x.ProjectID == projectId && !x.IsClosed).ToList();
+            var deta =  Db.ProjectTasks.Where(x => x.ProjectID == projectId && !x.IsClosed).OrderBy(x => x.Name).ToList();
             return deta;
         }
        
         private List<ProjectVariation> GetProjectVariationdetails(int? projectId)
         {
-            return Db.ProjectVariations.Where(x => x.ProjectID == projectId && !x.IsClosed).ToList();
+            return Db.ProjectVariations.Where(x => x.ProjectID == projectId && !x.IsClosed).OrderBy(x => x.Description).ToList();
         }
     }
 }

@@ -55,7 +55,7 @@
                 </td>
                 <td>
                     <span style="display: none;">@item.OfficeID</span>
-                    @Html.DropDownListFor(modelItem => item.OfficeID, new SelectList(Model.Offices, "Value", "Text", 1), new { @class = "form-control select-office" })
+                    @Html.DropDownListFor(modelItem => item.OfficeID, new SelectList(Model.Offices, "Value", "Text", item.OfficeID), "Default / Unassigned", new { @class = "form-control select-office" })
                 </td>
                 <td>
                     <a href='@Url.Action("Details", new {employeeId = item.EmployeeId})' class="btn btn-primary modal-link" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
