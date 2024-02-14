@@ -692,6 +692,7 @@
     <Compile Include="ViewModels\ExpensesUploadViewModel.cs" />
     <Compile Include="ViewModels\ExportTimesheetDataViewModel.cs" />
     <Compile Include="ViewModels\ProjectExpenseReportViewModel.cs" />
+    <Compile Include="ViewModels\RefreshreconcillationViewModel.cs" />
     <Compile Include="ViewModels\SearchWBSViewModel.cs" />
     <Compile Include="ViewModels\TimesheetApprovalViewModel.cs" />
     <Compile Include="ViewModels\UserEndDatesViewModel.cs">

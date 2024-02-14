@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
 using eTimeTrack.Helpers;
@@ -19,9 +20,20 @@ namespace eTimeTrack.Controllers
             public decimal? Hours { get; set; }
         }
 
-        public ActionResult Index(int? reconciliationTypeId, bool? hideComplete)
+        public ActionResult Index(int? reconciliationTypeId, bool? hideComplete, bool? IsRefresh)
         {
             int projectId = (int?)Session["SelectedProject"] ?? 0;
+
+            if (IsRefresh == true)
+            {
+                List<RefreshreconcillationViewModel> allData = Db.Database.SqlQuery<RefreshreconcillationViewModel>("EXEC GetRefreshReconciliation @ProjectId",
+                   new SqlParameter("ProjectId", projectId)).ToList();
+
+                foreach (var item in allData)
+                {
+                    SaveRefreshTimesheetId(item.Id, item.EmployeeTimesheetId_SHOULDBE);
+                }
+            }
 
             Dictionary<int, decimal?> etthours = Db.EmployeeTimesheetItems
                 .Where(x => x.ProjectTask.ProjectID == projectId)
@@ -134,6 +146,16 @@ namespace eTimeTrack.Controllers
             }
 
             return Json(false);
+        }
+
+        public void SaveRefreshTimesheetId(int id, int? employeeTimesheetId)
+        {
+            ReconciliationEntry existingItem = Db.ReconciliationEntries.Find(id);
+            if (existingItem != null)
+            {
+                existingItem.EmployeeTimesheetId = employeeTimesheetId;
+                Db.SaveChanges();
+            }
         }
 
         public JsonResult SaveReconciliationType(int id, int? reconciliationTypeId)

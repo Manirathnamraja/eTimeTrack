@@ -118,16 +118,17 @@
             });
 
             $('#refresh-btn').click(function () {
-                updatePage();
+                var isrefresh = true;
+                updatePage(isrefresh);
             });
 
             setupChangeActions();
         });
 
-        function updatePage() {
+        function updatePage(isrefresh) {
             var reconciliationTypeFilter = $('#filter-reconciliation-type').val();
             var completeFilter = $('#filter-complete').is(":checked");
-            window.location = 'ReconciliationEntries?reconciliationTypeId=' + reconciliationTypeFilter + '&hideComplete=' + completeFilter;
+            window.location = 'ReconciliationEntries?reconciliationTypeId=' + reconciliationTypeFilter + '&hideComplete=' + completeFilter + '&IsRefresh=' + isrefresh;
         }
 
         function setupChangeActions() {
