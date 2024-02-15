@@ -155,12 +155,12 @@ namespace eTimeTrack.Controllers
                                 }
                                 break;
                             }
-                            var transactionIDdetails = ws.Cells[i, transactionID].Text?.Trim();
-                            string exDate = ws.Cells[i, expenseItemDate].Value?.ToString()?.Trim();
+                            var transactionIDdetails = transactionID != 0 ? ws.Cells[i, transactionID].Text?.Trim() : null;
+                            string exDate = expenseItemDate !=0 ? ws.Cells[i, expenseItemDate].Value?.ToString()?.Trim() : null;
                             var ischeckexdate = CheckDate(exDate);
                             DateTime expenDate = !ischeckexdate ? DateTime.FromOADate(Convert.ToDouble(exDate)) : Convert.ToDateTime(exDate);
 
-                            string costDate = ws.Cells[i, costedInWeekEnding].Value?.ToString()?.Trim();
+                            string costDate = costedInWeekEnding != 0 ? ws.Cells[i, costedInWeekEnding].Value?.ToString()?.Trim() : null;
                             var ischeckcostdate = CheckDate(costDate);
                             DateTime cdate = !ischeckcostdate ? DateTime.FromOADate(Convert.ToDouble(costDate)) : Convert.ToDateTime(costDate);
                             var idevalues = string.Empty;
@@ -186,7 +186,7 @@ namespace eTimeTrack.Controllers
                                     }
                                 }
                             }
-                            int stdtypeid = 0; int exptypeid = 0;
+                            int stdtypeid = 0; int exptypeid = 0; bool existexpenses = false;
                             var homeoffics = homeOfficeType != 0 ? ws.Cells[i, homeOfficeType].Value?.ToString()?.Trim() : null;
                             if (!string.IsNullOrEmpty(homeoffics))
                             {
@@ -200,8 +200,41 @@ namespace eTimeTrack.Controllers
 
                             var expensestypes = context.ProjectExpenseTypes.Where(x => x.ProjectID == model.ProjectId).FirstOrDefault();
 
-                            bool existexpenses = context.ProjectExpensesUploads.Any(x => x.TransactionID == transactionIDdetails);
-                            if (!existexpenses && !string.IsNullOrEmpty(idevalues))
+                            if (!string.IsNullOrEmpty(transactionIDdetails))
+                            {
+                                existexpenses = context.ProjectExpensesUploads.Any(x => x.TransactionID == transactionIDdetails);
+                            }
+
+                            if (!existexpenses && !string.IsNullOrEmpty(model.UOM) && !string.IsNullOrEmpty(idevalues))
+                            {
+                                ProjectExpensesUpload expenses = new ProjectExpensesUpload
+                                {
+                                    TransactionID = transactionIDdetails,
+                                    ProjectId = model.ProjectId,
+                                    CompanyId = model.CompanyId,
+                                    ExpenseDate = expenDate.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                                    CostedInWeekEnding = cdate.ToString("yyyy-MM-dd HH:mm:ss.fff"),
+                                    Cost = cost != 0 ? ws.Cells[i, cost].Value?.ToString()?.Trim() : string.Empty,
+                                    HomeOfficeType = homeoffics,
+                                    EmployeeSupplierName = employeeSupplierName != 0 ? ws.Cells[i, employeeSupplierName].Value?.ToString()?.Trim() : string.Empty,
+                                    UOM = idevalues,
+                                    ExpenditureComment = expenditureComment != 0 ? ws.Cells[i, expenditureComment].Value?.ToString()?.Trim() : null,
+                                    InvoiceNumber = invoiceNumber != 0 ? ws.Cells[i, invoiceNumber].Value?.ToString()?.Trim() : null,
+                                    AddedBy = userId,
+                                    AddedDate = DateTime.UtcNow,
+                                    ProjectExpTypeID = exptypeid,
+                                    TaskID = expensestypes != null ? expensestypes.TaskID : 0,
+                                    VariationID = expensestypes != null ? expensestypes.VariationID : 0,
+                                    IsCostRecovery = expensestypes != null ? expensestypes.IsCostRecovery : false,
+                                    IsFeeRecovery = expensestypes != null ? expensestypes.IsFeeRecovery : false,
+                                    IsUpload = true
+                                };
+                                expensesUpload.Add(expenses);
+                                context.ProjectExpensesUploads.Add(expenses);
+                                await context.SaveChangesAsync();
+                                insertedRows++;
+                            }
+                            else if (!existexpenses && string.IsNullOrEmpty(model.UOM) && string.IsNullOrEmpty(idevalues))
                             {
                                 ProjectExpensesUpload expenses = new ProjectExpensesUpload
                                 {

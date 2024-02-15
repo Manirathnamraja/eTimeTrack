@@ -657,6 +657,10 @@
     <Compile Include="Migrations\202309250315163_ProjectExpensesUpload8.designer.cs">
       <DependentUpon>202309250315163_ProjectExpensesUpload8.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202402150746248_ProjectExpensesUpload9.cs" />
+    <Compile Include="Migrations\202402150746248_ProjectExpensesUpload9.designer.cs">
+      <DependentUpon>202402150746248_ProjectExpensesUpload9.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BulkImportStatus.cs" />
@@ -1396,6 +1400,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202309250315163_ProjectExpensesUpload8.resx">
       <DependentUpon>202309250315163_ProjectExpensesUpload8.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202402150746248_ProjectExpensesUpload9.resx">
+      <DependentUpon>202402150746248_ProjectExpensesUpload9.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

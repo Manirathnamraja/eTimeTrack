@@ -19,18 +19,18 @@ namespace eTimeTrack.Models
 
         [Display(Name = "Transaction ID")]
         public string TransactionID { get; set; }
-        [Required]
+        
         [Display(Name = "Expense Date")]
-        public string ExpenseDate { get; set; }
+        public string ExpenseDate { get; set; } 
         [Display(Name = "Costed In Week Ending")]
         public string CostedInWeekEnding { get; set; }
-        [Required]
-        public string Cost { get; set; }
+       
+        public string Cost { get; set; } 
         [Display(Name = "Home Office Type")]
         public string HomeOfficeType { get; set; }
-        [Required]
+        
         [Display(Name = "Employee Supplier Name")]
-        public string EmployeeSupplierName { get; set;}
+        public string EmployeeSupplierName { get; set;} 
         public string UOM { get; set; }
         [Display(Name = "Expenditure Comment")]
         public string ExpenditureComment { get; set; }
