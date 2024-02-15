@@ -201,7 +201,7 @@ namespace eTimeTrack.Controllers
                             var expensestypes = context.ProjectExpenseTypes.Where(x => x.ProjectID == model.ProjectId).FirstOrDefault();
 
                             bool existexpenses = context.ProjectExpensesUploads.Any(x => x.TransactionID == transactionIDdetails);
-                            if (!existexpenses && !string.IsNullOrEmpty(idevalues))
+                            if (!existexpenses)
                             {
                                 ProjectExpensesUpload expenses = new ProjectExpensesUpload
                                 {
