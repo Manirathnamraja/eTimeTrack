@@ -40,7 +40,8 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.TransactionID, new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.EditorFor(model => model.TransactionID, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.EditorFor(model => model.TransactionID, new { htmlAttributes = new { @class = "form-control", style = "display: inline-block" } })
+                        <span style="text-wrap: nowrap; color:red;">Warning: If Transaction Id is not available, please check that the import file does not contain any previously uploaded transactions</span>
                         @Html.ValidationMessageFor(m => m.TransactionID, "", new { @class = "text-danger" })
                     </div>
                 </div>
