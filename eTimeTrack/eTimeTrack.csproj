@@ -399,6 +399,7 @@
     <Compile Include="Controllers\ExpensesMappingController.cs" />
     <Compile Include="Controllers\ExpensesStdTypesController.cs" />
     <Compile Include="Controllers\ExpensesUploadController.cs" />
+    <Compile Include="Controllers\GuidanceNotesController.cs" />
     <Compile Include="Controllers\ProjectExpenseReportController.cs" />
     <Compile Include="Controllers\TimesheetApprovalController.cs" />
     <Compile Include="Controllers\SearchWBSController.cs" />
@@ -1216,6 +1217,7 @@
     <Content Include="Views\ExpensesAllocations\Edit.cshtml" />
     <Content Include="Views\ExpensesManualEntry\Index.cshtml" />
     <Content Include="Views\ProjectExpenseReport\Index.cshtml" />
+    <Content Include="Views\GuidanceNotes\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\ProjectTimesheetPeriods\Assign.cshtml" />
