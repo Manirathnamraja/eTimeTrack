@@ -701,6 +701,7 @@
     <Compile Include="ViewModels\ExpensesTypesViewModel.cs" />
     <Compile Include="ViewModels\ExpensesUploadViewModel.cs" />
     <Compile Include="ViewModels\ExportTimesheetDataViewModel.cs" />
+    <Compile Include="ViewModels\GetNotesViewModel.cs" />
     <Compile Include="ViewModels\ProjectExpenseReportViewModel.cs" />
     <Compile Include="ViewModels\RefreshreconcillationViewModel.cs" />
     <Compile Include="ViewModels\SearchWBSViewModel.cs" />
@@ -1218,6 +1219,7 @@
     <Content Include="Views\ExpensesManualEntry\Index.cshtml" />
     <Content Include="Views\ProjectExpenseReport\Index.cshtml" />
     <Content Include="Views\GuidanceNotes\Index.cshtml" />
+    <Content Include="Views\GuidanceNotes\GetNotes.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\ProjectTimesheetPeriods\Assign.cshtml" />

@@ -1,0 +1,75 @@
+﻿@using eTimeTrack.Extensions
+@using eTimeTrack.ViewModels
+@model GetNotesViewModel
+
+@{
+    ViewBag.Title = "Project Guidance Notes";
+}
+
+@Html.Partial("_Banner")
+@Html.Partial("_InfoMessageRender")
+
+<div class="container" style="max-width:1200px">
+    <div class="table-responsive">
+        <table class="table table-responsive cell-border" width="100%" id="notescolumns">
+            <thead>
+                <tr>
+                    <th>Time Administrator contact</th>
+                    <th>Online notes used with WBS codes</th>
+                    <th>Cap weekly hours at</th>
+                    <th>Match hours to home office timesheet?</th>
+                    <th>Overtime Approval requirements</th>
+                    <th>NT Time Code Note</th>
+                    <th>OT1 Time Code Note</th>
+                    <th>OT2 Time Code Note</th>
+                    <th>OT3 Time Code Note</th>
+                    <th>OT4 Time Code Note</th>
+                    <th>OT5 Time Code Note</th>
+                    <th>OT6 Time Code Note</th>
+                    <th>OT7 Time Code Note</th>
+                    <th>Timesheet Comments</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.GuidanceNotes)
+                {
+                    <tr>
+                        <td>@item.TimeAdministratorContact </td>
+                        <td>@item.WBSCodes </td>
+                        <td>@item.CapWeeklyHours </td>
+                        <td>@item.MatchHours </td>
+                        <td>@item.OvertimeApproval </td>
+                        <td>@item.NTTimeCodeNote </td>
+                        <td>@item.OT1TimeCodeNote </td>
+                        <td>@item.OT2TimeCodeNote </td>
+                        <td>@item.OT3TimeCodeNote </td>
+                        <td>@item.OT4TimeCodeNote </td>
+                        <td>@item.OT5TimeCodeNote </td>
+                        <td>@item.OT6TimeCodeNote </td>
+                        <td>@item.OT7TimeCodeNote </td>
+                        <td>@item.TimesheetComments </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+<a href="@Url.Action("Index", "Manage")" class="btn btn-primary">Back</a>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/notify")
+
+    <script>
+        $('#notescolumns').dataTable({
+            paging: true,
+            searching: true,
+            bLengthChange: false
+        });
+    </script>
+    
+}

@@ -44,6 +44,13 @@
                 @Html.ActionLink("Timesheet Approval", "Index", "TimesheetApproval")
             </dd>
         }
+        @if (User.IsUserPlusOrAbove())
+        {
+            <dd>
+                @Html.ActionLink("Project Guidance Notes", "GetNotes", "GuidanceNotes")
+            </dd>
+        }
+
 
     </dl>
 
