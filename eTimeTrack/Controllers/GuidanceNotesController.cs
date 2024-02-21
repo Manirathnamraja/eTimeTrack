@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -9,28 +10,45 @@ using eTimeTrack.ViewModels;
 
 namespace eTimeTrack.Controllers
 {
-    [Authorize(Roles = UserHelpers.AuthTextUserPlusOrAbove)]
+    [Authorize]
     public class GuidanceNotesController : BaseController
     {
         public ActionResult Index()
         {
             int ProjectId = (int?)Session?["SelectedProject"] ?? 0;
-
-            ViewBag.InfoMessage = TempData["InfoMessage"];
-            return View(new ProjectGuidanceNotes
+            var results = Db.ProjectGuidanceNotes.Where(x => x.ProjectId == ProjectId).FirstOrDefault();
+            if(results != null)
             {
-                ProjectId = ProjectId
-            });
+                results.ProjectId = ProjectId;
+                ViewBag.InfoMessage = TempData["InfoMessage"];
+                return View(results);
+            }
+            else
+            {
+                ViewBag.InfoMessage = TempData["InfoMessage"];
+                return View(new ProjectGuidanceNotes
+                {
+                    ProjectId = ProjectId
+                });
+            }
         }
 
         [HttpPost]
         public ActionResult Create(ProjectGuidanceNotes notes)
         {
+            var existing = Db.ProjectGuidanceNotes.Find(notes.GuidanceNoteId);
             notes.LastModifiedBy = UserHelpers.GetCurrentUserId();
             notes.LastModifiedDate = DateTime.UtcNow;
-            Db.ProjectGuidanceNotes.Add(notes);
+            if (existing != null)
+            {
+                Db.Entry(existing).CurrentValues.SetValues(notes);
+                Db.Entry(existing).State = EntityState.Modified;
+            }
+            else
+            {
+                Db.ProjectGuidanceNotes.Add(notes);
+            }
             Db.SaveChanges();
-
             TempData["InfoMessage"] = new InfoMessage(InfoMessageType.Success, "Succesfully Saved Project Guidance Notes");
             return RedirectToAction("Index");
         }

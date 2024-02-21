@@ -12,105 +12,176 @@
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model.ProjectId)
+    @Html.HiddenFor(model => model.GuidanceNoteId)
 
     <div class="form-horizontal">
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
-            @Html.LabelFor(model => model.TimeAdministratorContact, new { @class = "control-label col-md-4"})
+            <label class="control-label col-md-4">
+                Time Administrator Contact
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert email address of eTT Time Administrator for the project">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
             <div class="col-md-8">
-                @Html.EditorFor(model => model.TimeAdministratorContact, new { htmlAttributes = new { @class = "form-control", placeholder = "Insert email address of eTT Time Administrator for the project", style = "max-width:70%"  } })
+                @Html.EditorFor(model => model.TimeAdministratorContact, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%" } })
                 @Html.ValidationMessageFor(model => model.TimeAdministratorContact, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(model => model.WBSCodes, new { @class = "control-label col-md-4" })
+            <label class="control-label col-md-4">
+                Online notes used with WBS codes
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Yes or No with any commentary">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
             <div class="col-md-8">
-                @Html.EditorFor(model => model.WBSCodes, new { htmlAttributes = new { @class = "form-control", placeholder = "Yes or No with any commentary", style = "max-width:70%" } })
+                @Html.EditorFor(model => model.WBSCodes, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%" } })
                 @Html.ValidationMessageFor(model => model.WBSCodes, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(model => model.CapWeeklyHours, new { @class = "control-label col-md-4" })
+            <label class="control-label col-md-4">
+                Cap weekly hours at
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert any hours caps and provide additional commentary">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
             <div class="col-md-8">
-                @Html.EditorFor(model => model.CapWeeklyHours, new { htmlAttributes = new { @class = "form-control", placeholder = "Insert any hours caps and provide additional commentary", style = "max-width:70%" } })
+                @Html.EditorFor(model => model.CapWeeklyHours, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%" } })
                 @Html.ValidationMessageFor(model => model.CapWeeklyHours, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(model => model.MatchHours, new { @class = "control-label col-md-4" })
+            <label class="control-label col-md-4">
+                Match hours to home office timesheet?
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Yes or no with commentary if needed">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
             <div class="col-md-8">
-                @Html.EditorFor(model => model.MatchHours, new { htmlAttributes = new { @class = "form-control", placeholder = "Yes or no with commentary if needed", style = "max-width:70%" } })
+                @Html.EditorFor(model => model.MatchHours, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%" } })
                 @Html.ValidationMessageFor(model => model.MatchHours, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(model => model.OvertimeApproval, new { @class = "control-label col-md-4" })
+            <label class="control-label col-md-4">
+                Overtime Approval requirements
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert commentary including email if applicable">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
             <div class="col-md-8">
-                @Html.EditorFor(model => model.OvertimeApproval, new { htmlAttributes = new { @class = "form-control", placeholder = "Insert commentary including email if applicable", style = "max-width:70%" } })
+                @Html.EditorFor(model => model.OvertimeApproval, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%" } })
                 @Html.ValidationMessageFor(model => model.OvertimeApproval, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(model => model.NTTimeCodeNote, new { @class = "control-label col-md-4" })
+            <label class="control-label col-md-4">
+                NT Time Code Note
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert commentary on how this is applicable if required">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
             <div class="col-md-8">
-                @Html.EditorFor(model => model.NTTimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "Insert commentary on how this is applicable if required", style = "max-width:70%" } })
+                @Html.EditorFor(model => model.NTTimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%" } })
                 @Html.ValidationMessageFor(model => model.NTTimeCodeNote, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(model => model.OT1TimeCodeNote, new { @class = "control-label col-md-4" })
+            <label class="control-label col-md-4">
+                OT1 Time Code Note
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert commentary on how this is applicable if required">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
             <div class="col-md-8">
-                @Html.EditorFor(model => model.OT1TimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "Insert commentary on how this is applicable if required", style = "max-width:70%" } })
+                @Html.EditorFor(model => model.OT1TimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%" } })
                 @Html.ValidationMessageFor(model => model.OT1TimeCodeNote, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(model => model.OT2TimeCodeNote, new { @class = "control-label col-md-4" })
+            <label class="control-label col-md-4">
+                OT2 Time Code Note
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert commentary on how this is applicable if required">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
             <div class="col-md-8">
-                @Html.EditorFor(model => model.OT2TimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "Insert commentary on how this is applicable if required", style = "max-width:70%" } })
+                @Html.EditorFor(model => model.OT2TimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%" } })
                 @Html.ValidationMessageFor(model => model.OT2TimeCodeNote, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(model => model.OT3TimeCodeNote, new { @class = "control-label col-md-4" })
+            <label class="control-label col-md-4">
+                OT3 Time Code Note
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert commentary on how this is applicable if required">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
             <div class="col-md-8">
-                @Html.EditorFor(model => model.OT3TimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "Insert commentary on how this is applicable if required", style = "max-width:70%" } })
+                @Html.EditorFor(model => model.OT3TimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%" } })
                 @Html.ValidationMessageFor(model => model.OT3TimeCodeNote, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(model => model.OT4TimeCodeNote, new { @class = "control-label col-md-4" })
+            <label class="control-label col-md-4">
+                OT4 Time Code Note
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert commentary on how this is applicable if required">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
             <div class="col-md-8">
-                @Html.EditorFor(model => model.OT4TimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "Insert commentary on how this is applicable if required", style = "max-width:70%" } })
+                @Html.EditorFor(model => model.OT4TimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%" } })
                 @Html.ValidationMessageFor(model => model.OT4TimeCodeNote, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(model => model.OT5TimeCodeNote, new { @class = "control-label col-md-4" })
+            <label class="control-label col-md-4">
+                OT5 Time Code Note
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert commentary on how this is applicable if required">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
             <div class="col-md-8">
-                @Html.EditorFor(model => model.OT5TimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "Insert commentary on how this is applicable if required", style = "max-width:70%" } })
+                @Html.EditorFor(model => model.OT5TimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%" } })
                 @Html.ValidationMessageFor(model => model.OT5TimeCodeNote, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(model => model.OT6TimeCodeNote, new { @class = "control-label col-md-4" })
+            <label class="control-label col-md-4">
+                OT6 Time Code Note
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert commentary on how this is applicable if required">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
             <div class="col-md-8">
-                @Html.EditorFor(model => model.OT6TimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "Insert commentary on how this is applicable if required", style = "max-width:70%" } })
+                @Html.EditorFor(model => model.OT6TimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%" } })
                 @Html.ValidationMessageFor(model => model.OT6TimeCodeNote, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(model => model.OT7TimeCodeNote, new { @class = "control-label col-md-4" })
+            <label class="control-label col-md-4">
+                OT7 Time Code Note
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert commentary on how this is applicable if required">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
             <div class="col-md-8">
-                @Html.EditorFor(model => model.OT7TimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "Insert commentary on how this is applicable if required", style = "max-width:70%" } })
+                @Html.EditorFor(model => model.OT7TimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%" } })
                 @Html.ValidationMessageFor(model => model.OT7TimeCodeNote, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
-            @Html.LabelFor(model => model.TimesheetComments, new { @class = "control-label col-md-4" })
+            <label class="control-label col-md-4">
+                Timesheet Comments
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert commentary on if and how timesheet comments are to be captured">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
             <div class="col-md-8">
-                @Html.EditorFor(model => model.TimesheetComments, new { htmlAttributes = new { @class = "form-control", placeholder = "Insert commentary on if and how timesheet comments are to be captured", style = "max-width:70%" } })
+                @Html.EditorFor(model => model.TimesheetComments, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%" } })
                 @Html.ValidationMessageFor(model => model.TimesheetComments, "", new { @class = "text-danger" })
             </div>
         </div>
