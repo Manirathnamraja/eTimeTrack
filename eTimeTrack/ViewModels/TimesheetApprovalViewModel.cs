@@ -97,5 +97,7 @@ namespace eTimeTrack.ViewModels
 
         public bool IsDeleted { get; set; }
 
+        public int ProjectId { get; set; }
+
     }
 }

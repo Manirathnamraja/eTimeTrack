@@ -72,7 +72,8 @@ namespace eTimeTrack.Controllers
                                      EndDate = tp.EndDate,
                                      TimesheetItemID = e.TimesheetItemID,
                                      TimeCode = e.TimeCode,
-                                     Reviewercomments = e.Reviewercomments
+                                     Reviewercomments = e.Reviewercomments,
+                                     ProjectId = t.ProjectID
                                  };
 
             var res = empresultslist.Distinct().OrderByDescending(x => x.EndDate).ToList();
@@ -81,7 +82,7 @@ namespace eTimeTrack.Controllers
                 foreach (var item in res)
                 {
                     item.Timecodes = timecode(item.TimeCode);
-                    item.TimecodesName = timecodename(item.Timecodes);
+                    item.TimecodesName = timecodename(item.Timecodes, item.ProjectId);
                 }
             }
 
@@ -138,34 +139,36 @@ namespace eTimeTrack.Controllers
             return Json(false);
         }
 
-        private string timecodename(int time)
+        private string timecodename(int time, int projectid)
         {
+            var Configs = Db.ProjectTimeCodeConfigs.Where(x => x.ProjectID == projectid).FirstOrDefault();
+
             var result = string.Empty;
             switch (time)
             {
                 case 0:
-                    result = "NT: Normal Time";
+                    result = !string.IsNullOrEmpty(Configs.NTName) ? Configs.NTName : "NT: Normal Time";
                     break;
                 case 1:
-                    result = "OT1: Other Time 1";
+                    result = !string.IsNullOrEmpty(Configs.OT1Name) ? Configs.OT1Name : "Unapproved Overtime & Non-Billable Time - OT1: Other Time 1";
                     break;
                 case 2:
-                    result = "OT2: Other Time 2";
+                    result = !string.IsNullOrEmpty(Configs.OT2Name) ? Configs.OT2Name : "Unapproved Overtime & Non-Billable Time - OT2: Other Time 2";
                     break;
                 case 3:
-                    result = "OT3: Other Time 3";
+                    result = !string.IsNullOrEmpty(Configs.OT3Name) ? Configs.OT3Name : "Unapproved Overtime & Non-Billable Time - OT3: Other Time 3";
                     break;
                 case 4:
-                    result = "OT4: Other Time 4";
+                    result = !string.IsNullOrEmpty(Configs.OT4Name) ? Configs.OT4Name : "Unapproved Overtime & Non-Billable Time - OT4: Other Time 4";
                     break;
                 case 5:
-                    result = "OT5: Other Time 5";
+                    result = !string.IsNullOrEmpty(Configs.OT5Name) ? Configs.OT5Name : "Unapproved Overtime & Non-Billable Time - OT5: Other Time 5";
                     break;
                 case 6:
-                    result = "OT6: Other Time 6";
+                    result = !string.IsNullOrEmpty(Configs.OT6Name) ? Configs.OT6Name : "Unapproved Overtime & Non-Billable Time - OT6: Other Time 6";
                     break;
                 case 7:
-                    result = "OT7: Other Time 7";
+                    result = !string.IsNullOrEmpty(Configs.OT7Name) ? Configs.OT7Name : "Unapproved Overtime & Non-Billable Time - OT7: Other Time 7";
                     break;
             }
             return result;
