@@ -666,6 +666,10 @@
     <Compile Include="Migrations\202402190737087_ProjectGuidanceNotes.designer.cs">
       <DependentUpon>202402190737087_ProjectGuidanceNotes.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202408211607083_UnassignedEmployeeProjects.cs" />
+    <Compile Include="Migrations\202408211607083_UnassignedEmployeeProjects.Designer.cs">
+      <DependentUpon>202408211607083_UnassignedEmployeeProjects.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BulkImportStatus.cs" />
@@ -675,6 +679,7 @@
     <Compile Include="Models\ProjectExpensesUpload.cs" />
     <Compile Include="Models\ProjectExpenseType.cs" />
     <Compile Include="Models\ProjectGuidanceNotes.cs" />
+    <Compile Include="Models\UnassignedEmployeeProjects.cs" />
     <Compile Include="Models\UserRatesUpload.cs" />
     <Compile Include="Models\UserRate.cs" />
     <Compile Include="Models\ProjectUserClassification.cs" />
@@ -1415,6 +1420,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202402190737087_ProjectGuidanceNotes.resx">
       <DependentUpon>202402190737087_ProjectGuidanceNotes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202408211607083_UnassignedEmployeeProjects.resx">
+      <DependentUpon>202408211607083_UnassignedEmployeeProjects.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

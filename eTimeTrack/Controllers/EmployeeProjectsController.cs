@@ -92,6 +92,17 @@ namespace eTimeTrack.Controllers
             }
             else if (!assigned)
             {
+                UnassignedEmployeeProjects employeeProject = new UnassignedEmployeeProjects
+                {
+                    EmployeeProjectId = existing.EmployeeProjectId,
+                    EmployeeId = existing.EmployeeId,
+                    ProjectId = existing.ProjectId,
+                    ProjectUserTypeID = existing.ProjectUserTypeID,
+                    ProjectRole = existing.ProjectRole,
+                    ProjectDisciplineID = existing.ProjectDisciplineID,
+                    OfficeID = existing.OfficeID
+                };
+                Db.UnassignedEmployeeProjects.Add(employeeProject);
                 Db.EmployeeProjects.Remove(existing);
             }
 
