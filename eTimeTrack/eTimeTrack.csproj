@@ -670,6 +670,10 @@
     <Compile Include="Migrations\202408211607083_UnassignedEmployeeProjects.Designer.cs">
       <DependentUpon>202408211607083_UnassignedEmployeeProjects.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202408211736583_UnassignedEmployeeProjects1.cs" />
+    <Compile Include="Migrations\202408211736583_UnassignedEmployeeProjects1.Designer.cs">
+      <DependentUpon>202408211736583_UnassignedEmployeeProjects1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BulkImportStatus.cs" />
@@ -1423,6 +1427,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202408211607083_UnassignedEmployeeProjects.resx">
       <DependentUpon>202408211607083_UnassignedEmployeeProjects.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202408211736583_UnassignedEmployeeProjects1.resx">
+      <DependentUpon>202408211736583_UnassignedEmployeeProjects1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

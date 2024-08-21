@@ -165,7 +165,6 @@ namespace eTimeTrack.Controllers
             {
                 UnassignedEmployeeProjects employeeProject = new UnassignedEmployeeProjects 
                 { 
-                    EmployeeProjectId = existing.EmployeeProjectId, 
                     EmployeeId = existing.EmployeeId, 
                     ProjectId = existing.ProjectId, 
                     ProjectUserTypeID = existing.ProjectUserTypeID, 
