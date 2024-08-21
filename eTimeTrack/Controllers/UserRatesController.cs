@@ -234,7 +234,7 @@ namespace eTimeTrack.Controllers
 
                             var IsRatesConfirmedBool = ParseBool(ws.Cells[i, ratesConfirmedColumn].Text?.Trim());
 
-                            bool existUserRates = context.UserRates.Any(x => x.EmployeeId == employeeId && x.StartDate == startdate);
+                            bool existUserRates = context.UserRates.Any(x => x.EmployeeId == employeeId && x.StartDate == startdate && x.ProjectId == model.ProjectID);
                             if (!existUserRates)
                             {
                                 UserRate userRate = new UserRate
