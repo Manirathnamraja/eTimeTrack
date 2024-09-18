@@ -164,7 +164,7 @@ namespace eTimeTrack.Controllers
 
         private UserDetails GetUserDetails(int employeeId, int projectId)
         {
-            var userDetails = Db.EmployeeProjects.Where(x => x.EmployeeId == employeeId && x.ProjectId == projectId).FirstOrDefault();
+            var userDetails = Db.EmployeeProjectDetails.Where(x => x.EmployeeId == employeeId && x.ProjectId == projectId).FirstOrDefault();
             UserDetails user = new UserDetails();
 
             if (userDetails != null)

@@ -97,7 +97,7 @@ namespace eTimeTrack.Models
         public DbSet<ProjectExpensesStdDetails> ProjectExpensesStdDetails { get; set; }
         public DbSet<ProjectExpensesMapping> ProjectExpensesMappings { get; set; }
         public DbSet<ProjectGuidanceNotes> ProjectGuidanceNotes { get; set; }
-        public DbSet<UnassignedEmployeeProjects> UnassignedEmployeeProjects { get; set; }
+        public DbSet<EmployeeProjectDetails> EmployeeProjectDetails { get; set; }
         internal int SaveChangesWithoutLogging()
         {
             return base.SaveChanges();

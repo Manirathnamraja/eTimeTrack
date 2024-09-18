@@ -11,6 +11,7 @@
     string selectedProjectGroup = ViewBag.SelectedProjectGroup != null ? ViewBag.SelectedProjectGroup.ToString() : "null";
 }
 
+@Html.Partial("_InfoMessageRender")
 @Html.Partial("_Banner")
 
 @using (Html.BeginForm("IndexPost", "ProjectVariations", FormMethod.Post, new { enctype = "multipart/form-data" }))
@@ -36,7 +37,14 @@
 
     <input type="submit" id="filter" class="btn btn-primary" value="Filter Table" />
 }
-
+<div class="row">
+    <div class="col-md-4" style="margin-left:856px;">
+        <div class="pull-right">
+            <button type="button" class="btn btn-primary checkAllAssigned" style="margin-bottom:21px;">Toggle All (Current Page)</button>
+        </div>
+    </div>
+</div>
+<div id="alertmsg"></div>
 <table class="table data-table" width="100%">
     <thead>
         <tr>
@@ -82,7 +90,39 @@
 
 
         $(document).ready(function() {
+            $(".checkAllAssigned").click(function () {
+                var assingedCheckbox = [];
+                if ($(".assignCheckbox").is(":checked")) {
+                    $(".assignCheckbox").each(function (index, item) {
+                        $(item).prop("checked", false);
+                    });
+                }
+                else {
+                    $(".assignCheckbox").each(function (index, item) {
+                        $(item).prop("checked", true);
+                    });
+                }
+                $(".assignCheckbox").each(function (index, item) {
+                    var AssingedCheckbox = {};
+                    AssingedCheckbox.projectVariationId = @Model.ProjectVariation.VariationID;
+                    AssingedCheckbox.taskId = $(this).data('taskid');
+                    AssingedCheckbox.assigned = $(this).is(":checked");
+                    assingedCheckbox.push(AssingedCheckbox);
+                });
+                var checkbox = $(".assignCheckbox");
+                var checked = checkbox.is(":checked");
+                 $.post('@Url.Action("AssignToTaskALL", "ProjectVariations")',
+                     {
+                         variationsAssigned: assingedCheckbox
+                     }).done(function () {
+                         $("#alertmsg").html('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span></button>' + 'Successfully Saved' + '</div>');
+                         $('.approvedCheckbox[data-taskid="' + checkbox.data('taskid') + '"]').prop('checked', false)
+                             .prop('disabled', !checked);
+                         $('.closedCheckbox[data-taskid="' + checkbox.data('taskid') + '"]').prop('checked', false)
+                             .prop('disabled', !checked);
+                     });
 
+            });
 
             // Assignment
             $(document).on('click', '.assignCheckbox', function() {
@@ -161,6 +201,8 @@
             }
 
         });
+
+
 
     </script>
 

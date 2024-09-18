@@ -22,7 +22,7 @@ namespace eTimeTrack.Controllers
                 return InvokeHttp404(HttpContext);
             }
 
-            List<EmployeeProject> employees = GetAllProjectEmployeesOrdered(projectId, projectUserTypeId, projectDisciplineId,officeId).Where(x => x.Employee.IsActive).ToList();
+            List<EmployeeProjectsViewModel> employees = GetAllProjectEmployeesOrdered(projectId, projectUserTypeId, projectDisciplineId,officeId).Where(x => x.Employee.IsActive).ToList();
             
             List<SelectListItem> selectItems = GetProjectUserTypeSelectItems(projectId);
 
@@ -81,8 +81,19 @@ namespace eTimeTrack.Controllers
             }
 
             EmployeeProject existing = Db.EmployeeProjects.SingleOrDefault(x => x.EmployeeId == userId && x.ProjectId == projectId);
+            EmployeeProjectDetails projectDetails = Db.EmployeeProjectDetails.SingleOrDefault(x => x.EmployeeId == userId && x.ProjectId == projectId);
 
-            if (existing == null)
+            if (existing == null && projectDetails == null)
+            {
+                if (assigned)
+                {
+                    EmployeeProject employeeProject = new EmployeeProject { EmployeeId = (int)userId, ProjectId = (int)projectId };
+                    EmployeeProjectDetails employeeProjectDetails = new EmployeeProjectDetails { EmployeeId = (int)userId, ProjectId = (int)projectId };
+                    Db.EmployeeProjects.Add(employeeProject);
+                    Db.EmployeeProjectDetails.Add(employeeProjectDetails);
+                }
+            }
+            else if (existing == null && projectDetails != null)
             {
                 if (assigned)
                 {
@@ -92,21 +103,10 @@ namespace eTimeTrack.Controllers
             }
             else if (!assigned)
             {
-                UnassignedEmployeeProjects employeeProject = new UnassignedEmployeeProjects
-                {
-                    EmployeeId = existing.EmployeeId,
-                    ProjectId = existing.ProjectId,
-                    ProjectUserTypeID = existing.ProjectUserTypeID,
-                    ProjectRole = existing.ProjectRole,
-                    ProjectDisciplineID = existing.ProjectDisciplineID,
-                    OfficeID = existing.OfficeID
-                };
-                Db.UnassignedEmployeeProjects.Add(employeeProject);
                 Db.EmployeeProjects.Remove(existing);
             }
 
             Db.SaveChanges();
-
             return Json(true);
         }
 
@@ -132,7 +132,8 @@ namespace eTimeTrack.Controllers
                 return InvokeHttp404(HttpContext);
             }
 
-            EmployeeProject employeeProject = Db.EmployeeProjects.SingleOrDefault(x => x.EmployeeId == employeeId && x.ProjectId == project.ProjectID);
+            EmployeeProjectsViewModel employeeProject = GetAllEmployeeProjectdetails(project.ProjectID).Where(x => x.EmployeeId == employeeId).SingleOrDefault(); 
+            //Db.EmployeeProjects.SingleOrDefault(x => x.EmployeeId == employeeId && x.ProjectId == project.ProjectID);
 
             EmployeeProjectDetailsViewModel model = new EmployeeProjectDetailsViewModel
             {
@@ -221,7 +222,8 @@ namespace eTimeTrack.Controllers
                 return Json(false);
             }
 
-            EmployeeProject employeeProject = Db.EmployeeProjects.SingleOrDefault(x => x.EmployeeId == model.EmployeeID && x.ProjectId == project.ProjectID);
+            EmployeeProjectsViewModel employeeProject = GetAllEmployeeProjectdetails(project.ProjectID).Where(x => x.EmployeeId == model.EmployeeID).SingleOrDefault();
+            //Db.EmployeeProjects.SingleOrDefault(x => x.EmployeeId == model.EmployeeID && x.ProjectId == project.ProjectID);
 
             var intProjectUserTypeID = string.IsNullOrWhiteSpace(model.ProjectUserTypeID) ? -1 : int.Parse(model.ProjectUserTypeID);
             bool projectUserTypeIsGeneric = !string.IsNullOrWhiteSpace(model.ProjectUserTypeID) && Db.ProjectUserTypes.Any(x => x.ProjectUserTypeID == intProjectUserTypeID && x.UserTypeID == null);
@@ -233,15 +235,17 @@ namespace eTimeTrack.Controllers
             bool officeIsGeneric = !string.IsNullOrWhiteSpace(model.OfficeID) && Db.ProjectOffices.Any(x => x.OfficeId == intOfficeID);
 
             InfoMessage message;
-            if (employeeProject != null)
+            EmployeeProjectDetails projectDetails = Db.EmployeeProjectDetails.SingleOrDefault(x => x.ProjectId == employeeProject.ProjectId && x.EmployeeId == employeeProject.EmployeeId);
+
+            if (employeeProject != null && projectDetails != null)
             {
-                employeeProject.ProjectUserTypeID = projectUserTypeIsGeneric ? null : (!string.IsNullOrWhiteSpace(model.ProjectUserTypeID) ? intProjectUserTypeID : (int?)null);
+                projectDetails.ProjectUserTypeID = projectUserTypeIsGeneric ? null : (!string.IsNullOrWhiteSpace(model.ProjectUserTypeID) ? intProjectUserTypeID : (int?)null);
 
-                employeeProject.ProjectRole = model.ProjectRole;
+                projectDetails.ProjectRole = model.ProjectRole;
 
-                employeeProject.ProjectDisciplineID = !projectDisciplineIsGeneric ? null : (!string.IsNullOrWhiteSpace(model.ProjectDisciplineID) ? intProjectDisciplineID : (int?)null);
+                projectDetails.ProjectDisciplineID = !projectDisciplineIsGeneric ? null : (!string.IsNullOrWhiteSpace(model.ProjectDisciplineID) ? intProjectDisciplineID : (int?)null);
 
-                employeeProject.OfficeID = !officeIsGeneric ? null : (!string.IsNullOrWhiteSpace(model.OfficeID) ? intOfficeID : (int?)null);
+                projectDetails.OfficeID = !officeIsGeneric ? null : (!string.IsNullOrWhiteSpace(model.OfficeID) ? intOfficeID : (int?)null);
 
                 Db.SaveChanges();
                 message = new InfoMessage
@@ -266,11 +270,30 @@ namespace eTimeTrack.Controllers
         [HttpPost]
         public JsonResult UpdateUserProjectUserType(int? employeeId, int? projectId, int? projectUserTypeId)
         {
-            EmployeeProject employeeProject = Db.EmployeeProjects.Single(x => x.EmployeeId == employeeId && x.ProjectId == projectId);
+            EmployeeProjectsViewModel employeeProject = GetAllEmployeeProjectdetails(projectId).Where(x => x.EmployeeId == employeeId).SingleOrDefault();
+            //EmployeeProject employeeProject = Db.EmployeeProjects.SingleOrDefault(x => x.EmployeeId == employeeId && x.ProjectId == projectId);
 
             bool projectUserTypeIsGeneric = !projectUserTypeId.HasValue || Db.ProjectUserTypes.Any(x => x.ProjectUserTypeID == projectUserTypeId && x.UserTypeID == null);
 
-            employeeProject.ProjectUserTypeID = projectUserTypeIsGeneric ? null : projectUserTypeId;
+            EmployeeProjectDetails projectDetails = Db.EmployeeProjectDetails.SingleOrDefault(x => x.ProjectId == employeeProject.ProjectId && x.EmployeeId == employeeProject.EmployeeId);
+
+            if (employeeProject != null)
+            {
+                if (projectDetails != null)
+                {
+                    projectDetails.ProjectUserTypeID = projectUserTypeIsGeneric ? null : projectUserTypeId;
+                }
+                else
+                {
+                    EmployeeProjectDetails details = new EmployeeProjectDetails
+                    {
+                        ProjectId = employeeProject.ProjectId,
+                        EmployeeId = employeeProject.EmployeeId,
+                        ProjectUserTypeID = projectUserTypeIsGeneric ? null : projectUserTypeId
+                    };
+                    Db.EmployeeProjectDetails.Add(details);
+                }
+            }
             Db.SaveChanges();
 
             return Json(true);
@@ -279,11 +302,29 @@ namespace eTimeTrack.Controllers
         [HttpPost]
         public JsonResult UpdateUserProjectDiscipline(int? employeeId,int? projectId, int? projectDisciplineId)
         {
-            EmployeeProject employeeProject = Db.EmployeeProjects.Single(x => x.EmployeeId == employeeId && x.ProjectId == projectId);
+            EmployeeProjectsViewModel employeeProject = GetAllEmployeeProjectdetails(projectId).Where(x => x.EmployeeId == employeeId).SingleOrDefault();
+            //EmployeeProject employeeProject = Db.EmployeeProjects.SingleOrDefault(x => x.EmployeeId == employeeId && x.ProjectId == projectId);
 
             bool projectDisciplineIsGeneric = !projectDisciplineId.HasValue || Db.ProjectDisciplines.Any(x => x.ProjectDisciplineId == projectDisciplineId);
+            EmployeeProjectDetails projectDetails = Db.EmployeeProjectDetails.SingleOrDefault(x => x.ProjectId == employeeProject.ProjectId && x.EmployeeId == employeeProject.EmployeeId);
 
-            employeeProject.ProjectDisciplineID = !projectDisciplineIsGeneric ? null : projectDisciplineId;
+            if (employeeProject != null)
+            {
+                if (projectDetails != null)
+                {
+                    projectDetails.ProjectDisciplineID = !projectDisciplineIsGeneric ? null : projectDisciplineId;
+                }
+                else
+                {
+                    EmployeeProjectDetails details = new EmployeeProjectDetails
+                    {
+                        ProjectId = employeeProject.ProjectId,
+                        EmployeeId = employeeProject.EmployeeId,
+                        ProjectDisciplineID = !projectDisciplineIsGeneric ? null : projectDisciplineId
+                    };
+                    Db.EmployeeProjectDetails.Add(details);
+                }
+            }
             Db.SaveChanges();
 
             return Json(true);
@@ -292,11 +333,31 @@ namespace eTimeTrack.Controllers
         [HttpPost]
         public JsonResult UpdateOffice(int? employeeId, int? projectId, int? officeId)
         {
-            EmployeeProject employeeProject = Db.EmployeeProjects.SingleOrDefault(x => x.EmployeeId == employeeId && x.ProjectId == projectId);
+            EmployeeProjectsViewModel employeeProject = GetAllEmployeeProjectdetails(projectId).Where(x => x.EmployeeId == employeeId).SingleOrDefault();
+            //EmployeeProject employeeProject = Db.EmployeeProjects.SingleOrDefault(x => x.EmployeeId == employeeId && x.ProjectId == projectId);
 
             bool officeIsGeneric = !officeId.HasValue || Db.ProjectOffices.Any(x => x.OfficeId == officeId);
 
-            employeeProject.OfficeID = !officeIsGeneric ? null : officeId;
+            EmployeeProjectDetails projectDetails = Db.EmployeeProjectDetails.SingleOrDefault(x => x.ProjectId == employeeProject.ProjectId && x.EmployeeId == employeeProject.EmployeeId);
+
+            if (employeeProject != null)
+            {
+                if (projectDetails != null)
+                {
+                    projectDetails.OfficeID = !officeIsGeneric ? null : officeId;
+                }
+                else
+                {
+                    EmployeeProjectDetails details = new EmployeeProjectDetails
+                    {
+                        ProjectId = employeeProject.ProjectId,
+                        EmployeeId = employeeProject.EmployeeId,
+                        OfficeID = !officeIsGeneric ? null : officeId
+                    };
+                  Db.EmployeeProjectDetails.Add(details);
+                }
+            }
+
             Db.SaveChanges();
 
             return Json(true);

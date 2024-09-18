@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
-using eTimeTrack.Models;
-using eTimeTrack.Extensions;
-using eTimeTrack.Helpers;
 using System.Web.Configuration;
+using System.Web.Mvc;
 using eTimeTrack.Enums;
 using eTimeTrack.Exceptions;
+using eTimeTrack.Extensions;
+using eTimeTrack.Helpers;
+using eTimeTrack.Models;
 using eTimeTrack.ViewModels;
 using OfficeOpenXml;
-using Spire.Doc;
-using Spire.Xls;
 
 namespace eTimeTrack.Controllers
 {
@@ -89,7 +86,7 @@ namespace eTimeTrack.Controllers
 
         public JsonResult GetProjectUserTypeAndMandatoryCommentsInfo(int? employeeId)
         {
-            List<EmployeeProject> employeeProjects = Db.EmployeeProjects.Include(x => x.ProjectUserType).Include(x => x.ProjectUserType.UserType).Where(x => x.EmployeeId == employeeId).ToList();
+            List<EmployeeProjectDetails> employeeProjects = Db.EmployeeProjectDetails.Include(x => x.ProjectUserType).Include(x => x.ProjectUserType.UserType).Where(x => x.EmployeeId == employeeId).ToList();
 
             List<EmployeeProjectUserTypeInfo> projectUserTypesAndMandatoryCommentMode = new List<EmployeeProjectUserTypeInfo>();
 
@@ -124,7 +121,7 @@ namespace eTimeTrack.Controllers
             return Json(projectUserTypesAndMandatoryCommentMode);
         }
 
-        private ActionResult TimesheetEditView(int? id, bool readOnly = false)
+        private ActionResult TimesheetEditView(int? id, bool readOnly = false, string editmode = "")
         {
             if (id == null)
             {
@@ -163,6 +160,18 @@ namespace eTimeTrack.Controllers
             ViewBag.MobileMode = IsMobileDevice();
 
             SetTimeCodeTexts(timesheet);
+            if (editmode == "Create")
+            {
+                foreach (var item in timesheet.TimesheetItems)
+                {
+                    if (item.ProjectTask.IsClosed || item.Variation.IsClosed || item.ProjectTask.ProjectGroup.IsClosed
+                        || item.ProjectTask.ProjectGroup.ProjectPart.IsClosed || item.ProjectTask.Project.IsClosed)
+                    {
+                        item.Valid = true;
+                    }
+                }
+                
+            }
 
             return View("Timesheet", timesheet);
         }
@@ -308,7 +317,7 @@ namespace eTimeTrack.Controllers
 
                 Db.EmployeeTimesheets.Add(employeeTimesheet);
                 Db.SaveChanges();
-                return RedirectToAction("Timesheet", new { id = employeeTimesheet.TimesheetID });
+                return RedirectToAction("Timesheet", new { id = employeeTimesheet.TimesheetID, editmode = "Create" });
             }
 
             ViewBag.TimesheetPeriodID = new SelectList(Db.TimesheetPeriods, "TimesheetPeriodID", "TimesheetPeriodID", employeeTimesheet.TimesheetPeriodID);
@@ -382,13 +391,13 @@ namespace eTimeTrack.Controllers
             return RedirectToAction("Timesheet", new { id = existing.TimesheetID });
         }
 
-        public ActionResult Timesheet(int? id)
+        public ActionResult Timesheet(int? id, string editmode = "")
         {
             if (id == null) return InvokeHttp404(HttpContext);
 
             ViewBag.DuplicatesAvailable = PotentialDuplicateAddItems((int)id);
             ViewBag.InfoMessage = TempData["InfoMessage"];
-            return TimesheetEditView(id);
+            return TimesheetEditView(id, false, editmode);
         }
 
         private void SetItemReadOnlyStatus(EmployeeTimesheet employeeTimesheet)
@@ -1203,7 +1212,7 @@ namespace eTimeTrack.Controllers
         [HttpPost]
         public JsonResult GetUserTypeDescription(int? employeeId, int? projectId)
         {
-            ProjectUserType projectUserType = Db.EmployeeProjects.SingleOrDefault(x => x.EmployeeId == employeeId && x.ProjectId == projectId)?.ProjectUserType;
+            ProjectUserType projectUserType = Db.EmployeeProjectDetails.SingleOrDefault(x => x.EmployeeId == employeeId && x.ProjectId == projectId)?.ProjectUserType;
             if (projectUserType == null)
             {
                 return Json(false);

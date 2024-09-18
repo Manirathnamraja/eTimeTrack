@@ -3,13 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 namespace eTimeTrack.Models
 {
-    public class UnassignedEmployeeProjects : ITrackableModel
+    public class EmployeeProjectDetails : ITrackableModel
     {
         [Key]
-        public int EmployeeProjectId { get; set; }
-        
+        public int EmployeeProjectDetailsID { get; set; }
         public int EmployeeId { get; set; }
-      
         public int ProjectId { get; set; }
         public int? ProjectUserTypeID { get; set; }
         public int? ProjectDisciplineID { get; set; }
@@ -24,15 +22,10 @@ namespace eTimeTrack.Models
         [ForeignKey("ProjectDisciplineID")]
         public virtual ProjectDiscipline ProjectDiscipline { get; set; }
 
-        [JsonIgnore]
-        public virtual Employee Employee { get; set; }
-
-        [JsonIgnore]
-        public virtual Project Project { get; set; }
-
+       
         public string GetId()
         {
-            return EmployeeProjectId.ToString();
+            return EmployeeProjectDetailsID.ToString();
         }
 
         public string ToJson()

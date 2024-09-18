@@ -105,9 +105,10 @@ namespace eTimeTrack.Controllers
             employees.ForEach(x => employeesVm.Add(new ProjectEmployeesViewModel { Employee = x, IsAdmin = admins.FirstOrDefault(y => y.Id == x.Id) != null, RoleName = GetRoleDetails(x.Roles.Select(y => y.RoleId).FirstOrDefault()) }));
 
 
-            List<EmployeeProject> assignedProjects = Db.EmployeeProjects.Where(x => x.ProjectId == project.ProjectID).ToList();
+            List<EmployeeProjectsViewModel> assignedProjects = GetAllEmployeeProjectdetails(project.ProjectID);
+                //Db.EmployeeProjects.Where(x => x.ProjectId == project.ProjectID).ToList();
 
-            var model = new GenericAssignmentModel<Project, ProjectEmployeesViewModel, EmployeeProject> { AssignmentRecipient = project, AvailableList = employeesVm, AssignedList = assignedProjects };
+            var model = new GenericAssignmentModel<Project, ProjectEmployeesViewModel, EmployeeProjectsViewModel> { AssignmentRecipient = project, AvailableList = employeesVm, AssignedList = assignedProjects };
 
             return View(model);
         }
@@ -152,8 +153,19 @@ namespace eTimeTrack.Controllers
             }
 
             EmployeeProject existing = Db.EmployeeProjects.SingleOrDefault(x => x.EmployeeId == userId && x.ProjectId == projectId);
+            EmployeeProjectDetails projectDetails = Db.EmployeeProjectDetails.SingleOrDefault(x => x.EmployeeId == userId && x.ProjectId == projectId);
 
-            if (existing == null)
+            if (existing == null && projectDetails == null)
+            {
+                if (assigned)
+                {
+                    EmployeeProject employeeProject = new EmployeeProject { EmployeeId = (int)userId, ProjectId = (int)projectId };
+                    EmployeeProjectDetails employeeProjectDetails = new EmployeeProjectDetails { EmployeeId = (int)userId, ProjectId = (int)projectId };
+                    Db.EmployeeProjects.Add(employeeProject);
+                    Db.EmployeeProjectDetails.Add(employeeProjectDetails);
+                }
+            }
+            else if (existing == null && projectDetails != null)
             {
                 if (assigned)
                 {
@@ -163,16 +175,6 @@ namespace eTimeTrack.Controllers
             }
             else if (!assigned)
             {
-                UnassignedEmployeeProjects employeeProject = new UnassignedEmployeeProjects 
-                { 
-                    EmployeeId = existing.EmployeeId, 
-                    ProjectId = existing.ProjectId, 
-                    ProjectUserTypeID = existing.ProjectUserTypeID, 
-                    ProjectRole = existing.ProjectRole,
-                    ProjectDisciplineID = existing.ProjectDisciplineID, 
-                    OfficeID = existing.OfficeID
-                };
-                Db.UnassignedEmployeeProjects.Add(employeeProject);
                 Db.EmployeeProjects.Remove(existing);
             }
 

@@ -8,6 +8,6 @@ namespace eTimeTrack.ViewModels
 {
     public class GetNotesViewModel
     {
-        public List<ProjectGuidanceNotes> GuidanceNotes { get; set; }
+        public ProjectGuidanceNotes GuidanceNotes { get; set; }
     }
 }

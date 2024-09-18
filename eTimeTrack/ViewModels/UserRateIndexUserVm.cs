@@ -10,6 +10,6 @@ namespace eTimeTrack.ViewModels
     public class UserRateIndexUserVm
     {
         public List<UserRate> UserRates { get; set; }
-        public List<EmployeeProject> EmployeeProjects { get; set; }
+        public List<EmployeeProjectsViewModel> EmployeeProjects { get; set; }
     }
 }

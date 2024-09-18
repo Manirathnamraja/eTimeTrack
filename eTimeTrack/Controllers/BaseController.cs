@@ -12,6 +12,7 @@ using eTimeTrack.Models;
 using Elmah;
 using Spire.Doc;
 using Spire.Xls;
+using eTimeTrack.ViewModels;
 
 namespace eTimeTrack.Controllers
 {
@@ -169,7 +170,7 @@ namespace eTimeTrack.Controllers
             return employeeProjects.Where(x => projectCompanies.Select(y => y.ProjectId).Contains(x.ProjectId)).Select(x => x.Project).ToList();
         }
 
-        protected List<EmployeeProject> GetAllProjectEmployeesOrdered(int? projectId, int? projectUserTypeId = null, int? projectDisciplineId = null, int? officeId = null)
+        protected List<EmployeeProjectsViewModel> GetAllProjectEmployeesOrdered(int? projectId, int? projectUserTypeId = null, int? projectDisciplineId = null, int? officeId = null)
         {
             IQueryable<ProjectUserType> projectUserTypes = Db.ProjectUserTypes.Where(x => x.ProjectID == projectId);
 
@@ -197,7 +198,12 @@ namespace eTimeTrack.Controllers
             bool isGeneric = projectUserTypeId == null || projectUserTypeId == projectGenericUserTypeId;
             bool isGenericDiscipline = projectDisciplineId == null || projectDisciplineId == projectGenericDisciplineId;
             bool isGenericOffice = officeId == null || officeId == officeGenericId;
-            return Db.EmployeeProjects.Where(x =>
+
+            var empdetails = GetAllEmployeeProjectdetails(projectId);
+
+            //User details Improvement - Split EmployeeProjects table
+
+            return empdetails.Where(x =>
                 x.ProjectId == projectId
                 && (
                     projectUserTypeId == null || ((isGeneric ? (x.ProjectUserTypeID == null || x.ProjectUserTypeID == projectGenericUserTypeId) : x.ProjectUserTypeID == projectUserTypeId
@@ -209,6 +215,48 @@ namespace eTimeTrack.Controllers
                     officeId == null || ((isGenericOffice ? (x.OfficeID == null || x.OfficeID == officeGenericId) : x.OfficeID == officeId
                     )))
                 ).OrderBy(x => x.Employee.Names).ThenBy(x => x.Employee.EmployeeNo).ToList();
+
+            //return Db.EmployeeProjects.Where(x =>
+            //    x.ProjectId == projectId
+            //    && (
+            //        projectUserTypeId == null || ((isGeneric ? (x.ProjectUserTypeID == null || x.ProjectUserTypeID == projectGenericUserTypeId) : x.ProjectUserTypeID == projectUserTypeId
+            //        )))
+            //    && (
+            //        projectDisciplineId == null || ((isGenericDiscipline ? (x.ProjectDisciplineID == null || x.ProjectDisciplineID == projectGenericDisciplineId) : x.ProjectDisciplineID == projectDisciplineId
+            //        )))
+            //        && (
+            //        officeId == null || ((isGenericOffice ? (x.OfficeID == null || x.OfficeID == officeGenericId) : x.OfficeID == officeId
+            //        )))
+            //    ).OrderBy(x => x.Employee.Names).ThenBy(x => x.Employee.EmployeeNo).ToList();
+        }
+
+
+        protected List<EmployeeProjectsViewModel> GetAllEmployeeProjectdetails(int? projectId = 0, int? employeeId = 0)
+        {
+            var results = (from ep in Db.EmployeeProjects
+                          join epd in Db.EmployeeProjectDetails on ep.EmployeeId equals epd.EmployeeId 
+                          join emp in Db.Users on ep.EmployeeId equals emp.Id
+                          join p in Db.Projects on ep.ProjectId equals p.ProjectID
+                          //join put in Db.ProjectUserTypes on epd.ProjectId equals put.ProjectID
+                          //join pd in Db.ProjectDisciplines on epd.ProjectDisciplineID equals pd.ProjectDisciplineId
+                          //join ofi in Db.ProjectOffices on epd.OfficeID equals ofi.OfficeId
+                          where (ep.ProjectId == projectId && epd.ProjectId == projectId) || (ep.EmployeeId == employeeId)
+                          select new EmployeeProjectsViewModel
+                          {
+                              EmployeeProjectId = ep.EmployeeProjectId,
+                              EmployeeId = ep.EmployeeId,
+                              ProjectId = ep.ProjectId,
+                              ProjectUserTypeID = epd.ProjectUserTypeID,
+                              ProjectDisciplineID = epd.ProjectDisciplineID,
+                              OfficeID = epd.OfficeID,
+                              ProjectRole = epd.ProjectRole,
+                              //ProjectUserType = put,
+                              //ProjectDiscipline = pd,
+                              Project = p,
+                              Employee = emp
+                          }).ToList();
+
+            return results;
         }
 
         protected List<UserRate> GetAllUserRatesOrdered(int? projectId)

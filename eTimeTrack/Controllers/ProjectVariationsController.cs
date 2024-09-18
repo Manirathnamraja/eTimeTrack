@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using eTimeTrack.Helpers;
 using eTimeTrack.Models;
@@ -134,6 +135,31 @@ namespace eTimeTrack.Controllers
                 Db.ProjectVariationItems.Remove(existing);
             }
             Db.SaveChanges();
+        }
+
+        [HttpPost]
+        public void AssignToTaskALL(List<VariationsAssignedViewmodels> variationsAssigned)
+        {
+            foreach (var item in variationsAssigned)
+            {
+                ProjectVariationItem existing = Db.ProjectVariationItems.SingleOrDefault(x => x.TaskID == item.taskId && x.VariationID == item.projectVariationId);
+
+                if (existing == null)
+                {
+                    if (item.assigned)
+                    {
+                        ProjectVariationItem newVariationItem =
+                            new ProjectVariationItem { TaskID = item.taskId, VariationID = item.projectVariationId, IsClosed = false };
+                        Db.ProjectVariationItems.Add(newVariationItem);
+                    }
+                }
+                else if (!item.assigned)
+                {
+                    Db.ProjectVariationItems.Remove(existing);
+                }
+                Db.SaveChanges();
+            }
+            
         }
 
 

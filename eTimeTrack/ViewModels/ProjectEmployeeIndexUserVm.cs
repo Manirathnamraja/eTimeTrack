@@ -9,7 +9,7 @@ namespace eTimeTrack.ViewModels
 {
     public class ProjectEmployeeIndexUserVm
     {
-        public List<EmployeeProject> EmployeeProjects { get; set; }
+        public List<EmployeeProjectsViewModel> EmployeeProjects { get; set; }
         public int? ProjectUserTypeIdFilter { get; set; }
         public int? ProjectDisciplineIdFilter { get; set; }
         public int? OfficeIdFilter { get; set; }

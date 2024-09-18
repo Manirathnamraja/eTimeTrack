@@ -666,13 +666,25 @@
     <Compile Include="Migrations\202402190737087_ProjectGuidanceNotes.designer.cs">
       <DependentUpon>202402190737087_ProjectGuidanceNotes.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202408211607083_UnassignedEmployeeProjects.cs" />
-    <Compile Include="Migrations\202408211607083_UnassignedEmployeeProjects.Designer.cs">
-      <DependentUpon>202408211607083_UnassignedEmployeeProjects.cs</DependentUpon>
+    <Compile Include="Migrations\202408221301546_EmployeeProjectDetails.cs" />
+    <Compile Include="Migrations\202408221301546_EmployeeProjectDetails.Designer.cs">
+      <DependentUpon>202408221301546_EmployeeProjectDetails.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202408211736583_UnassignedEmployeeProjects1.cs" />
-    <Compile Include="Migrations\202408211736583_UnassignedEmployeeProjects1.Designer.cs">
-      <DependentUpon>202408211736583_UnassignedEmployeeProjects1.cs</DependentUpon>
+    <Compile Include="Migrations\202408221439042_EmployeeProjectDetails1.cs" />
+    <Compile Include="Migrations\202408221439042_EmployeeProjectDetails1.Designer.cs">
+      <DependentUpon>202408221439042_EmployeeProjectDetails1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202408231327508_EmployeeProjectDetails2.cs" />
+    <Compile Include="Migrations\202408231327508_EmployeeProjectDetails2.Designer.cs">
+      <DependentUpon>202408231327508_EmployeeProjectDetails2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202408261017208_EmployeeProject.cs" />
+    <Compile Include="Migrations\202408261017208_EmployeeProject.Designer.cs">
+      <DependentUpon>202408261017208_EmployeeProject.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202408261031172_EmployeeProject1.cs" />
+    <Compile Include="Migrations\202408261031172_EmployeeProject1.Designer.cs">
+      <DependentUpon>202408261031172_EmployeeProject1.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -683,7 +695,7 @@
     <Compile Include="Models\ProjectExpensesUpload.cs" />
     <Compile Include="Models\ProjectExpenseType.cs" />
     <Compile Include="Models\ProjectGuidanceNotes.cs" />
-    <Compile Include="Models\UnassignedEmployeeProjects.cs" />
+    <Compile Include="Models\EmployeeProjectDetails.cs" />
     <Compile Include="Models\UserRatesUpload.cs" />
     <Compile Include="Models\UserRate.cs" />
     <Compile Include="Models\ProjectUserClassification.cs" />
@@ -704,6 +716,7 @@
     <Compile Include="Models\ProjectTimesheetPeriod.cs" />
     <Compile Include="Models\ProjectUserType.cs" />
     <Compile Include="Models\UserType.cs" />
+    <Compile Include="ViewModels\EmployeeProjectsViewModel.cs" />
     <Compile Include="ViewModels\ExpensesAllocationsViewModel.cs" />
     <Compile Include="ViewModels\ExpensesMappingViewModel.cs" />
     <Compile Include="ViewModels\ExpensesStdTypesViewModel.cs" />
@@ -720,6 +733,7 @@
     </Compile>
     <Compile Include="ViewModels\UserSelectUpdateViewModel.cs" />
     <Compile Include="ViewModels\UserSelectviewmodel.cs" />
+    <Compile Include="ViewModels\VariationsAssignedViewmodels.cs" />
     <Compile Include="ViewModels\WeeklyCostReportsIndexUserVm.cs" />
     <Compile Include="ViewModels\ExportTimesheetsIndexViewModel.cs" />
     <Compile Include="ViewModels\ApplicationUserViewModel.cs" />
@@ -1425,11 +1439,20 @@
     <EmbeddedResource Include="Migrations\202402190737087_ProjectGuidanceNotes.resx">
       <DependentUpon>202402190737087_ProjectGuidanceNotes.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202408211607083_UnassignedEmployeeProjects.resx">
-      <DependentUpon>202408211607083_UnassignedEmployeeProjects.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202408221301546_EmployeeProjectDetails.resx">
+      <DependentUpon>202408221301546_EmployeeProjectDetails.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202408211736583_UnassignedEmployeeProjects1.resx">
-      <DependentUpon>202408211736583_UnassignedEmployeeProjects1.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202408221439042_EmployeeProjectDetails1.resx">
+      <DependentUpon>202408221439042_EmployeeProjectDetails1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202408231327508_EmployeeProjectDetails2.resx">
+      <DependentUpon>202408231327508_EmployeeProjectDetails2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202408261017208_EmployeeProject.resx">
+      <DependentUpon>202408261017208_EmployeeProject.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202408261031172_EmployeeProject1.resx">
+      <DependentUpon>202408261031172_EmployeeProject1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

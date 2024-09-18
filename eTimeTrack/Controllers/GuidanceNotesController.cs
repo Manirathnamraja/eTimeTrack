@@ -57,7 +57,7 @@ namespace eTimeTrack.Controllers
         public ActionResult GetNotes()
         {
             int ProjectId = (int?)Session?["SelectedProject"] ?? 0;
-            var results = Db.ProjectGuidanceNotes.Where(x => x.ProjectId == ProjectId).ToList();
+            var results = Db.ProjectGuidanceNotes.Where(x => x.ProjectId == ProjectId).SingleOrDefault();
             return View(new GetNotesViewModel
             {
                 GuidanceNotes = results

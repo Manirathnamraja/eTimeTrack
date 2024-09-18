@@ -1,6 +1,6 @@
 ﻿@using eTimeTrack.Models
 @using eTimeTrack.ViewModels
-@model GenericAssignmentModel<Project, ProjectEmployeesViewModel, EmployeeProject>
+@model GenericAssignmentModel<Project, ProjectEmployeesViewModel, EmployeeProjectsViewModel>
 
 @{
     ViewBag.Title = "Assign Employees to Project";
@@ -22,7 +22,7 @@
     <tbody>
         @foreach (ProjectEmployeesViewModel emp in Model.AvailableList)
             {
-                EmployeeProject assignedProject = Model.AssignedList.SingleOrDefault(x => x.EmployeeId == emp.Employee.Id);
+                EmployeeProjectsViewModel assignedProject = Model.AssignedList.SingleOrDefault(x => x.EmployeeId == emp.Employee.Id);
             <tr>
                 <td>@emp.Employee.EmployeeNo</td>
                 <td>@emp.Employee.Email</td>

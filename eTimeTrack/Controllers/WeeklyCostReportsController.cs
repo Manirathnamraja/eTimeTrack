@@ -65,7 +65,7 @@ namespace eTimeTrack.Controllers
 
             if (allData.Count == 0)
             {
-                TempData["InfoMessage"] = new InfoMessage { MessageContent = "There are no rates available for this date range. Please try for different date range.", MessageType = InfoMessageType.Failure };
+                TempData["InfoMessage"] = new InfoMessage { MessageContent = "There is no data available for this date range. Check that timesheet data and rates exist for the date range, and that at least one TimeCode Name is defined.", MessageType = InfoMessageType.Failure };
                 ViewBag.InfoMessage = TempData["InfoMessage"];
                 return RedirectToAction("Index");
             }

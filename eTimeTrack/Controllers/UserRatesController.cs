@@ -36,7 +36,7 @@ namespace eTimeTrack.Controllers
             }
             List<UserRate> userRates = GetAllUserRatesOrdered(projectId).Where(x => x.Employee.IsActive).ToList();
 
-            List<EmployeeProject> employeeProjects = GetAllProjectEmployeesOrdered(projectId).Where(x => x.Employee.IsActive).ToList();
+            List<EmployeeProjectsViewModel> employeeProjects = GetAllProjectEmployeesOrdered(projectId).Where(x => x.Employee.IsActive).ToList();
 
             ViewBag.ProjectId = projectId;
 

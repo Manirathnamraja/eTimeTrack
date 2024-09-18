@@ -13,49 +13,163 @@
     <div class="alert alert-info">
         These notes are intended as a general guide for project personnel to assist in the completion of timesheets. Please contact your project’s time administrator if you need further assistance.
     </div>
-    <div class="table-responsive">
-        <table class="table table-responsive cell-border" width="100%" id="notescolumns">
-            <thead>
-                <tr>
-                    <th>Time Administrator contact</th>
-                    <th>Online notes used with WBS codes</th>
-                    <th>Cap weekly hours at</th>
-                    <th>Match hours to home office timesheet?</th>
-                    <th>Overtime Approval requirements</th>
-                    <th>NT Time Code Note</th>
-                    <th>OT1 Time Code Note</th>
-                    <th>OT2 Time Code Note</th>
-                    <th>OT3 Time Code Note</th>
-                    <th>OT4 Time Code Note</th>
-                    <th>OT5 Time Code Note</th>
-                    <th>OT6 Time Code Note</th>
-                    <th>OT7 Time Code Note</th>
-                    <th>Timesheet Comments</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.GuidanceNotes)
-                {
-                    <tr>
-                        <td>@item.TimeAdministratorContact </td>
-                        <td>@item.WBSCodes </td>
-                        <td>@item.CapWeeklyHours </td>
-                        <td>@item.MatchHours </td>
-                        <td>@item.OvertimeApproval </td>
-                        <td>@item.NTTimeCodeNote </td>
-                        <td>@item.OT1TimeCodeNote </td>
-                        <td>@item.OT2TimeCodeNote </td>
-                        <td>@item.OT3TimeCodeNote </td>
-                        <td>@item.OT4TimeCodeNote </td>
-                        <td>@item.OT5TimeCodeNote </td>
-                        <td>@item.OT6TimeCodeNote </td>
-                        <td>@item.OT7TimeCodeNote </td>
-                        <td>@item.TimesheetComments </td>
+    <div class="form-horizontal">
+        <hr />
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                Time Administrator Contact
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert email address of eTT Time Administrator for the project">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.GuidanceNotes.TimeAdministratorContact, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%", @readonly = "readonly" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                Online notes used with WBS codes
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Yes or No with any commentary">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.GuidanceNotes.WBSCodes, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%", @readonly = "readonly" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                Cap weekly hours at
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert any hours caps and provide additional commentary">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.GuidanceNotes.CapWeeklyHours, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%", @readonly = "readonly" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                Match hours to home office timesheet?
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Yes or no with commentary if needed">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.GuidanceNotes.MatchHours, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%", @readonly = "readonly" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                Overtime Approval requirements
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert commentary including email if applicable">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.GuidanceNotes.OvertimeApproval, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%", @readonly = "readonly" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                NT Time Code Note
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert commentary on how this is applicable if required">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.GuidanceNotes.NTTimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%", @readonly = "readonly" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                OT1 Time Code Note
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert commentary on how this is applicable if required">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.GuidanceNotes.OT1TimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%", @readonly = "readonly" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                OT2 Time Code Note
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert commentary on how this is applicable if required">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.GuidanceNotes.OT2TimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%", @readonly = "readonly" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                OT3 Time Code Note
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert commentary on how this is applicable if required">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.GuidanceNotes.OT3TimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%", @readonly = "readonly" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                OT4 Time Code Note
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert commentary on how this is applicable if required">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.GuidanceNotes.OT4TimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%", @readonly = "readonly" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                OT5 Time Code Note
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert commentary on how this is applicable if required">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.GuidanceNotes.OT5TimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%", @readonly = "readonly" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                OT6 Time Code Note
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert commentary on how this is applicable if required">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.GuidanceNotes.OT6TimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%", @readonly = "readonly" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                OT7 Time Code Note
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert commentary on how this is applicable if required">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.GuidanceNotes.OT7TimeCodeNote, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%", @readonly = "readonly" } })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">
+                Timesheet Comments
+                <a class='tool-tip' data-toggle="tooltip" data-placement="right" title="Insert commentary on if and how timesheet comments are to be captured">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </label>
+            <div class="col-md-8">
+                @Html.EditorFor(model => model.GuidanceNotes.TimesheetComments, new { htmlAttributes = new { @class = "form-control", placeholder = "", style = "max-width:70%", @readonly = "readonly" } })
+            </div>
+        </div>
 
-                    </tr>
-                }
-            </tbody>
-        </table>
     </div>
 </div>
 
@@ -67,12 +181,6 @@
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/notify")
 
-    <script>
-        $('#notescolumns').dataTable({
-            paging: true,
-            searching: true,
-            bLengthChange: false
-        });
-    </script>
+    
     
 }

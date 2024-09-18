@@ -7,13 +7,13 @@ namespace eTimeTrack.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class UnassignedEmployeeProjects : IMigrationMetadata
+    public sealed partial class EmployeeProject1 : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(UnassignedEmployeeProjects));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(EmployeeProject1));
         
         string IMigrationMetadata.Id
         {
-            get { return "202408211607083_UnassignedEmployeeProjects"; }
+            get { return "202408261031172_EmployeeProject1"; }
         }
         
         string IMigrationMetadata.Source
